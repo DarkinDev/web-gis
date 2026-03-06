@@ -1,4 +1,4 @@
-# 🚌 Bus Management WebGIS
+# Bus Management WebGIS
 
 Hệ thống WebGIS quản lý xe buýt sử dụng Django + PostGIS với đầy đủ chức năng GIS thực tế.
 
