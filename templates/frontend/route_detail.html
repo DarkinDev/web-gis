@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Tuyến {{ route.route_number }} - {{ route.name }} - BusGIS{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header" style="background: linear-gradient(135deg, {{ route.color }}cc, {{ route.color }});">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'routes-list' %}">Tuyến xe</a></li>
+                    <li class="breadcrumb-item active">{{ route.route_number }}</li>
+                </ol>
+            </nav>
+            <div class="route-header-content">
+                <div class="route-badge">{{ route.route_number }}</div>
+                <div>
+                    <h1>{{ route.name }}</h1>
+                    <p class="mb-0">{{ route.start_point }} ↔ {{ route.end_point }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <div class="row g-4">
+            <!-- Route Info -->
+            <div class="col-lg-4">
+                <div class="info-card">
+                    <h5><i class="bi bi-info-circle me-2"></i>Thông tin tuyến</h5>
+                    <ul class="info-list">
+                        <li>
+                            <span class="label">Giờ hoạt động</span>
+                            <span class="value">{{ route.operating_hours }}</span>
+                        </li>
+                        <li>
+                            <span class="label">Tần suất</span>
+                            <span class="value">{{ route.frequency }}</span>
+                        </li>
+                        <li>
+                            <span class="label">Giá vé</span>
+                            <span class="value text-primary fw-bold">{{ route.ticket_price|floatformat:0 }}đ</span>
+                        </li>
+                        <li>
+                            <span class="label">Số trạm dừng</span>
+                            <span class="value">{{ route.total_stops }} trạm</span>
+                        </li>
+                    </ul>
+                    {% if route.description %}
+                    <div class="route-description mt-3">
+                        <h6>Mô tả</h6>
+                        <p>{{ route.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    <a href="{% url 'home' %}?route={{ route.id }}" class="btn btn-primary w-100 mt-3">
+                        <i class="bi bi-map me-1"></i>Xem trên bản đồ
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stops Timeline -->
+            <div class="col-lg-8">
+                <div class="info-card">
+                    <h5><i class="bi bi-geo-alt me-2"></i>Các trạm dừng</h5>
+                    <div class="stops-timeline">
+                        {% for rs in stops %}
+                        <div
+                            class="timeline-item {% if forloop.first %}first{% endif %} {% if forloop.last %}last{% endif %}">
+                            <div class="timeline-marker" style="background: {{ route.color }}">
+                                {{ rs.order }}
+                            </div>
+                            <div class="timeline-content">
+                                <h6>{{ rs.stop.name }}</h6>
+                                <p class="mb-0 text-muted small">
+                                    {% if rs.stop.address %}
+                                    <i class="bi bi-signpost me-1"></i>{{ rs.stop.address }}
+                                    {% endif %}
+                                </p>
+                                <div class="timeline-meta">
+                                    {% if rs.distance_from_start %}
+                                    <span><i class="bi bi-arrows-move"></i> {{ rs.distance_from_start }} km</span>
+                                    {% endif %}
+                                    {% if rs.estimated_time %}
+                                    <span><i class="bi bi-clock"></i> {{ rs.estimated_time }} phút</span>
+                                    {% endif %}
+                                    {% if rs.stop.has_shelter %}
+                                    <span class="badge bg-success"><i class="bi bi-umbrella"></i> Có mái che</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="bi bi-geo-alt"></i>
+                            <p>Chưa có trạm dừng nào</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

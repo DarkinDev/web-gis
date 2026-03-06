@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Danh sách trạm dừng - BusGIS{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="bi bi-geo-alt-fill me-2"></i>Danh sách trạm dừng</h1>
+            <p class="lead">{{ stops.count }} trạm dừng xe buýt</p>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <!-- Search -->
+        <div class="filter-bar mb-4">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" id="stop-search" placeholder="Tìm trạm dừng...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'home' %}" class="btn btn-primary w-100">
+                        <i class="bi bi-map me-1"></i>Xem trên bản đồ
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stops List -->
+        <div class="row g-3" id="stops-grid">
+            {% for stop in stops %}
+            <div class="col-md-6 col-lg-4 stop-item" data-name="{{ stop.name }}">
+                <div class="stop-card">
+                    <div class="stop-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div class="stop-info">
+                        <h6>{{ stop.name }}</h6>
+                        {% if stop.address %}
+                        <p class="stop-address"><i class="bi bi-signpost me-1"></i>{{ stop.address }}</p>
+                        {% endif %}
+                        <div class="stop-badges">
+                            {% if stop.has_shelter %}
+                            <span class="badge bg-success-subtle text-success"><i class="bi bi-umbrella"></i> Mái
+                                che</span>
+                            {% endif %}
+                            {% if stop.has_bench %}
+                            <span class="badge bg-info-subtle text-info"><i class="bi bi-person-arms-up"></i> Ghế
+                                ngồi</span>
+                            {% endif %}
+                        </div>
+                        <div class="stop-routes mt-2">
+                            {% for route in stop.get_routes %}
+                            <span class="route-tag"
+                                style="background: {{ route.color }}20; color: {{ route.color }}; border-color: {{ route.color }}">
+                                {{ route.route_number }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="bi bi-geo-alt"></i>
+                    <h4>Chưa có trạm dừng nào</h4>
+                    <p>Thêm trạm dừng qua trang quản trị</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('stop-search');
+        const stopItems = document.querySelectorAll('.stop-item');
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            stopItems.forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                if (name.includes(query)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

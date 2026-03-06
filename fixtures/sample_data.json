@@ -1,0 +1,519 @@
+[
+    {
+        "model": "bus.busroute",
+        "pk": 1,
+        "fields": {
+            "route_number": "01",
+            "name": "Bến Thành - Bến xe Chợ Lớn",
+            "description": "Tuyến xe buýt nối trung tâm Q1 với Chợ Lớn Q5",
+            "start_point": "Bến Thành (Q1)",
+            "end_point": "Bến xe Chợ Lớn (Q5)",
+            "operating_hours": "05:00 - 21:00",
+            "frequency": "10-15 phút/chuyến",
+            "ticket_price": "7000",
+            "color": "#e74c3c",
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busroute",
+        "pk": 2,
+        "fields": {
+            "route_number": "14",
+            "name": "Bến Thành - Sân bay Tân Sơn Nhất",
+            "description": "Tuyến xe buýt nối trung tâm Q1 với sân bay",
+            "start_point": "Bến Thành (Q1)",
+            "end_point": "Sân bay Tân Sơn Nhất",
+            "operating_hours": "05:00 - 22:00",
+            "frequency": "15-20 phút/chuyến",
+            "ticket_price": "7000",
+            "color": "#3498db",
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busroute",
+        "pk": 3,
+        "fields": {
+            "route_number": "26",
+            "name": "Bến Thành - Đại học Quốc gia",
+            "description": "Tuyến xe buýt nối trung tâm Q1 với làng đại học Thủ Đức",
+            "start_point": "Bến Thành (Q1)",
+            "end_point": "ĐHQG TP.HCM",
+            "operating_hours": "05:30 - 20:30",
+            "frequency": "12-18 phút/chuyến",
+            "ticket_price": "7000",
+            "color": "#2ecc71",
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busroute",
+        "pk": 4,
+        "fields": {
+            "route_number": "52",
+            "name": "Bến Thành - Thảo Điền",
+            "description": "Tuyến xe buýt nối trung tâm với khu Thảo Điền Q2",
+            "start_point": "Bến Thành (Q1)",
+            "end_point": "Thảo Điền (Q2)",
+            "operating_hours": "05:30 - 21:00",
+            "frequency": "10-15 phút/chuyến",
+            "ticket_price": "7000",
+            "color": "#9b59b6",
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busroute",
+        "pk": 5,
+        "fields": {
+            "route_number": "88",
+            "name": "Bến Thành - Suối Tiên",
+            "description": "Tuyến xe buýt nối trung tâm với khu du lịch Suối Tiên",
+            "start_point": "Bến Thành (Q1)",
+            "end_point": "Suối Tiên (Q9)",
+            "operating_hours": "05:00 - 20:00",
+            "frequency": "15-20 phút/chuyến",
+            "ticket_price": "7000",
+            "color": "#f39c12",
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 1,
+        "fields": {
+            "name": "Bến Thành",
+            "code": "BT001",
+            "address": "Công trường Quách Thị Trang, P. Bến Thành, Q.1",
+            "location": "POINT(106.6983 10.7725)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 2,
+        "fields": {
+            "name": "Nhà hát Thành phố",
+            "code": "NT001",
+            "address": "7 Công trường Lam Sơn, P. Bến Nghé, Q.1",
+            "location": "POINT(106.7032 10.7765)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 3,
+        "fields": {
+            "name": "Dinh Độc Lập",
+            "code": "DD001",
+            "address": "135 Nam Kỳ Khởi Nghĩa, P. Bến Thành, Q.1",
+            "location": "POINT(106.6952 10.7791)",
+            "has_shelter": true,
+            "has_bench": false,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 4,
+        "fields": {
+            "name": "Chợ Bến Thành",
+            "code": "CBT01",
+            "address": "Đường Lê Lợi, P. Bến Thành, Q.1",
+            "location": "POINT(106.6981 10.7727)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 5,
+        "fields": {
+            "name": "Công viên 23/9",
+            "code": "CV239",
+            "address": "Phạm Ngũ Lão, P. Phạm Ngũ Lão, Q.1",
+            "location": "POINT(106.6921 10.7695)",
+            "has_shelter": false,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 6,
+        "fields": {
+            "name": "Chợ Lớn",
+            "code": "CL001",
+            "address": "Đường Châu Văn Liêm, Q.5",
+            "location": "POINT(106.6578 10.7535)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 7,
+        "fields": {
+            "name": "Bệnh viện Chợ Rẫy",
+            "code": "BVCR1",
+            "address": "201B Nguyễn Chí Thanh, Q.5",
+            "location": "POINT(106.6605 10.7583)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 8,
+        "fields": {
+            "name": "Sân bay Tân Sơn Nhất",
+            "code": "TSN01",
+            "address": "Trường Sơn, P.2, Q. Tân Bình",
+            "location": "POINT(106.6620 10.8188)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 9,
+        "fields": {
+            "name": "Công viên Hoàng Văn Thụ",
+            "code": "HVT01",
+            "address": "Hoàng Văn Thụ, Q. Tân Bình",
+            "location": "POINT(106.6712 10.8012)",
+            "has_shelter": true,
+            "has_bench": false,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 10,
+        "fields": {
+            "name": "Đại học Bách Khoa",
+            "code": "BK001",
+            "address": "268 Lý Thường Kiệt, Q.10",
+            "location": "POINT(106.6586 10.7729)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 11,
+        "fields": {
+            "name": "Suối Tiên",
+            "code": "ST001",
+            "address": "Khu du lịch Suối Tiên, Q.9",
+            "location": "POINT(106.8754 10.8711)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 12,
+        "fields": {
+            "name": "ĐHQG TP.HCM",
+            "code": "VNU01",
+            "address": "Khu phố 6, P. Linh Trung, TP Thủ Đức",
+            "location": "POINT(106.8028 10.8709)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 13,
+        "fields": {
+            "name": "Thảo Điền",
+            "code": "TD001",
+            "address": "Thảo Điền, Q.2",
+            "location": "POINT(106.7323 10.8044)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 14,
+        "fields": {
+            "name": "Cầu Thủ Thiêm",
+            "code": "TT001",
+            "address": "Cầu Thủ Thiêm, Q.Bình Thạnh",
+            "location": "POINT(106.7187 10.7899)",
+            "has_shelter": false,
+            "has_bench": false,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.busstop",
+        "pk": 15,
+        "fields": {
+            "name": "Ngã tư Hàng Xanh",
+            "code": "HX001",
+            "address": "Ngã tư Hàng Xanh, Q. Bình Thạnh",
+            "location": "POINT(106.7108 10.8015)",
+            "has_shelter": true,
+            "has_bench": true,
+            "is_active": true
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 1,
+        "fields": {
+            "route": 1,
+            "stop": 1,
+            "order": 1,
+            "distance_from_start": "0.00",
+            "estimated_time": 0
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 2,
+        "fields": {
+            "route": 1,
+            "stop": 4,
+            "order": 2,
+            "distance_from_start": "0.20",
+            "estimated_time": 2
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 3,
+        "fields": {
+            "route": 1,
+            "stop": 5,
+            "order": 3,
+            "distance_from_start": "0.80",
+            "estimated_time": 5
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 4,
+        "fields": {
+            "route": 1,
+            "stop": 7,
+            "order": 4,
+            "distance_from_start": "3.50",
+            "estimated_time": 15
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 5,
+        "fields": {
+            "route": 1,
+            "stop": 6,
+            "order": 5,
+            "distance_from_start": "5.00",
+            "estimated_time": 25
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 6,
+        "fields": {
+            "route": 2,
+            "stop": 1,
+            "order": 1,
+            "distance_from_start": "0.00",
+            "estimated_time": 0
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 7,
+        "fields": {
+            "route": 2,
+            "stop": 2,
+            "order": 2,
+            "distance_from_start": "0.50",
+            "estimated_time": 3
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 8,
+        "fields": {
+            "route": 2,
+            "stop": 3,
+            "order": 3,
+            "distance_from_start": "1.00",
+            "estimated_time": 6
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 9,
+        "fields": {
+            "route": 2,
+            "stop": 9,
+            "order": 4,
+            "distance_from_start": "4.00",
+            "estimated_time": 20
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 10,
+        "fields": {
+            "route": 2,
+            "stop": 8,
+            "order": 5,
+            "distance_from_start": "7.00",
+            "estimated_time": 35
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 11,
+        "fields": {
+            "route": 3,
+            "stop": 1,
+            "order": 1,
+            "distance_from_start": "0.00",
+            "estimated_time": 0
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 12,
+        "fields": {
+            "route": 3,
+            "stop": 10,
+            "order": 2,
+            "distance_from_start": "2.00",
+            "estimated_time": 10
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 13,
+        "fields": {
+            "route": 3,
+            "stop": 15,
+            "order": 3,
+            "distance_from_start": "5.00",
+            "estimated_time": 25
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 14,
+        "fields": {
+            "route": 3,
+            "stop": 12,
+            "order": 4,
+            "distance_from_start": "15.00",
+            "estimated_time": 50
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 15,
+        "fields": {
+            "route": 4,
+            "stop": 1,
+            "order": 1,
+            "distance_from_start": "0.00",
+            "estimated_time": 0
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 16,
+        "fields": {
+            "route": 4,
+            "stop": 2,
+            "order": 2,
+            "distance_from_start": "0.50",
+            "estimated_time": 3
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 17,
+        "fields": {
+            "route": 4,
+            "stop": 14,
+            "order": 3,
+            "distance_from_start": "3.00",
+            "estimated_time": 15
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 18,
+        "fields": {
+            "route": 4,
+            "stop": 13,
+            "order": 4,
+            "distance_from_start": "5.00",
+            "estimated_time": 25
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 19,
+        "fields": {
+            "route": 5,
+            "stop": 1,
+            "order": 1,
+            "distance_from_start": "0.00",
+            "estimated_time": 0
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 20,
+        "fields": {
+            "route": 5,
+            "stop": 15,
+            "order": 2,
+            "distance_from_start": "5.00",
+            "estimated_time": 20
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 21,
+        "fields": {
+            "route": 5,
+            "stop": 12,
+            "order": 3,
+            "distance_from_start": "15.00",
+            "estimated_time": 45
+        }
+    },
+    {
+        "model": "bus.routestop",
+        "pk": 22,
+        "fields": {
+            "route": 5,
+            "stop": 11,
+            "order": 4,
+            "distance_from_start": "20.00",
+            "estimated_time": 60
+        }
+    }
+]
