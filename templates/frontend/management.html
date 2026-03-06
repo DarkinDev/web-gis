@@ -1,0 +1,505 @@
+{% extends 'base.html' %}
+
+{% block title %}Quản lý - BusGIS{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --primary: #0066cc;
+    --success: #00b894;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+}
+body { background: #f4f6fb; }
+.mgmt-header {
+    background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
+    color: white; padding: 2rem 0; margin-bottom: 2rem;
+}
+.mgmt-header h1 { font-size: 1.8rem; font-weight: 700; }
+.stat-card {
+    background: white; border-radius: 16px; padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    display: flex; align-items: center; gap: 1rem;
+}
+.stat-card .icon {
+    width: 56px; height: 56px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; flex-shrink: 0;
+}
+.stat-card .icon.blue { background: #e8f0fe; color: #0066cc; }
+.stat-card .icon.green { background: #e6f9f5; color: #00b894; }
+.stat-card .num { font-size: 2rem; font-weight: 700; line-height: 1; }
+.stat-card .lbl { font-size: 0.85rem; color: #6c757d; }
+.section-card {
+    background: white; border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden;
+    margin-bottom: 2rem;
+}
+.section-card .section-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.section-card .section-header h5 { margin: 0; font-weight: 600; }
+.table th { background: #f8f9fa; font-weight: 600; font-size: .85rem; }
+.table td { vertical-align: middle; font-size: .88rem; }
+.color-dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    display: inline-block; border: 1px solid rgba(0,0,0,.1);
+}
+.badge-status-active { background: #d1f5e8; color: #00875a; }
+.badge-status-inactive { background: #ffeaea; color: #c00; }
+.btn-icon { width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; }
+.search-bar { max-width: 280px; }
+.modal-header { background: linear-gradient(135deg,#0066cc,#004499); color:white; }
+.modal-header .btn-close { filter: invert(1); }
+.form-label { font-weight: 500; font-size: .88rem; }
+.alert-toast {
+    position: fixed; top: 80px; right: 24px; z-index: 9999;
+    min-width: 280px; border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.15);
+    animation: toastIn .3s ease;
+}
+@keyframes toastIn { from{transform:translateX(110%);opacity:0} to{transform:translateX(0);opacity:1} }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="mgmt-header">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1><i class="bi bi-gear-fill me-2"></i>Quản lý Hệ thống</h1>
+                <p class="mb-0 opacity-75">Thêm, sửa, xóa tuyến xe và trạm dừng</p>
+            </div>
+            <a href="{% url 'home' %}" class="btn btn-light btn-sm">
+                <i class="bi bi-map me-1"></i> Xem bản đồ
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid px-4">
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="icon blue"><i class="bi bi-signpost-split"></i></div>
+                <div><div class="num">{{ total_routes }}</div><div class="lbl">Tuyến xe</div></div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="icon green"><i class="bi bi-geo-alt-fill"></i></div>
+                <div><div class="num">{{ total_stops }}</div><div class="lbl">Trạm dừng</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Routes Table -->
+    <div class="section-card">
+        <div class="section-header">
+            <h5><i class="bi bi-signpost-split me-2 text-primary"></i>Tuyến Xe Buýt</h5>
+            <div class="d-flex gap-2 align-items-center">
+                <input type="text" class="form-control form-control-sm search-bar" id="routeSearch" placeholder="Tìm tuyến...">
+                <button class="btn btn-primary btn-sm" onclick="openRouteModal()">
+                    <i class="bi bi-plus-lg me-1"></i>Thêm tuyến
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="routeTable">
+                <thead>
+                    <tr>
+                        <th>Số tuyến</th><th>Tên tuyến</th><th>Điểm đầu → Cuối</th>
+                        <th>Giờ HĐ</th><th>Màu</th><th>Trạng thái</th><th style="width:100px">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for route in routes %}
+                    <tr data-search="{{ route.route_number }} {{ route.name|lower }}">
+                        <td><strong>{{ route.route_number }}</strong></td>
+                        <td>{{ route.name }}</td>
+                        <td class="text-muted small">{{ route.start_point }} → {{ route.end_point }}</td>
+                        <td class="small">{{ route.operating_hours }}</td>
+                        <td><span class="color-dot" style="background:{{ route.color }}" title="{{ route.color }}"></span></td>
+                        <td>
+                            {% if route.is_active %}
+                                <span class="badge badge-status-active rounded-pill px-2">Hoạt động</span>
+                            {% else %}
+                                <span class="badge badge-status-inactive rounded-pill px-2">Dừng</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-icon btn-outline-primary me-1" onclick="editRoute({{ route.id }})" title="Sửa"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-icon btn-outline-danger" onclick="deleteRoute({{ route.id }}, '{{ route.route_number }}')" title="Xóa"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Stops Table -->
+    <div class="section-card">
+        <div class="section-header">
+            <h5><i class="bi bi-geo-alt-fill me-2 text-success"></i>Trạm Dừng</h5>
+            <div class="d-flex gap-2 align-items-center">
+                <input type="text" class="form-control form-control-sm search-bar" id="stopSearch" placeholder="Tìm trạm...">
+                <button class="btn btn-success btn-sm" onclick="openStopModal()">
+                    <i class="bi bi-plus-lg me-1"></i>Thêm trạm
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive" style="max-height:500px;overflow-y:auto;">
+            <table class="table table-hover mb-0" id="stopTable">
+                <thead style="position:sticky;top:0;z-index:1;">
+                    <tr>
+                        <th>Tên trạm</th><th>Mã</th><th>Địa chỉ</th>
+                        <th>Tọa độ</th><th>Mái che</th><th>Trạng thái</th><th style="width:100px">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stop in stops %}
+                    <tr data-search="{{ stop.name|lower }} {{ stop.address|lower }}">
+                        <td><strong>{{ stop.name }}</strong></td>
+                        <td class="text-muted small">{{ stop.code|default:'-' }}</td>
+                        <td class="text-muted small">{{ stop.address|truncatechars:40 }}</td>
+                        <td class="small text-muted">{{ stop.latitude|floatformat:4 }}, {{ stop.longitude|floatformat:4 }}</td>
+                        <td>{% if stop.has_shelter %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle text-muted"></i>{% endif %}</td>
+                        <td>
+                            {% if stop.is_active %}
+                                <span class="badge badge-status-active rounded-pill px-2">Hoạt động</span>
+                            {% else %}
+                                <span class="badge badge-status-inactive rounded-pill px-2">Dừng</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button class="btn btn-icon btn-outline-primary me-1" onclick="editStop({{ stop.id }})" title="Sửa"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-icon btn-outline-danger" onclick="deleteStop({{ stop.id }}, '{{ stop.name|escapejs }}')" title="Xóa"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Route Modal -->
+<div class="modal fade" id="routeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="routeModalTitle">Thêm Tuyến Xe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="routeId">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Số tuyến <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="routeNumber" placeholder="VD: 01">
+                    </div>
+                    <div class="col-md-9">
+                        <label class="form-label">Tên tuyến <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="routeName" placeholder="VD: Bến Thành - Suối Tiên">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Điểm đầu</label>
+                        <input type="text" class="form-control" id="routeStart" placeholder="Tên điểm đầu">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Điểm cuối</label>
+                        <input type="text" class="form-control" id="routeEnd" placeholder="Tên điểm cuối">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Giờ hoạt động</label>
+                        <input type="text" class="form-control" id="routeHours" value="05:00 - 22:00">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Tần suất</label>
+                        <input type="text" class="form-control" id="routeFreq" value="10-15 phút/chuyến">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Giá vé (VNĐ)</label>
+                        <input type="number" class="form-control" id="routePrice" value="7000">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Màu tuyến</label>
+                        <input type="color" class="form-control form-control-color" id="routeColor" value="#3388ff">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" id="routeActive">
+                            <option value="true">Đang hoạt động</option>
+                            <option value="false">Dừng hoạt động</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Mô tả</label>
+                        <textarea class="form-control" id="routeDesc" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveRoute()">
+                    <i class="bi bi-check-lg me-1"></i>Lưu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stop Modal -->
+<div class="modal fade" id="stopModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stopModalTitle">Thêm Trạm Dừng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="stopId">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Tên trạm <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="stopName" placeholder="Tên trạm dừng">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Mã trạm</label>
+                        <input type="text" class="form-control" id="stopCode" placeholder="VD: BS001">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-select" id="stopActive">
+                            <option value="true">Đang hoạt động</option>
+                            <option value="false">Dừng hoạt động</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" id="stopAddr" placeholder="Địa chỉ trạm">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Vĩ độ (Latitude) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="stopLat" step="0.000001" placeholder="10.8231">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Kinh độ (Longitude) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="stopLng" step="0.000001" placeholder="106.6297">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="stopShelter">
+                            <label class="form-check-label" for="stopShelter">Có mái che</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="stopBench">
+                            <label class="form-check-label" for="stopBench">Có ghế ngồi</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-success" onclick="saveStop()">
+                    <i class="bi bi-check-lg me-1"></i>Lưu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h6 class="modal-title mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Xác nhận xóa</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="deleteConfirmText">Bạn có chắc chắn muốn xóa?</div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteBtn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const routeModal  = new bootstrap.Modal(document.getElementById('routeModal'));
+const stopModal   = new bootstrap.Modal(document.getElementById('stopModal'));
+const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+// ── Search Filters ──────────────────────────────────────────────────────────
+document.getElementById('routeSearch').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#routeTable tbody tr').forEach(r => {
+        r.style.display = r.dataset.search.includes(q) ? '' : 'none';
+    });
+});
+document.getElementById('stopSearch').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#stopTable tbody tr').forEach(r => {
+        r.style.display = r.dataset.search.includes(q) ? '' : 'none';
+    });
+});
+
+// ── Notification ─────────────────────────────────────────────────────────────
+function toast(msg, type='success') {
+    const t = document.createElement('div');
+    const colours = {success:'#00b894', error:'#e74c3c', warning:'#f39c12'};
+    t.className = 'alert-toast alert';
+    t.style.background = colours[type] || colours.success;
+    t.style.color = 'white';
+    t.style.border = 'none';
+    t.innerHTML = `<i class="bi bi-${type==='success'?'check-circle':'x-circle'} me-2"></i>${msg}`;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .4s'; setTimeout(()=>t.remove(),400); }, 3000);
+}
+
+// ── Route CRUD ────────────────────────────────────────────────────────────────
+function openRouteModal(id=null) {
+    document.getElementById('routeId').value = '';
+    document.getElementById('routeNumber').value = '';
+    document.getElementById('routeName').value = '';
+    document.getElementById('routeStart').value = '';
+    document.getElementById('routeEnd').value = '';
+    document.getElementById('routeHours').value = '05:00 - 22:00';
+    document.getElementById('routeFreq').value = '10-15 phút/chuyến';
+    document.getElementById('routePrice').value = '7000';
+    document.getElementById('routeColor').value = '#3388ff';
+    document.getElementById('routeActive').value = 'true';
+    document.getElementById('routeDesc').value = '';
+    document.getElementById('routeModalTitle').textContent = 'Thêm Tuyến Xe';
+    routeModal.show();
+}
+
+async function editRoute(id) {
+    const res  = await fetch(`/mgmt/routes/${id}/get/`);
+    const data = await res.json();
+    document.getElementById('routeId').value          = data.id;
+    document.getElementById('routeNumber').value      = data.route_number;
+    document.getElementById('routeName').value        = data.name;
+    document.getElementById('routeStart').value       = data.start_point;
+    document.getElementById('routeEnd').value         = data.end_point;
+    document.getElementById('routeHours').value       = data.operating_hours;
+    document.getElementById('routeFreq').value        = data.frequency;
+    document.getElementById('routePrice').value       = data.ticket_price;
+    document.getElementById('routeColor').value       = data.color;
+    document.getElementById('routeActive').value      = String(data.is_active);
+    document.getElementById('routeDesc').value        = data.description;
+    document.getElementById('routeModalTitle').textContent = `Sửa Tuyến ${data.route_number}`;
+    routeModal.show();
+}
+
+async function saveRoute() {
+    const id = document.getElementById('routeId').value;
+    const body = {
+        route_number:    document.getElementById('routeNumber').value.trim(),
+        name:            document.getElementById('routeName').value.trim(),
+        start_point:     document.getElementById('routeStart').value.trim(),
+        end_point:       document.getElementById('routeEnd').value.trim(),
+        operating_hours: document.getElementById('routeHours').value.trim(),
+        frequency:       document.getElementById('routeFreq').value.trim(),
+        ticket_price:    parseInt(document.getElementById('routePrice').value),
+        color:           document.getElementById('routeColor').value,
+        is_active:       document.getElementById('routeActive').value === 'true',
+        description:     document.getElementById('routeDesc').value.trim(),
+    };
+    if (!body.route_number || !body.name) { toast('Vui lòng điền số tuyến và tên tuyến!', 'error'); return; }
+
+    const url = id ? `/mgmt/routes/${id}/update/` : '/mgmt/routes/create/';
+    const res  = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const data = await res.json();
+    if (data.success) { toast(data.message); routeModal.hide(); setTimeout(()=>location.reload(), 800); }
+    else toast(data.error, 'error');
+}
+
+function deleteRoute(id, num) {
+    document.getElementById('deleteConfirmText').textContent = `Xóa tuyến "${num}"? Thao tác này không thể hoàn tác!`;
+    document.getElementById('confirmDeleteBtn').onclick = async () => {
+        const res  = await fetch(`/mgmt/routes/${id}/delete/`, { method:'POST' });
+        const data = await res.json();
+        deleteModal.hide();
+        if (data.success) { toast(data.message); setTimeout(()=>location.reload(),800); }
+        else toast(data.error, 'error');
+    };
+    deleteModal.show();
+}
+
+// ── Stop CRUD ─────────────────────────────────────────────────────────────────
+function openStopModal() {
+    document.getElementById('stopId').value = '';
+    document.getElementById('stopName').value = '';
+    document.getElementById('stopCode').value = '';
+    document.getElementById('stopAddr').value = '';
+    document.getElementById('stopLat').value = '';
+    document.getElementById('stopLng').value = '';
+    document.getElementById('stopActive').value = 'true';
+    document.getElementById('stopShelter').checked = false;
+    document.getElementById('stopBench').checked = false;
+    document.getElementById('stopModalTitle').textContent = 'Thêm Trạm Dừng';
+    stopModal.show();
+}
+
+async function editStop(id) {
+    const res  = await fetch(`/mgmt/stops/${id}/get/`);
+    const data = await res.json();
+    document.getElementById('stopId').value         = data.id;
+    document.getElementById('stopName').value       = data.name;
+    document.getElementById('stopCode').value       = data.code || '';
+    document.getElementById('stopAddr').value       = data.address || '';
+    document.getElementById('stopLat').value        = data.latitude;
+    document.getElementById('stopLng').value        = data.longitude;
+    document.getElementById('stopActive').value     = String(data.is_active);
+    document.getElementById('stopShelter').checked  = data.has_shelter;
+    document.getElementById('stopBench').checked    = data.has_bench;
+    document.getElementById('stopModalTitle').textContent = `Sửa Trạm "${data.name}"`;
+    stopModal.show();
+}
+
+async function saveStop() {
+    const id = document.getElementById('stopId').value;
+    const body = {
+        name:        document.getElementById('stopName').value.trim(),
+        code:        document.getElementById('stopCode').value.trim(),
+        address:     document.getElementById('stopAddr').value.trim(),
+        latitude:    parseFloat(document.getElementById('stopLat').value),
+        longitude:   parseFloat(document.getElementById('stopLng').value),
+        is_active:   document.getElementById('stopActive').value === 'true',
+        has_shelter: document.getElementById('stopShelter').checked,
+        has_bench:   document.getElementById('stopBench').checked,
+    };
+    if (!body.name || isNaN(body.latitude) || isNaN(body.longitude)) {
+        toast('Vui lòng điền tên trạm và tọa độ hợp lệ!', 'error'); return;
+    }
+    const url = id ? `/mgmt/stops/${id}/update/` : '/mgmt/stops/create/';
+    const res  = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const data = await res.json();
+    if (data.success) { toast(data.message); stopModal.hide(); setTimeout(()=>location.reload(),800); }
+    else toast(data.error, 'error');
+}
+
+function deleteStop(id, name) {
+    document.getElementById('deleteConfirmText').textContent = `Xóa trạm "${name}"? Thao tác này không thể hoàn tác!`;
+    document.getElementById('confirmDeleteBtn').onclick = async () => {
+        const res  = await fetch(`/mgmt/stops/${id}/delete/`, { method:'POST' });
+        const data = await res.json();
+        deleteModal.hide();
+        if (data.success) { toast(data.message); setTimeout(()=>location.reload(),800); }
+        else toast(data.error, 'error');
+    };
+    deleteModal.show();
+}
+</script>
+{% endblock %}

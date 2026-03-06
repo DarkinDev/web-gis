@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Danh sách tuyến xe - BusGIS{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="bi bi-signpost-2-fill me-2"></i>Danh sách tuyến xe</h1>
+            <p class="lead">Khám phá {{ routes.count }} tuyến xe buýt hoạt động</p>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <!-- Search and Filter -->
+        <div class="filter-bar mb-4">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" id="route-search"
+                            placeholder="Tìm theo số hiệu hoặc tên tuyến...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="status-filter">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="active">Đang hoạt động</option>
+                        <option value="inactive">Tạm ngưng</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'home' %}" class="btn btn-primary w-100">
+                        <i class="bi bi-map me-1"></i>Xem trên bản đồ
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Routes Grid -->
+        <div class="row g-4" id="routes-grid">
+            {% for route in routes %}
+            <div class="col-md-6 col-lg-4 route-item" data-route-number="{{ route.route_number }}"
+                data-name="{{ route.name }}">
+                <div class="route-card">
+                    <div class="route-number" style="background: {{ route.color }}">
+                        {{ route.route_number }}
+                    </div>
+                    <div class="route-info">
+                        <h5>{{ route.name }}</h5>
+                        <div class="route-endpoints">
+                            <div class="endpoint">
+                                <i class="bi bi-geo-fill text-success"></i>
+                                <span>{{ route.start_point }}</span>
+                            </div>
+                            <div class="endpoint-arrow">
+                                <i class="bi bi-arrow-down"></i>
+                            </div>
+                            <div class="endpoint">
+                                <i class="bi bi-geo-fill text-danger"></i>
+                                <span>{{ route.end_point }}</span>
+                            </div>
+                        </div>
+                        <div class="route-meta">
+                            <span><i class="bi bi-clock"></i> {{ route.operating_hours }}</span>
+                            <span><i class="bi bi-hourglass-split"></i> {{ route.frequency }}</span>
+                        </div>
+                        <div class="route-footer">
+                            <span class="ticket-price">
+                                <i class="bi bi-ticket-perforated"></i>
+                                {{ route.ticket_price|floatformat:0 }}đ
+                            </span>
+                            <span class="stop-count">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ route.total_stops }} trạm
+                            </span>
+                        </div>
+                    </div>
+                    <a href="{% url 'route-detail' route.pk %}" class="route-link">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="bi bi-signpost-2"></i>
+                    <h4>Chưa có tuyến xe nào</h4>
+                    <p>Thêm tuyến xe qua trang quản trị</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('route-search');
+        const routeItems = document.querySelectorAll('.route-item');
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.toLowerCase();
+            routeItems.forEach(item => {
+                const number = item.dataset.routeNumber.toLowerCase();
+                const name = item.dataset.name.toLowerCase();
+                if (number.includes(query) || name.includes(query)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
