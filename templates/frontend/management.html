@@ -10,7 +10,7 @@
     --danger: #e74c3c;
     --warning: #f39c12;
 }
-body { background: #f4f6fb; }
+body { background: #f4f6fb; color: #333; }
 .mgmt-header {
     background: linear-gradient(135deg, #0066cc 0%, #004499 100%);
     color: white; padding: 2rem 0; margin-bottom: 2rem;
@@ -125,21 +125,56 @@ body { background: #f4f6fb; }
                         <td class="small">{{ route.operating_hours }}</td>
                         <td><span class="color-dot" style="background:{{ route.color }}" title="{{ route.color }}"></span></td>
                         <td>
-                            {% if route.is_active %}
+                            {% if route.is_deleted %}
+                                <span class="badge rounded-pill px-2" style="background:#e74c3c;color:white;">Đã xóa</span>
+                            {% elif route.is_active %}
                                 <span class="badge badge-status-active rounded-pill px-2">Hoạt động</span>
                             {% else %}
                                 <span class="badge badge-status-inactive rounded-pill px-2">Dừng</span>
                             {% endif %}
                         </td>
                         <td>
+                            {% if route.is_deleted %}
+                            <button class="btn btn-icon btn-outline-success" onclick="restoreRoute({{ route.id }}, '{{ route.route_number }}')" title="Khôi phục"><i class="bi bi-arrow-counterclockwise"></i></button>
+                            {% else %}
                             <button class="btn btn-icon btn-outline-primary me-1" onclick="editRoute({{ route.id }})" title="Sửa"><i class="bi bi-pencil"></i></button>
                             <button class="btn btn-icon btn-outline-danger" onclick="deleteRoute({{ route.id }}, '{{ route.route_number }}')" title="Xóa"><i class="bi bi-trash"></i></button>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        <!-- Pagination Tuyến xe -->
+        {% if routes.has_other_pages %}
+        <div class="px-3 py-2 border-top d-flex justify-content-between align-items-center bg-light">
+            <span class="small text-muted">Trang {{ routes.number }} / {{ routes.paginator.num_pages }}</span>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    {% if routes.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?route_page={{ routes.previous_page_number }}&stop_page={{ stops.number }}">Trước</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Trước</span></li>
+                    {% endif %}
+                    
+                    {% for i in routes.paginator.page_range %}
+                        {% if routes.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        {% elif i > routes.number|add:'-3' and i < routes.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?route_page={{ i }}&stop_page={{ stops.number }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if routes.has_next %}
+                    <li class="page-item"><a class="page-link" href="?route_page={{ routes.next_page_number }}&stop_page={{ stops.number }}">Tiếp</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Tiếp</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
     </div>
 
     <!-- Stops Table -->
@@ -170,21 +205,56 @@ body { background: #f4f6fb; }
                         <td class="small text-muted">{{ stop.latitude|floatformat:4 }}, {{ stop.longitude|floatformat:4 }}</td>
                         <td>{% if stop.has_shelter %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle text-muted"></i>{% endif %}</td>
                         <td>
-                            {% if stop.is_active %}
+                            {% if stop.is_deleted %}
+                                <span class="badge rounded-pill px-2" style="background:#e74c3c;color:white;">Đã xóa</span>
+                            {% elif stop.is_active %}
                                 <span class="badge badge-status-active rounded-pill px-2">Hoạt động</span>
                             {% else %}
                                 <span class="badge badge-status-inactive rounded-pill px-2">Dừng</span>
                             {% endif %}
                         </td>
                         <td>
+                            {% if stop.is_deleted %}
+                            <button class="btn btn-icon btn-outline-success" onclick="restoreStop({{ stop.id }}, '{{ stop.name|escapejs }}')" title="Khôi phục"><i class="bi bi-arrow-counterclockwise"></i></button>
+                            {% else %}
                             <button class="btn btn-icon btn-outline-primary me-1" onclick="editStop({{ stop.id }})" title="Sửa"><i class="bi bi-pencil"></i></button>
                             <button class="btn btn-icon btn-outline-danger" onclick="deleteStop({{ stop.id }}, '{{ stop.name|escapejs }}')" title="Xóa"><i class="bi bi-trash"></i></button>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        <!-- Pagination Trạm dừng -->
+        {% if stops.has_other_pages %}
+        <div class="px-3 py-2 border-top d-flex justify-content-between align-items-center bg-light">
+            <span class="small text-muted">Trang {{ stops.number }} / {{ stops.paginator.num_pages }}</span>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    {% if stops.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?stop_page={{ stops.previous_page_number }}&route_page={{ routes.number }}">Trước</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Trước</span></li>
+                    {% endif %}
+                    
+                    {% for i in stops.paginator.page_range %}
+                        {% if stops.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        {% elif i > stops.number|add:'-3' and i < stops.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?stop_page={{ i }}&route_page={{ routes.number }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if stops.has_next %}
+                    <li class="page-item"><a class="page-link" href="?stop_page={{ stops.next_page_number }}&route_page={{ routes.number }}">Tiếp</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Tiếp</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -437,6 +507,15 @@ function deleteRoute(id, num) {
     deleteModal.show();
 }
 
+async function restoreRoute(id, num) {
+    if(confirm(`Bạn có chắc chắn muốn khôi phục tuyến "${num}"?`)) {
+        const res = await fetch(`/mgmt/routes/${id}/restore/`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) { toast(data.message); setTimeout(()=>location.reload(), 800); }
+        else toast(data.error, 'error');
+    }
+}
+
 // ── Stop CRUD ─────────────────────────────────────────────────────────────────
 function openStopModal() {
     document.getElementById('stopId').value = '';
@@ -500,6 +579,15 @@ function deleteStop(id, name) {
         else toast(data.error, 'error');
     };
     deleteModal.show();
+}
+
+async function restoreStop(id, name) {
+    if(confirm(`Bạn có chắc chắn muốn khôi phục trạm "${name}"?`)) {
+        const res = await fetch(`/mgmt/stops/${id}/restore/`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) { toast(data.message); setTimeout(()=>location.reload(), 800); }
+        else toast(data.error, 'error');
+    }
 }
 </script>
 {% endblock %}

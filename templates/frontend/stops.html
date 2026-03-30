@@ -7,7 +7,7 @@
     <div class="page-header">
         <div class="container">
             <h1><i class="bi bi-geo-alt-fill me-2"></i>Danh sách trạm dừng</h1>
-            <p class="lead">{{ stops.count }} trạm dừng xe buýt</p>
+            <p class="lead">{{ stops.paginator.count }} trạm dừng xe buýt</p>
         </div>
     </div>
 
@@ -73,6 +73,33 @@
             </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination -->
+        {% if stops.has_other_pages %}
+        <nav class="mt-5 d-flex justify-content-center">
+            <ul class="pagination pagination-lg shadow-sm">
+                {% if stops.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ stops.previous_page_number }}"><i class="bi bi-chevron-left"></i></a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
+                {% endif %}
+
+                {% for i in stops.paginator.page_range %}
+                    {% if stops.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% elif i > stops.number|add:'-3' and i < stops.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if stops.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ stops.next_page_number }}"><i class="bi bi-chevron-right"></i></a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-right"></i></span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

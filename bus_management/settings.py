@@ -170,3 +170,24 @@ REST_FRAMEWORK = {
 
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = True
+
+# ─── Email Configuration (Mailtrap SMTP) ──────────────────────────────────────
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_PORT = 2525
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'YOUR_MAILTRAP_USERNAME'   # ← Thay bằng Username từ Mailtrap
+EMAIL_HOST_PASSWORD = 'YOUR_MAILTRAP_PASSWORD'  # ← Thay bằng Password từ Mailtrap
+DEFAULT_FROM_EMAIL = 'BusGIS System <noreply@busgis.vn>'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
+# Danh sách email quản trị nhận thông báo hệ thống
+ADMIN_NOTIFICATION_EMAILS = [
+    'your-admin@email.com',  # ← Thay bằng email của bạn
+]
+
+# ─── Auth Settings ─────────────────────────────────────────────────────────────
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+PASSWORD_RESET_TIMEOUT = 86400  # Link reset hết hạn sau 24h

@@ -2,6 +2,28 @@
 Bus Models - Core models for bus management system
 """
 from django.contrib.gis.db import models
+from django.utils import timezone
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+class ActiveManager(models.Manager):
+    """Manager mặc định: chỉ trả về records chưa bị xóa"""
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
+
+
+class AllObjectsManager(models.Manager):
+    """Manager đặc biệt: trả về tất cả records kể cả đã xóa (dùng trong Restore)"""
+    def get_queryset(self):
+        return super().get_queryset()
+
+
+class DeletedManager(models.Manager):
+    """Manager chỉ trả về records đã bị xóa mềm"""
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=True)
 
 
 class BusRoute(models.Model):
@@ -58,8 +80,23 @@ class BusRoute(models.Model):
         default=True,
         verbose_name='Đang hoạt động'
     )
+    # ── Soft Delete ──────────────────────────────────────
+    is_deleted = models.BooleanField(
+        default=False,
+        verbose_name='Đã xóa'
+    )
+    deleted_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name='Thời điểm xóa'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # Managers
+    objects = ActiveManager()        # Mặc định: chỉ active
+    all_objects = AllObjectsManager()  # Tất cả (kể cả đã xóa)
+    deleted_objects = DeletedManager() # Chỉ đã xóa
 
     class Meta:
         verbose_name = 'Tuyến xe buýt'
@@ -68,7 +105,19 @@ class BusRoute(models.Model):
 
     def __str__(self):
         return f"Tuyến {self.route_number}: {self.name}"
-    
+
+    def soft_delete(self):
+        """Xóa mềm: đánh dấu is_deleted=True thay vì xóa khỏi DB"""
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.save(update_fields=['is_deleted', 'deleted_at'])
+
+    def restore(self):
+        """Khôi phục bản ghi đã xóa mềm"""
+        self.is_deleted = False
+        self.deleted_at = None
+        self.save(update_fields=['is_deleted', 'deleted_at'])
+
     @property
     def total_stops(self):
         return self.routestop_set.count()
@@ -108,8 +157,23 @@ class BusStop(models.Model):
         default=True,
         verbose_name='Đang hoạt động'
     )
+    # ── Soft Delete ──────────────────────────────────────
+    is_deleted = models.BooleanField(
+        default=False,
+        verbose_name='Đã xóa'
+    )
+    deleted_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name='Thời điểm xóa'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # Managers
+    objects = ActiveManager()
+    all_objects = AllObjectsManager()
+    deleted_objects = DeletedManager()
 
     class Meta:
         verbose_name = 'Trạm dừng'
@@ -118,6 +182,16 @@ class BusStop(models.Model):
 
     def __str__(self):
         return self.name
+
+    def soft_delete(self):
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.save(update_fields=['is_deleted', 'deleted_at'])
+
+    def restore(self):
+        self.is_deleted = False
+        self.deleted_at = None
+        self.save(update_fields=['is_deleted', 'deleted_at'])
 
     @property
     def latitude(self):
@@ -171,3 +245,21 @@ class RouteStop(models.Model):
 
     def __str__(self):
         return f"{self.route.route_number} - {self.stop.name} (#{self.order})"
+
+# ─── User Profile ────────────────────────────────────────────────────────────
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    phone_number = models.CharField(max_length=20, blank=True, null=True, verbose_name='Số điện thoại')
+    
+    def __str__(self):
+        return self.user.username
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

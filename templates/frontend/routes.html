@@ -7,7 +7,7 @@
     <div class="page-header">
         <div class="container">
             <h1><i class="bi bi-signpost-2-fill me-2"></i>Danh sách tuyến xe</h1>
-            <p class="lead">Khám phá {{ routes.count }} tuyến xe buýt hoạt động</p>
+            <p class="lead">Khám phá {{ routes.paginator.count }} tuyến xe buýt hoạt động</p>
         </div>
     </div>
 
@@ -91,6 +91,33 @@
             </div>
             {% endfor %}
         </div>
+
+        <!-- Pagination -->
+        {% if routes.has_other_pages %}
+        <nav class="mt-5 d-flex justify-content-center">
+            <ul class="pagination pagination-lg shadow-sm">
+                {% if routes.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ routes.previous_page_number }}"><i class="bi bi-chevron-left"></i></a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
+                {% endif %}
+
+                {% for i in routes.paginator.page_range %}
+                    {% if routes.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% elif i > routes.number|add:'-3' and i < routes.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if routes.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ routes.next_page_number }}"><i class="bi bi-chevron-right"></i></a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-right"></i></span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

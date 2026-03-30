@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f4f8; margin: 0; padding: 20px; }
+    .container { max-width: 580px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+    .header { background: linear-gradient(135deg, #e74c3c, #c0392b); padding: 32px 40px; text-align: center; color: #fff; }
+    .header h1 { margin: 0; font-size: 22px; font-weight: 700; }
+    .body { padding: 32px 40px; }
+    .info-box { background: #fff0f0; border-left: 4px solid #e74c3c; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+    .info-box p { margin: 4px 0; font-size: 14px; color: #334; }
+    .restore-btn { display: inline-block; background: #27ae60; color: #fff; text-decoration: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; margin-top: 16px; font-size: 14px; }
+    .footer { background: #f8fafd; padding: 20px 40px; text-align: center; color: #888; font-size: 12px; border-top: 1px solid #eee; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🗑️ BusGIS — Dữ liệu bị xóa</h1>
+    <p>Thông báo xóa mềm từ hệ thống</p>
+  </div>
+  <div class="body">
+    <p>Xin chào Admin,</p>
+    <p>Một bản ghi vừa bị <strong>xóa</strong> trong hệ thống:</p>
+    <div class="info-box">
+      <p><strong>Loại dữ liệu:</strong> {{ item_type }}</p>
+      <p><strong>Tên:</strong> {{ item_name }}</p>
+      <p><strong>ID:</strong> #{{ item_id }}</p>
+    </div>
+    <p>✅ Dữ liệu <strong>chưa bị xóa vĩnh viễn</strong>. Bạn có thể khôi phục bằng cách vào trang Restore trong Admin:</p>
+    <a href="http://localhost:8000{{ restore_url }}" class="restore-btn">♻️ Vào trang Restore</a>
+    <p style="margin-top:16px; color:#666; font-size:13px;">Email này được gửi tự động. Vui lòng không trả lời.</p>
+  </div>
+  <div class="footer">BusGIS System &copy; 2026</div>
+</div>
+</body>
+</html>

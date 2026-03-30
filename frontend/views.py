@@ -1,14 +1,44 @@
 """
 Frontend Views - User-facing views
 """
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
 import json
 from bus.models import BusRoute, BusStop, RouteStop
+from django.core.paginator import Paginator
+from .forms import UserUpdateForm, ProfileUpdateForm
+
+# Kiểm tra user có quyền staff (nhân viên hoặc admin)
+is_staff = user_passes_test(lambda u: u.is_active and u.is_staff, login_url='/accounts/login/')
 
 
+@login_required
+def profile_view(request):
+    """Trang hồ sơ cá nhân: Sửa tên, email, sđt"""
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, 'Hồ sơ của bạn đã được cập nhật!')
+            return redirect('profile')
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form
+    }
+    return render(request, 'frontend/profile.html', context)
+
+
+@login_required
 def home_view(request):
     """Home page with full-screen map"""
     routes = BusRoute.objects.filter(is_active=True).order_by('route_number')
@@ -20,13 +50,18 @@ def home_view(request):
     return render(request, 'frontend/home.html', context)
 
 
+@login_required
 def routes_list_view(request):
-    """List all bus routes"""
-    routes = BusRoute.objects.filter(is_active=True).order_by('route_number')
-    context = {'routes': routes}
+    """List all bus routes with pagination"""
+    all_routes = BusRoute.objects.filter(is_active=True).order_by('route_number')
+    paginator  = Paginator(all_routes, 10)
+    page_num   = request.GET.get('page')
+    routes     = paginator.get_page(page_num)
+    context    = {'routes': routes}
     return render(request, 'frontend/routes.html', context)
 
 
+@login_required
 def route_detail_view(request, pk):
     """Detail view for a specific route"""
     route = get_object_or_404(BusRoute, pk=pk)
@@ -35,22 +70,38 @@ def route_detail_view(request, pk):
     return render(request, 'frontend/route_detail.html', context)
 
 
+@login_required
 def stops_list_view(request):
-    """List all bus stops"""
-    stops = BusStop.objects.filter(is_active=True).order_by('name')
-    context = {'stops': stops}
+    """List all bus stops with pagination"""
+    all_stops = BusStop.objects.filter(is_active=True).order_by('name')
+    paginator = Paginator(all_stops, 10)
+    page_num  = request.GET.get('page')
+    stops     = paginator.get_page(page_num)
+    context   = {'stops': stops}
     return render(request, 'frontend/stops.html', context)
 
 
+@is_staff
 def management_view(request):
     """Management dashboard for CRUD operations"""
-    routes = BusRoute.objects.all().order_by('route_number')
-    stops  = BusStop.objects.all().order_by('name')
+    all_routes = BusRoute.all_objects.all().order_by('route_number')
+    all_stops  = BusStop.all_objects.all().order_by('name')
+
+    # Phân trang Tuyến xe (10 bản ghi/trang)
+    route_paginator = Paginator(all_routes, 10)
+    route_page_num  = request.GET.get('route_page')
+    routes          = route_paginator.get_page(route_page_num)
+
+    # Phân trang Trạm dừng (10 bản ghi/trang)
+    stop_paginator = Paginator(all_stops, 10)
+    stop_page_num  = request.GET.get('stop_page')
+    stops          = stop_paginator.get_page(stop_page_num)
+
     context = {
         'routes': routes,
         'stops': stops,
-        'total_routes': routes.count(),
-        'total_stops': stops.count(),
+        'total_routes': all_routes.count(),
+        'total_stops': all_stops.count(),
     }
     return render(request, 'frontend/management.html', context)
 
@@ -102,8 +153,20 @@ def api_delete_route(request, pk):
     try:
         route = get_object_or_404(BusRoute, pk=pk)
         num   = route.route_number
-        route.delete()
+        route.soft_delete()
         return JsonResponse({'success': True, 'message': f'Đã xóa tuyến {num}'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def api_restore_route(request, pk):
+    try:
+        route = get_object_or_404(BusRoute.all_objects, pk=pk)
+        num   = route.route_number
+        route.restore()
+        return JsonResponse({'success': True, 'message': f'Đã khôi phục tuyến {num}'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
@@ -154,8 +217,20 @@ def api_delete_stop(request, pk):
     try:
         stop = get_object_or_404(BusStop, pk=pk)
         name = stop.name
-        stop.delete()
+        stop.soft_delete()
         return JsonResponse({'success': True, 'message': f'Đã xóa trạm "{name}"'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def api_restore_stop(request, pk):
+    try:
+        stop = get_object_or_404(BusStop.all_objects, pk=pk)
+        name = stop.name
+        stop.restore()
+        return JsonResponse({'success': True, 'message': f'Đã khôi phục trạm "{name}"'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 

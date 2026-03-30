@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Inter', Arial, sans-serif; background: #f0f4f8; margin: 0; padding: 20px; }
+    .container { max-width: 580px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+    .header { background: linear-gradient(135deg, #0066cc, #004a99); padding: 32px 40px; text-align: center; color: #fff; }
+    .header h1 { margin: 0; font-size: 22px; font-weight: 700; }
+    .header p { margin: 6px 0 0; opacity: .85; font-size: 14px; }
+    .body { padding: 32px 40px; }
+    .info-box { background: #f0f7ff; border-left: 4px solid #0066cc; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+    .info-box p { margin: 4px 0; font-size: 14px; color: #334; }
+    .info-box strong { color: #0066cc; }
+    .footer { background: #f8fafd; padding: 20px 40px; text-align: center; color: #888; font-size: 12px; border-top: 1px solid #eee; }
+    .badge { display: inline-block; background: #0066cc; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🚌 BusGIS — Tuyến xe mới</h1>
+    <p>Thông báo tự động từ hệ thống</p>
+  </div>
+  <div class="body">
+    <p>Xin chào Admin,</p>
+    <p>Hệ thống vừa ghi nhận <strong>tuyến xe mới</strong> được thêm vào:</p>
+    <div class="info-box">
+      <p><strong>Số hiệu:</strong> <span class="badge">{{ route.route_number }}</span></p>
+      <p><strong>Tên tuyến:</strong> {{ route.name }}</p>
+      <p><strong>Điểm đầu:</strong> {{ route.start_point }}</p>
+      <p><strong>Điểm cuối:</strong> {{ route.end_point }}</p>
+      <p><strong>Giờ hoạt động:</strong> {{ route.operating_hours }}</p>
+      <p><strong>Giá vé:</strong> {{ route.ticket_price|floatformat:0 }} VNĐ</p>
+    </div>
+    <p style="color:#666; font-size:13px;">Email này được gửi tự động. Vui lòng không trả lời.</p>
+  </div>
+  <div class="footer">BusGIS System &copy; 2026 — Hệ thống WebGIS Quản lý Xe Buýt</div>
+</div>
+</body>
+</html>

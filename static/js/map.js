@@ -39,9 +39,10 @@ function initMap() {
         zoomControl: false
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors | BusGIS',
-        maxZoom: 19
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a> | BusGIS',
+        subdomains: 'abcd',
+        maxZoom: 20
     }).addTo(map);
 
     stopsLayer      = L.layerGroup().addTo(map);
