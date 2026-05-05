@@ -1,0 +1,753 @@
+# Hướng Dẫn & Tập Hợp Tất Cả Sơ Đồ (Mermaid)
+
+## 1. Hướng dẫn ngắn
+- File này gồm: phần hướng dẫn, danh sách ảnh gợi ý và tất cả sơ đồ ở định dạng Mermaid.
+- Render bằng `mmdc` hoặc công cụ hỗ trợ Mermaid để xuất SVG/PNG.
+- Trong báo cáo: đặt phần **Sơ đồ** riêng (dùng mã Mermaid hoặc SVG đã render), phần **Hình ảnh** riêng (screenshots UI).
+
+## 2. Danh sách ảnh gợi ý
+- images/home.png — Màn hình Landing/Home
+- images/routes_list.png — Danh sách tuyến với map và bảng
+- images/route_detail.png — Trang chi tiết tuyến (bản đồ, stops)
+- images/search_ui.png — Giao diện tìm tuyến
+- images/import_tool.png — Giao diện import (admin)
+- images/admin_manage_routes.png — Trang quản lý tuyến (admin)
+- images/notification_email.png — Mẫu email thông báo
+
+---
+### Danh sách ảnh chi tiết và mẫu văn bản kèm theo
+
+Ghi chú ngắn: mỗi ảnh nên có 3 phần: (1) một câu giới thiệu đặt trước ảnh, (2) caption (dưới ảnh), (3) 1–3 câu phân tích/ghi chú đặt sau ảnh. Dưới đây là danh sách ảnh đề xuất kèm mẫu văn bản sẵn để copy.
+
+- `images/home.png` — Màn hình Landing/Home
+  - Trước ảnh: "Màn hình chính hiển thị bản đồ tương tác, thanh tìm kiếm và điều hướng đến các chức năng chính của hệ thống."
+  - Chú thích: "Hình A.1: Giao diện trang chủ — bản đồ tương tác và thanh tìm kiếm."
+  - Sau ảnh: "Giao diện tập trung vào tìm kiếm và hiển thị kết quả trên bản đồ; cần đảm bảo thanh tìm kiếm dễ tiếp cận trên thiết bị di động."
+
+- `images/routes_list.png` — Danh sách tuyến với map và bảng
+  - Trước ảnh: "Ảnh mô tả giao diện danh sách tuyến kèm bản đồ mini và bộ lọc."
+  - Chú thích: "Hình A.2: Danh sách tuyến — map + bảng kết quả."
+  - Sau ảnh: "Danh sách hỗ trợ lọc theo loại tuyến và khoảng cách; khuyến nghị thêm phân trang và highlight tuyến khi hover."
+
+- `images/route_detail.png` — Trang chi tiết tuyến
+  - Trước ảnh: "Trang chi tiết hiển thị đồ họa tuyến, danh sách trạm và thông tin giờ chạy."
+  - Chú thích: "Hình A.3: Chi tiết tuyến — bản đồ, danh sách trạm, thông tin tuyến."
+  - Sau ảnh: "Từ đây, người dùng có thể xem thứ tự trạm và khoảng cách; đề xuất thêm tùy chọn xuất lộ trình (GPX)."
+
+- `images/search_ui.png` — Giao diện tìm tuyến
+  - Trước ảnh: "Form tìm kiếm với lựa chọn theo vị trí hiện tại, tên đường và bộ lọc nâng cao."
+  - Chú thích: "Hình A.4: Giao diện tìm tuyến — các tuỳ chọn tìm kiếm."
+  - Sau ảnh: "Nên tối ưu UX cho trường hợp nhập không rõ ràng bằng gợi ý tự động (autocomplete)."
+
+- `images/import_tool.png` — Giao diện import (admin)
+  - Trước ảnh: "Giao diện import dữ liệu cho admin, hiển thị tiến trình và báo cáo lỗi."
+  - Chú thích: "Hình A.5: Công cụ Import — upload, preview và lịch sử import."
+  - Sau ảnh: "Thiết kế cần hiển thị các lỗi bản ghi chi tiết để admin dễ sửa; hỗ trợ revert cho thao tác sai."
+
+- `images/admin_manage_routes.png` — Trang quản lý tuyến (admin)
+  - Trước ảnh: "Dashboard quản trị với danh sách tuyến, bộ lọc và thao tác CRUD."
+  - Chú thích: "Hình A.6: Dashboard Admin — quản lý tuyến và trạm."
+  - Sau ảnh: "Cần thêm cảnh báo xác nhận cho hành động xóa và chế độ xem lịch sử thay đổi."
+
+- `images/notification_email.png` — Mẫu email thông báo
+  - Trước ảnh: "Mẫu email HTML dùng để gửi thông báo thay đổi tuyến hoặc đặt lại mật khẩu."
+  - Chú thích: "Hình A.7: Mẫu email thông báo."
+  - Sau ảnh: "Kiểm tra hiển thị trên nhiều client mail; dùng Mailtrap để debug trước khi gửi thực tế."
+
+---
+### Mẫu văn bản cho sơ đồ (general)
+
+- Trước sơ đồ: "Sơ đồ sau mô tả ... (mục tiêu/đối tượng sơ đồ)."
+- Chú thích: "Sơ đồ X.Y: [Tên sơ đồ]."
+- Sau sơ đồ: "Từ sơ đồ này, ta thấy ... (ghi 2–3 điểm chính và kết luận/nghị xuất)."
+
+---
+### Mở rộng: 20 Use Case chi tiết (từng case một)
+
+/* Dưới đây là 20 use case được liệt kê và mỗi case có một mô tả ngắn — bạn có thể render từng case riêng bằng Mermaid hoặc nhóm lại theo actor. */
+
+1. Đăng ký tài khoản (Register): Người dùng đăng ký bằng email, nhận email xác nhận.
+2. Đăng nhập (Login): Xác thực bằng email + mật khẩu.
+3. Đăng xuất (Logout): Kết thúc phiên làm việc.
+4. Xem bản đồ (View Map): Người dùng xem bản đồ tổng quan.
+5. Tìm tuyến theo vị trí (Search by Location): Tìm tuyến gần vị trí hiện tại.
+6. Tìm tuyến theo mã/tên (Search by Route ID/Name): Tìm theo từ khóa.
+7. Xem chi tiết tuyến (View Route Detail): Hiển thị lộ trình, trạm và lịch trình.
+8. Xem chi tiết trạm (View Stop Detail): Hiển thị thông tin trạm và tuyến liên quan.
+9. Đánh dấu yêu thích tuyến (Favorite Route): Người dùng lưu tuyến vào danh sách yêu thích.
+10. Gửi phản hồi / báo cáo sự cố (Report Issue): Người dùng gửi phản ánh, đính kèm ảnh.
+11. Yêu cầu đặt lại mật khẩu (Request Password Reset): Gửi link qua email.
+12. Quản trị import dữ liệu (Admin Import Data): Admin upload và chạy import job.
+13. Quản trị CRUD tuyến (Admin CRUD Route): Thêm/Sửa/Xóa tuyến.
+14. Quản trị CRUD trạm (Admin CRUD Stop): Thêm/Sửa/Xóa trạm.
+15. Khôi phục tuyến đã xóa (Restore Soft-Deleted Route): Admin restore từ thùng rác.
+16. Gửi thông báo tới user (Send Notification): Hệ thống gửi email khi tuyến thay đổi.
+17. Lập lịch import định kỳ (Schedule Import): Job tự động chạy theo lịch.
+18. Xem lịch sử import (View Import History): Admin xem log và báo cáo.
+19. Quản lý quyền (Manage Permissions): Phân quyền user/staff.
+20. Xuất dữ liệu tuyến (Export Route Data): Xuất GeoJSON/CSV/GPX cho 1 tuyến hoặc nhiều tuyến.
+
+/* Tạo một mermaid group usecase hiển thị actors và 20 use cases */
+
+%% Use Case: Bộ 20 Use Cases
+graph TB
+  subgraph Actors
+    EndUser[Người dùng]
+    Admin[Quản trị viên]
+  end
+
+  subgraph UseCases[Use Cases chi tiết]
+    UC1[Đăng ký tài khoản]
+    UC2[Đăng nhập]
+    UC3[Đăng xuất]
+    UC4[Xem bản đồ]
+    UC5[Tìm tuyến theo vị trí]
+    UC6[Tìm theo mã/tên]
+    UC7[Xem chi tiết tuyến]
+    UC8[Xem chi tiết trạm]
+    UC9[Đánh dấu yêu thích]
+    UC10[Gửi phản hồi]
+    UC11[Đặt lại mật khẩu]
+    UC12[Import dữ liệu]
+    UC13[CRUD tuyến]
+    UC14[CRUD trạm]
+    UC15[Khôi phục tuyến]
+    UC16[Gửi thông báo]
+    UC17[Lập lịch import]
+    UC18[Xem lịch sử import]
+    UC19[Quản lý quyền]
+    UC20[Xuất dữ liệu]
+  end
+
+  EndUser --> UC1
+  EndUser --> UC2
+  EndUser --> UC3
+  EndUser --> UC4
+  EndUser --> UC5
+  EndUser --> UC6
+  EndUser --> UC7
+  EndUser --> UC8
+  EndUser --> UC9
+  EndUser --> UC10
+  EndUser --> UC11
+
+  Admin --> UC12
+  Admin --> UC13
+  Admin --> UC14
+  Admin --> UC15
+  Admin --> UC16
+  Admin --> UC17
+  Admin --> UC18
+  Admin --> UC19
+  Admin --> UC20
+
+%% ==========================
+%% 20 Use Case - từng sơ đồ riêng
+%% ==========================
+
+%% UC01: Đăng ký tài khoản
+graph LR
+  User[Người dùng] --> UC01(Đăng ký tài khoản)
+  UC01 --> Email[Nhận email xác nhận]
+
+%% UC02: Đăng nhập
+graph LR
+  User[Người dùng] --> UC02(Đăng nhập)
+  UC02 --> Auth[Backend: xác thực email + mật khẩu]
+
+%% UC03: Đăng xuất
+graph LR
+  User[Người dùng] --> UC03(Đăng xuất)
+  UC03 --> Session[Hủy session / token]
+
+%% UC04: Xem bản đồ
+graph LR
+  User[Người dùng] --> UC04(Xem bản đồ)
+  UC04 --> Tiles[TileServer / OSM]
+  UC04 --> Backend[API cung cấp dữ liệu tuyến]
+
+%% UC05: Tìm tuyến theo vị trí
+graph LR
+  User[Người dùng] --> UC05(Tìm tuyến theo vị trí)
+  UC05 --> Geo[Geocoding / tọa độ]
+  UC05 --> GIS[Truy vấn PostGIS]
+  GIS --> Backend[Trả kết quả]
+
+%% UC06: Tìm tuyến theo mã/tên
+graph LR
+  User[Người dùng] --> UC06(Tìm theo mã/tên)
+  UC06 --> SearchAPI[API tìm kiếm văn bản]
+  SearchAPI --> Backend[Chuẩn hóa & trả kết quả]
+
+%% UC07: Xem chi tiết tuyến
+graph LR
+  User[Người dùng] --> UC07(Xem chi tiết tuyến)
+  UC07 --> RouteDB[Đọc BusRoute, RouteStop]
+  UC07 --> Map[Hiển thị lộ trình trên map]
+
+%% UC08: Xem chi tiết trạm
+graph LR
+  User[Người dùng] --> UC08(Xem chi tiết trạm)
+  UC08 --> StopDB[Đọc BusStop & các tuyến liên quan]
+  UC08 --> Nearby[Truy vấn tuyến gần]
+
+%% UC09: Đánh dấu yêu thích tuyến
+graph LR
+  User[Người dùng] --> UC09(Đánh dấu yêu thích)
+  UC09 --> Profile[Update UserProfile.favorites]
+  Profile --> DB[Persist vào DB]
+
+%% UC10: Gửi phản hồi / báo cáo sự cố
+graph LR
+  User[Người dùng] --> UC10(Gửi phản hồi / báo cáo)
+  UC10 --> Upload[Đính kèm ảnh]
+  UC10 --> Ticket[API tạo ticket / notify admin]
+  Ticket --> Admin[Quản trị viên nhận]
+
+%% UC11: Yêu cầu đặt lại mật khẩu
+graph LR
+  User[Người dùng] --> UC11(Yêu cầu đặt lại mật khẩu)
+  UC11 --> EmailSvc[Gửi email có token]
+  EmailSvc --> User[Người dùng nhấn link]
+  User --> Reset[Form cập nhật mật khẩu]
+
+%% UC12: Quản trị import dữ liệu
+graph LR
+  Admin[Quản trị viên] --> UC12(Import dữ liệu)
+  UC12 --> Upload[Upload CSV/JSON]
+  Upload --> Validate[Validate schema]
+  Validate --> Queue[Enqueue job (Celery)]
+
+%% UC13: Quản trị CRUD tuyến
+graph LR
+  Admin[Quản trị viên] --> UC13(CRUD tuyến)
+  UC13 --> Create[Thêm tuyến]
+  UC13 --> Update[Cập nhật tuyến]
+  UC13 --> Delete[Xóa tuyến (soft delete)]
+  Delete --> Audit[Ghi log vào AUDIT_LOG]
+
+%% UC14: Quản trị CRUD trạm
+graph LR
+  Admin[Quản trị viên] --> UC14(CRUD trạm)
+  UC14 --> CreateStop[Tạo trạm]
+  UC14 --> EditStop[Sửa trạm]
+  UC14 --> DeleteStop[Xóa trạm]
+
+%% UC15: Khôi phục tuyến đã xóa
+graph LR
+  Admin[Quản trị viên] --> UC15(Khôi phục tuyến đã xóa)
+  UC15 --> Trash[Danh sách soft-deleted]
+  Trash --> Restore[Restore -> BUSROUTE.is_deleted = false]
+
+%% UC16: Gửi thông báo tới user
+graph LR
+  System[Hệ thống] --> UC16(Gửi thông báo)
+  UC16 --> NotificationDB[Tạo bản ghi NOTIFICATION]
+  NotificationDB --> EmailSvc[Gửi email / push]
+
+%% UC17: Lập lịch import định kỳ
+graph LR
+  Scheduler[Cron / Airflow] --> UC17(Lập lịch import)
+  UC17 --> Queue[Push job vào Celery]
+  Queue --> Worker[Xử lý import tự động]
+
+%% UC18: Xem lịch sử import
+graph LR
+  Admin[Quản trị viên] --> UC18(Xem lịch sử import)
+  UC18 --> ImportJobDB[Đọc IMPORT_JOB & report]
+  UC18 --> Report[Hiển thị báo cáo lỗi / thành công]
+
+%% UC19: Quản lý quyền
+graph LR
+  Admin[Quản trị viên] --> UC19(Quản lý quyền)
+  UC19 --> RolesDB[Tạo / gán role]
+  UC19 --> Permission[Set permissions cho staff]
+
+%% UC20: Xuất dữ liệu tuyến (Excel)
+graph LR
+  User[Người dùng] --> UC20(Xuất dữ liệu tuyến)
+  UC20 --> ExportAPI[Tạo export (Excel / CSV / GeoJSON)]
+  ExportAPI --> Storage[Store / Download link]
+
+%% UC21: Import dữ liệu từ Excel (tuyến & trạm)
+graph LR
+  Admin[Quản trị viên] --> UC21(Import Excel: Routes & Stops)
+  UC21 --> UploadExcel[Upload file Excel (.xlsx) với các sheet: routes, stops]
+  UploadExcel --> ValidateExcel[Validate schema & preview]
+  ValidateExcel -- invalid --> ImportError[Show errors]
+  ValidateExcel -- valid --> EnqueueExcel[Enqueue job (Celery)]
+  EnqueueExcel --> WorkerExcel[Worker xử lý: parse sheets -> normalize -> upsert]
+  WorkerExcel --> UpsertExcel[Upsert BusRoute, BusStop, ROUTESTOP]
+  UpsertExcel --> ImportReportExcel[Write import report & audit]
+  ImportReportExcel --> NotifyAdminExcel[Notify Admin]
+
+---
+### ERD Mở rộng (chi tiết thêm các thực thể phụ)
+
+erDiagram
+  USER {
+    int id PK
+    string username
+    string email
+    string password_hash
+    boolean is_staff
+    datetime created_at
+  }
+  USERPROFILE {
+    int id PK
+    int user_id FK
+    string full_name
+    string phone
+    text preferences
+    string avatar_url
+  }
+  BUSROUTE {
+    int id PK
+    string code
+    string name
+    text geometry_geojson
+    string operating_hours
+    string color
+    boolean is_deleted
+  }
+  BUSSTOP {
+    int id PK
+    string code
+    string name
+    decimal lat
+    decimal lon
+    string address
+  }
+  ROUTESTOP {
+    int id PK
+    int route_id FK
+    int stop_id FK
+    int stop_order
+    float distance_from_start
+  }
+  NOTIFICATION {
+    int id PK
+    int user_id FK
+    string type
+    text content
+    boolean is_sent
+    datetime sent_at
+  }
+  IMPORT_JOB {
+    int id PK
+    string filename
+    string status
+    text report
+    datetime started_at
+    datetime finished_at
+  }
+  AUDIT_LOG {
+    int id PK
+    string entity
+    int entity_id
+    string action
+    int performed_by
+    datetime performed_at
+    text diff
+  }
+
+  USER ||--o{ USERPROFILE : has
+  USER ||--o{ NOTIFICATION : receives
+  BUSROUTE ||--o{ ROUTESTOP : has_stops
+  BUSSTOP ||--o{ ROUTESTOP : part_of
+  IMPORT_JOB ||--o{ BUSROUTE : creates_or_updates
+  AUDIT_LOG ||--o{ USER : performed_by
+
+---
+### Sơ đồ kiến trúc hệ thống (chi tiết)
+
+%% System architecture
+graph TB
+  subgraph ClientSide
+    Browser[Trình duyệt / Mobile App]
+  end
+
+  subgraph Edge
+    CDN[CDN / Static Files]
+    LB[Load Balancer (nginx)]
+  end
+
+  subgraph AppLayer
+    Web[Web Server (Gunicorn/uWSGI)]
+    App[Application (Django + GeoDjango)]
+    Worker[Worker (Celery)]
+    Cache[Redis Cache]
+    Storage[Object Storage (S3 / local)]
+  end
+
+  subgraph DataLayer
+    Postgres[PostgreSQL + PostGIS]
+    TileServer[Tile Server / OSM Tiles]
+    EmailSvc[Mailtrap / SMTP]
+  end
+
+  Browser --> LB --> CDN
+  LB --> Web --> App
+  App --> Postgres
+  App --> Redis
+  App --> Storage
+  Worker --> Postgres
+  Worker --> Storage
+  App --> EmailSvc
+  App --> TileServer
+
+  classDef infra fill:#f7f7f7,stroke:#333;
+  class Edge,AppLayer,DataLayer infra;
+
+---
+Ghi chú: Sơ đồ kiến trúc mô tả các thành phần chính, luồng dữ liệu, và nơi cần tối ưu (caching, queue, storage). Tôi có thể tách các phần này thành file `.mmd` riêng hoặc xuất ra SVG nếu bạn cần.
+
+### Sơ đồ Luồng xử lý dữ liệu (DFD / Pipeline)
+
+Trước sơ đồ: "Sơ đồ sau mô tả luồng xử lý dữ liệu chính trong hệ thống từ khi admin/upload hoặc nguồn bên ngoài cung cấp dữ liệu, đến khi dữ liệu được upsert vào PostGIS và sinh các báo cáo/notify. Sơ đồ nhấn mạnh các bước: nhận file, validate/schema check, enqueue job, xử lý bởi worker, upsert dữ liệu không gian, cập nhật chỉ mục/geometry, và gửi thông báo/ghi log. Đồng thời nêu rõ nơi lưu trữ tạm (temp storage), nơi lưu báo cáo import, và điểm cần cơ chế retry/alerting." 
+
+Chú thích: "Sơ đồ 4-3. Luồng xử lý dữ liệu (Import / ETL Pipeline)" 
+
+flowchart TD
+  subgraph Ingest
+    Ext[External Sources]
+    Admin[Admin upload]
+    Scheduler[Scheduler (cron)]
+  end
+
+  Ext -->|push / API| IngestPoint[Ingest endpoint]
+  Admin -->|upload file| IngestPoint
+  Scheduler -->|scheduled fetch| IngestPoint
+
+  IngestPoint --> TempStorage[(Temp storage / object storage)]
+  IngestPoint --> Validate[Validate & Schema check]
+  Validate -- invalid --> ImportError[Generate import error report]
+  ImportError --> NotifyAdmin[Notify Admin / Log]
+
+  Validate -- valid --> Enqueue[Enqueue job (Celery / Queue)]
+  Enqueue --> Worker[Worker picks job]
+  Worker --> Parse[Parse & normalize records]
+  Parse --> GeometryProc[Geometry conversion & simplify]
+  GeometryProc --> Upsert[Upsert into PostGIS (BUSROUTE, BUSSTOP, ROUTESTOP)]
+  Upsert --> Indexing[Update spatial index / materialized views]
+  Upsert --> Audit[AUDIT_LOG]
+  Upsert --> ImportReport[Write import report]
+
+  ImportReport --> NotifyAdmin
+  NotifyAdmin --> EmailSvc[Email / Notification Service]
+
+  Worker --> BackupStorage[Archive original file]
+  TempStorage --> BackupStorage
+
+  classDef dfd fill:#f3f8ff,stroke:#2b80ff;
+  class IngestPoint,Validate,Enqueue,Worker,Parse,Upsert,GeometryProc dfd;
+
+Phân tích ngắn (sau sơ đồ): "Luồng xử lý dữ liệu được thiết kế nhằm tách hoàn toàn phần ingest và phần xử lý nặng về backend bằng một hàng đợi công việc (Celery). Các file được lưu tạm để hỗ trợ retry và debug; worker chịu trách nhiệm chuẩn hóa dữ liệu, chuyển geometry về dạng GeoJSON/WKB phù hợp và upsert vào bảng PostGIS. Sau khi upsert, hệ thống cập nhật chỉ mục không gian và ghi lại audit để phục vụ rollback/restore. Mọi lỗi cần tạo báo cáo chi tiết và thông báo cho admin để xử lý thủ công hoặc requeue."
+---
+
+%% ==========================
+%% Sơ đồ Use Case: Tổng quan hệ thống
+%% ==========================
+
+Trước sơ đồ: "Sơ đồ sau trình bày các actor chính và ca sử dụng cốt lõi của hệ thống, giúp người đọc nắm nhanh phạm vi chức năng." 
+
+Chú thích (caption): "Sơ đồ 1.1: Use Case — Tổng quan chức năng hệ thống." 
+
+Phân tích ngắn (sau sơ đồ): "Sơ đồ 1.1 cho thấy 'Người dùng' tương tác với các chức năng tìm tuyến, xem chi tiết và quản lý hồ sơ; 'Quản trị viên' chịu trách nhiệm nhập liệu và quản lý hệ thống. Từ sơ đồ này có thể xác định các kịch bản test và điểm cần bảo mật." 
+
+graph TB
+  subgraph Actors
+    U[Người dùng]
+    A[Quản trị viên]
+  end
+
+  subgraph System[Hệ thống Web-GIS Bus]
+    UC1[Tìm tuyến]
+    UC2[Xem chi tiết tuyến]
+    UC3[Xem trạm]
+    UC4[Đăng ký / Đăng nhập]
+    UC5[Quản lý hồ sơ]
+    UC6[Yêu cầu đặt lại mật khẩu]
+    UC7[Báo cáo sự cố]
+    UC8[Nhập dữ liệu tuyến]
+    UC9[Quản lý tuyến]
+    UC10[Gửi thông báo]
+  end
+
+  U --> UC1
+  U --> UC2
+  U --> UC3
+  U --> UC4
+  U --> UC5
+  U --> UC6
+  U --> UC7
+  A --> UC8
+  A --> UC9
+  A --> UC10
+
+  UC8 --> UC9
+
+%% ==========================
+%% Sơ đồ Use Case: Xác thực
+%% ==========================
+
+Trước sơ đồ: "Sơ đồ Xác thực mô tả luồng đăng ký, đăng nhập và quản lý hồ sơ của người dùng." 
+
+Chú thích: "Sơ đồ 1.2: Use Case — Xác thực và quản lý hồ sơ." 
+
+Phân tích ngắn: "Sơ đồ này giúp xác định các bước cần kiểm thử (email xác nhận, đặt lại mật khẩu) và các end-point liên quan đến authentication trên backend." 
+
+graph LR
+  U[Người dùng]
+  subgraph Auth[Xác thực]
+    UC1[Đăng ký]
+    UC2[Đăng nhập]
+    UC3[Đăng xuất]
+    UC4[Đặt lại mật khẩu]
+    UC5[Xác nhận email]
+    UC6[Chỉnh sửa hồ sơ]
+  end
+
+  U --> UC1
+  U --> UC2
+  U --> UC4
+  U --> UC6
+  UC1 --> UC5
+
+%% ==========================
+%% Sơ đồ Use Case: Báo cáo sự cố
+%% ==========================
+
+Trước sơ đồ: "Sơ đồ này mô tả luồng báo cáo sự cố từ người dùng đến quản trị viên, bao gồm khả năng đính kèm ảnh màn hình." 
+
+Chú thích: "Sơ đồ 1.3: Use Case — Báo cáo sự cố." 
+
+Phân tích ngắn: "Sơ đồ này cho thấy bước kiểm tra và xử lý của admin, từ đó có thể thiết kế hệ thống gửi thông báo và tracking trạng thái báo cáo." 
+
+graph LR
+  U[Người dùng]
+  subgraph Report[Báo cáo sự cố]
+    R1[Mở biểu mẫu báo cáo]
+    R2[Điền thông tin]
+    R3[Đính kèm ảnh màn hình]
+    R4[Gửi báo cáo]
+    R5[Quản trị viên xem xét]
+  end
+
+  U --> R1
+  R1 --> R2
+  R2 --> R3
+  R3 --> R4
+  R4 --> R5
+
+%% ==========================
+%% Sơ đồ Activity: Tìm tuyến
+%% ==========================
+
+Trước sơ đồ: "Biểu đồ hoạt động sau mô tả các bước chính khi người dùng thực hiện tìm tuyến trên giao diện." 
+
+Chú thích: "Sơ đồ 2.1: Activity — Tìm tuyến." 
+
+Phân tích ngắn: "Biểu đồ nêu rõ các bước: nhận input, geocoding, truy vấn GIS, xếp hạng kết quả và hiển thị — tham chiếu cho phần mã xử lý backend và cải thiện UX" 
+
+flowchart TD
+  Start((Start)) --> Input["Người dùng nhập điểm đi/đến hoặc click trên bản đồ"]
+  Input --> Geocode{"Đầu vào có phải tọa độ?"}
+  Geocode -- No --> CallGeocode["Gọi dịch vụ geocoding"]
+  CallGeocode --> FindRoutes["Truy vấn tuyến trong DB/GIS\n(lọc theo khoảng cách, dịch vụ)"]
+  Geocode -- Yes --> FindRoutes
+  FindRoutes --> Rank["Xếp hạng/điểm các tuyến ứng viên"]
+  Rank --> Display["Trả kết quả về frontend (bản đồ + danh sách)"]
+  Display --> End((End))
+
+%% ==========================
+%% Sơ đồ Activity: Nhập dữ liệu tuyến
+%% ==========================
+
+Trước sơ đồ: "Biểu đồ hoạt động này mô tả quy trình import dữ liệu tuyến bởi quản trị viên, từ upload đến thông báo kết quả." 
+
+Chú thích: "Sơ đồ 2.2: Activity — Nhập dữ liệu tuyến." 
+
+Phân tích ngắn: "Sơ đồ cho thấy các điểm cần xử lý lỗi và cơ chế thông báo tới admin; dùng để thiết kế retry policy và logging cho job import." 
+
+flowchart TD
+  Start((Start)) --> Upload["Quản trị viên tải file import (CSV/JSON)"]
+  Upload --> Validate["Kiểm tra định dạng & schema"]
+  Validate -- Invalid --> Error["Hiển thị lỗi, hủy bỏ"]
+  Validate -- Valid --> Enqueue["Đưa job vào hàng đợi (celery/task queue)"]
+  Enqueue --> Worker["Worker nhận job"]
+  Worker --> Parse["Phân tích bản ghi & kiểm tra từng bản ghi"]
+  Parse --> Upsert["Upsert BusRoute, BusStop, quan hệ"]
+  Upsert --> Notify["Tạo báo cáo import & gửi thông báo cho admin"]
+  Notify --> End((End))
+
+%% ==========================
+%% Sơ đồ Activity: Đăng ký người dùng
+%% ==========================
+
+Trước sơ đồ: "Biểu đồ mô tả luồng đăng ký: từ nhập thông tin, kiểm tra, tạo tài khoản đến gửi email xác nhận." 
+
+Chú thích: "Sơ đồ 2.3: Activity — Đăng ký người dùng." 
+
+Phân tích ngắn: "Sơ đồ nhấn mạnh các bước cần xác thực và gửi email; cần đảm bảo token xác nhận an toàn và thời gian sống hợp lý." 
+
+flowchart TD
+  Start((Start)) --> FillForm["Người dùng điền biểu mẫu đăng ký"]
+  FillForm --> Validate["Kiểm tra dữ liệu (email, mật khẩu)"]
+  Validate -- Fail --> ShowErrors["Trả lỗi xác thực"]
+  Validate -- OK --> CreateUser["Tạo Người dùng & Hồ sơ người dùng"]
+  CreateUser --> SendConfirm["Gửi email xác nhận"]
+  SendConfirm --> Confirm["Người dùng nhấn link xác nhận"]
+  Confirm --> Activated["Kích hoạt tài khoản"]
+  Activated --> End((End))
+
+%% ==========================
+%% Sơ đồ Activity: Đặt lại mật khẩu
+%% ==========================
+
+Trước sơ đồ: "Luồng đặt lại mật khẩu thể hiện yêu cầu từ người dùng, gửi link, và xác nhận token để cập nhật mật khẩu mới." 
+
+Chú thích: "Sơ đồ 2.4: Activity — Đặt lại mật khẩu." 
+
+Phân tích ngắn: "Lưu ý xử lý token hết hạn và thông báo lỗi rõ ràng cho người dùng; kết hợp Mailtrap ở môi trường phát triển để kiểm thử email." 
+
+flowchart TD
+  Start((Start)) --> Request["Người dùng yêu cầu đặt lại mật khẩu"]
+  Request --> SendEmail["Gửi link đặt lại qua email"]
+  SendEmail --> UserClick["Người dùng nhấn link & nhập mật khẩu mới"]
+  UserClick --> Validate["Kiểm tra token & mật khẩu mới"]
+  Validate -- OK --> UpdatePass["Cập nhật mật khẩu & thông báo người dùng"]
+  Validate -- Fail --> Error["Hiển thị lỗi/token đã hết hạn"]
+  UpdatePass --> End((End))
+
+%% ==========================
+%% Sơ đồ Sequence: Tìm tuyến
+%% ==========================
+
+Trước sơ đồ: "Sơ đồ tuần tự này trình bày lần gọi giữa frontend, backend và GIS khi thực hiện truy vấn tìm tuyến." 
+
+Chú thích: "Sơ đồ 3.1: Sequence — Tìm tuyến." 
+
+Phân tích ngắn: "Sơ đồ mô tả thứ tự thông điệp và thời điểm xử lý; dùng để tối ưu hóa thời gian phản hồi và cache kết quả nếu cần." 
+
+sequenceDiagram
+  participant Người_dùng as Người dùng
+  participant Frontend
+  participant Backend
+  participant GIS as GIS/DB
+
+  Người_dùng->>Frontend: Nhập điểm đi/đến
+  Frontend->>Backend: POST /search {tọa độ/truy vấn}
+  Backend->>GIS: Truy vấn không gian / tuyến gần nhất
+  GIS-->>Backend: danh sách tuyến ứng viên
+  Backend->>Backend: Xếp hạng & định dạng kết quả
+  Backend-->>Frontend: 200 OK {kết quả}
+  Frontend-->>Người_dùng: Hiển thị bản đồ + danh sách
+
+%% ==========================
+%% Sơ đồ Sequence: Xử lý import
+%% ==========================
+
+Trước sơ đồ: "Sơ đồ tuần tự mô tả chu trình upload, enqueue job, xử lý bởi worker và cập nhật DB." 
+
+Chú thích: "Sơ đồ 3.2: Sequence — Xử lý import." 
+
+Phân tích ngắn: "Chú ý tới điểm lưu trữ tạm file import, cơ chế retry khi worker lỗi và thông báo kết quả cho admin." 
+
+sequenceDiagram
+  participant Quản_trị_viên as Quản trị viên
+  participant Backend
+  participant Queue
+  participant Worker
+  participant DB
+
+  Quản_trị_viên->>Backend: Tải file import
+  Backend->>Queue: Đưa job vào hàng đợi
+  Worker->>Queue: Lấy job
+  Worker->>Backend: Yêu cầu file (hoặc đọc từ storage)
+  Worker->>DB: Upsert tuyến/trạm
+  DB-->>Worker: OK
+  Worker->>Backend: Gửi báo cáo import
+  Backend-->>Quản_trị_viên: Thông báo kết quả import
+
+%% ==========================
+%% Sơ đồ Sequence: Gửi thông báo
+%% ==========================
+
+Trước sơ đồ: "Sơ đồ tuần tự này trình bày luồng gửi thông báo từ hệ thống đến dịch vụ email và người dùng." 
+
+Chú thích: "Sơ đồ 3.3: Sequence — Gửi thông báo." 
+
+Phân tích ngắn: "Sơ đồ nhấn mạnh trạng thái gửi email và cập nhật trạng thái thông báo; cần theo dõi delivery status và log lỗi." 
+
+sequenceDiagram
+  participant Hệ_thống as Hệ thống
+  participant Notifier as Dịch_vụ_Thông_báo
+  participant Email as Nhà_cung_cấp_Email
+  participant Người_dùng as Người dùng
+
+  Hệ_thống->>Notifier: Tạo bản ghi thông báo
+  Notifier->>Email: Gửi email (mẫu)
+  Email-->>Notifier: Trạng thái giao
+  Notifier-->>Hệ_thống: Cập nhật trạng thái thông báo
+  Notifier-->>Người_dùng: Email đã được gửi
+
+%% ==========================
+%% Sơ đồ ERD: Các thực thể
+%% ==========================
+
+Trước sơ đồ: "Sơ đồ ERD tổng hợp các thực thể chính và mối quan hệ giữa chúng trong hệ thống." 
+
+Chú thích: "Sơ đồ ERD: Các thực thể chính và quan hệ (User, UserProfile, BusRoute, BusStop, Notification, ImportJob)." 
+
+Phân tích ngắn: "ERD giúp nắm cấu trúc dữ liệu: quan hệ 1-n giữa User và UserProfile, quan hệ tuyến–trạm, và bảng import job theo dõi lịch sử import; dùng để thiết kế migration và chỉ mục cho PostGIS." 
+
+erDiagram
+  USER {
+    int id PK
+    string username
+    string email
+    string password_hash
+    datetime created_at
+  }
+  USERPROFILE {
+    int id PK
+    int user_id FK
+    string full_name
+    string phone
+    text preferences
+  }
+  BUSROUTE {
+    int id PK
+    string code
+    string name
+    text geometry_geojson
+    boolean is_deleted
+  }
+  BUSSTOP {
+    int id PK
+    string code
+    string name
+    decimal lat
+    decimal lon
+  }
+  NOTIFICATION {
+    int id PK
+    int user_id FK
+    string type
+    text content
+    boolean is_sent
+    datetime sent_at
+  }
+  IMPORT_JOB {
+    int id PK
+    string filename
+    string status
+    datetime started_at
+    datetime finished_at
+  }
+
+  USER ||--o{ USERPROFILE : has
+  USER ||--o{ NOTIFICATION : receives
+  BUSROUTE ||--o{ BUSSTOP : has_stops
+  IMPORT_JOB ||--o{ BUSROUTE : creates_or_updates

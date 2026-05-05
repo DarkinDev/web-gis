@@ -1,0 +1,15 @@
+%% Sequence - Search route flow
+
+sequenceDiagram
+  participant User
+  participant Frontend
+  participant Backend
+  participant GIS as GIS/DB
+
+  User->>Frontend: Enter origin/destination
+  Frontend->>Backend: POST /search {coords/query}
+  Backend->>GIS: Spatial query / nearest routes
+  GIS-->>Backend: route candidates
+  Backend->>Backend: Rank & format results
+  Backend-->>Frontend: 200 OK {results}
+  Frontend-->>User: Display map + list

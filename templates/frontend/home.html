@@ -79,28 +79,26 @@
                 <label class="form-label small">Bán kính (mét):</label>
                 <input type="range" class="form-range" id="buffer-radius" min="100" max="2000" value="500"
                     oninput="updateRadiusLabel()">
-                <div class="d-flex justify-content-between small text-muted">
+                <div class="d-flex justify-content-between small text-white">
                     <span>100m</span>
                     <span id="radius-value">500m</span>
                     <span>2000m</span>
                 </div>
             </div>
-            <p class="small text-muted">Click vào trạm để hiển thị vùng phục vụ</p>
+            <p class="small text-whiteSửa lại thanh tìm kiếm sao cho tìm hết được tuyến khi nhập từ khoá thay vì tìm chỉ trong trang">Click vào trạm để hiển thị vùng phục vụ</p>
         </div>
 
         <!-- Filter by Route -->
         <div class="route-filter">
             <h6><i class="bi bi-funnel me-2"></i>Lọc theo tuyến</h6>
-            <div class="route-chips">
-                <button class="route-chip active" data-route="all" onclick="filterByRoute('all')">
-                    Tất cả
-                </button>
-                {% for route in routes %}
-                <button class="route-chip" data-route="{{ route.id }}" onclick="filterByRoute({{ route.id }})"
-                    style="--route-color: {{ route.color }}">
-                    {{ route.route_number }}
-                </button>
-                {% endfor %}
+            <div class="route-select-wrapper">
+                <select class="form-select form-select-sm bg-dark text-white border-secondary" 
+                        id="route-select-filter" onchange="filterByRoute(this.value)">
+                    <option value="all">-- Tất cả các tuyến --</option>
+                    {% for route in routes %}
+                    <option value="{{ route.id }}">{{ route.route_number }} - {{ route.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
 
@@ -163,7 +161,7 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="/static/js/map.js"></script>
+<script src="/static/js/map.js?v=4"></script>
 <script>
     // Initialize map after DOM is loaded
     document.addEventListener('DOMContentLoaded', function () {

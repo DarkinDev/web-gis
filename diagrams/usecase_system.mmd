@@ -1,0 +1,34 @@
+%% Use Case tổng quan - Web-GIS Bus
+%% Actors: User, Admin
+
+graph TB
+  subgraph Actors
+    U[User]
+    A[Admin]
+  end
+
+  subgraph System[Web-GIS Bus System]
+    UC1[Search routes]
+    UC2[View route detail]
+    UC3[View stops]
+    UC4[Register / Login]
+    UC5[Manage profile]
+    UC6[Request password reset]
+    UC7[Report issue]
+    UC8[Import bus data]
+    UC9[Manage routes]
+    UC10[Send notifications]
+  end
+
+  U --> UC1
+  U --> UC2
+  U --> UC3
+  U --> UC4
+  U --> UC5
+  U --> UC6
+  U --> UC7
+  A --> UC8
+  A --> UC9
+  A --> UC10
+
+  UC8 --> UC9

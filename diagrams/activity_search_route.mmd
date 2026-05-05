@@ -1,0 +1,11 @@
+%% Activity - Tìm tuyến
+
+flowchart TD
+  Start((Start)) --> Input["User enters origin/destination or clicks on map"]
+  Input --> Geocode{"Is input geographic?"}
+  Geocode -- No --> CallGeocode["Call geocoding service"]
+  CallGeocode --> FindRoutes["Query routes via DB/GIS\n(filter by proximity, service) "]
+  Geocode -- Yes --> FindRoutes
+  FindRoutes --> Rank["Rank/score candidate routes"]
+  Rank --> Display["Return results to frontend (map + list)"]
+  Display --> End((End))

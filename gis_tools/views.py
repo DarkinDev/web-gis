@@ -249,8 +249,23 @@ def find_route_view(request):
             status=status.HTTP_404_NOT_FOUND
         )
     
-    routes = get_route_between_stops(start_stop_id, end_stop_id)
-    
+    routes, substitutions = get_route_between_stops(start_stop_id, end_stop_id)
+
+    # Build warnings khi trạm gốc không thuộc tuyến
+    warnings = []
+    if 'start' in substitutions:
+        s = substitutions['start']
+        warnings.append(
+            f"Trạm '{s['original_stop_name']}' không thuộc tuyến nào. "
+            f"Dùng trạm gần nhất: '{s['name']}' ({int(s['distance_m'])}m)"
+        )
+    if 'end' in substitutions:
+        s = substitutions['end']
+        warnings.append(
+            f"Trạm '{s['original_stop_name']}' không thuộc tuyến nào. "
+            f"Dùng trạm gần nhất: '{s['name']}' ({int(s['distance_m'])}m)"
+        )
+
     return Response({
         'start_stop': {
             'id': start_stop.id,
@@ -265,5 +280,7 @@ def find_route_view(request):
             'lng': end_stop.longitude
         },
         'routes_found': len(routes),
-        'routes': routes
+        'routes': routes,
+        'substitutions': substitutions,
+        'warnings': warnings,
     })

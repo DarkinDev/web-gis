@@ -17,19 +17,36 @@ let selectedRouteId = null;
 let bufferMode  = false;
 let currentBufferRadius = 500;
 
-const MIN_ZOOM_STOPS = 14;   // only render stop markers at this zoom or above
+// ─── Loading State ────────────────────────────────────────────────────────────
+function showLoading(msg = 'Đang tải dữ liệu...') {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.querySelector('.fw-bold').textContent = msg;
+        overlay.style.display = 'flex';
+    }
+}
+
+function hideLoading() {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+const MIN_ZOOM_STOPS = 14;
 
 // ─── API endpoints ────────────────────────────────────────────────────────────
 const API = {
-    stops:         '/api/stops/',
-    stopsGeojson:  '/api/stops/geojson/',
-    routes:        '/api/routes/',
-    routesGeojson: '/api/routes/geojson/',
-    nearestStops:  '/api/gis/nearest/',
-    stopsInRadius: '/api/gis/stops-in-radius/',
-    findRoute:     '/api/gis/find-route/',
-    distance:      '/api/gis/distance/'
+    stops:                  '/api/stops/',
+    stopsGeojson:           '/api/stops/geojson/',
+    routes:                 '/api/routes/',
+    routesGeojson:          '/api/routes/geojson/',
+    routesGeojsonFromStops: '/api/routes/geojson-from-stops/',
+    nearestStops:           '/api/gis/nearest/',
+    stopsInRadius:          '/api/gis/stops-in-radius/',
+    findRoute:              '/api/gis/find-route/',
+    distance:               '/api/gis/distance/'
 };
+
+const NOMINATIM = 'https://nominatim.openstreetmap.org';
 
 // ─── Map Initialisation ───────────────────────────────────────────────────────
 function initMap() {
@@ -45,17 +62,17 @@ function initMap() {
         maxZoom: 20
     }).addTo(map);
 
-    stopsLayer      = L.layerGroup().addTo(map);
-    routesLayer     = L.layerGroup().addTo(map);
-    bufferLayer     = L.layerGroup().addTo(map);
+    stopsLayer       = L.layerGroup().addTo(map);
+    routesLayer      = L.layerGroup().addTo(map);
+    bufferLayer      = L.layerGroup().addTo(map);
     routeResultLayer = L.layerGroup().addTo(map);
 
-    // Refresh stops on every zoom change
     map.on('zoomend', () => displayStops(allStops, selectedRouteId));
 }
 
 // ─── Load Data from API ───────────────────────────────────────────────────────
 async function loadStops() {
+    showLoading('Đang tải danh sách trạm dừng...');
     try {
         const res  = await fetch(API.stopsGeojson);
         const data = await res.json();
@@ -66,17 +83,25 @@ async function loadStops() {
     } catch (e) {
         console.error('Error loading stops:', e);
         showNotification('Không thể tải dữ liệu trạm dừng', 'error');
+    } finally {
+        hideLoading();
     }
 }
 
 async function loadRoutes() {
+    showLoading('Đang tải mạng lưới tuyến xe...');
     try {
-        const res  = await fetch(API.routesGeojson);
+        const res  = await fetch(API.routesGeojsonFromStops);
         const data = await res.json();
-        if (data.features) allRoutes = data.features;
-        // Routes are hidden by default – only shown when a filter or search fires.
+        if (data.features) {
+            allRoutes = data.features;
+            displayAllRoutes(allRoutes);  // Vẽ tất cả tuyến khi khởi tạo
+        }
     } catch (e) {
         console.error('Error loading routes:', e);
+        showNotification('Không thể tải dữ liệu tuyến xe', 'error');
+    } finally {
+        hideLoading();
     }
 }
 
@@ -85,8 +110,6 @@ function displayStops(features, filterRouteId = null) {
     stopsLayer.clearLayers();
 
     const zoom = map.getZoom();
-
-    // Hide dots at low zoom unless a specific route is chosen
     if (zoom < MIN_ZOOM_STOPS && (!filterRouteId || filterRouteId === 'all')) {
         showZoomHint(true);
         return;
@@ -94,10 +117,9 @@ function displayStops(features, filterRouteId = null) {
     showZoomHint(false);
 
     features.forEach(feature => {
-        const coords = feature.geometry.coordinates;   // [lng, lat]
+        const coords = feature.geometry.coordinates;
         const props  = feature.properties;
 
-        // Route filter
         if (filterRouteId && filterRouteId !== 'all') {
             const hasRoute = props.routes && props.routes.some(r => r.id === parseInt(filterRouteId));
             if (!hasRoute) return;
@@ -155,28 +177,24 @@ function showZoomHint(show) {
 }
 
 // ─── Display Routes ───────────────────────────────────────────────────────────
-function displayRoutes(features, filterRouteId = null) {
+
+/**
+ * Vẽ TẤT CẢ tuyến với độ mờ nhạt làm nền bản đồ
+ */
+function displayAllRoutes(features) {
     routesLayer.clearLayers();
-    if (!filterRouteId) return;   // Nothing to show
+    if (!features || features.length === 0) return;
 
     features.forEach(feature => {
         if (!feature.geometry) return;
-
-        if (filterRouteId !== 'all') {
-            if (Array.isArray(filterRouteId)) {
-                if (!filterRouteId.includes(feature.id)) return;
-            } else {
-                if (feature.id !== parseInt(filterRouteId)) return;
-            }
-        }
-
-        const props  = feature.properties;
+        const props   = feature.properties;
+        const featureId = feature.id || props.id;
         const latLngs = feature.geometry.coordinates.map(c => [c[1], c[0]]);
 
         L.polyline(latLngs, {
             color:   props.color || '#3388ff',
-            weight:  5,
-            opacity: 0.85
+            weight:  4,
+            opacity: 0.55
         }).bindPopup(`
             <div class="popup-content">
                 <h5 style="color:${props.color}">Tuyến ${props.route_number}</h5>
@@ -188,45 +206,168 @@ function displayRoutes(features, filterRouteId = null) {
     });
 }
 
-// ─── Search ───────────────────────────────────────────────────────────────────
-async function searchStops() {
-    const query = document.getElementById('search-input').value.trim();
-    if (query.length < 2) {
-        showNotification('Nhập ít nhất 2 ký tự', 'warning');
+/**
+ * Vẽ tuyến theo filter — nếu có filterRouteId: CHỈ vẽ tuyến được chọn, ẩn phần còn lại
+ * filterRouteId: null/'all' = tất cả | number | number[]
+ */
+function displayRoutes(features, filterRouteId = null) {
+    routesLayer.clearLayers();
+    if (!features || features.length === 0) return;
+
+    // Không có filter → vẽ tất cả bình thường
+    if (!filterRouteId || filterRouteId === 'all') {
+        displayAllRoutes(features);
         return;
     }
+
+    // Chuẩn hoá filterRouteId về string để so sánh linh hoạt
+    const filterArr = Array.isArray(filterRouteId)
+        ? filterRouteId.map(String)
+        : [String(filterRouteId)];
+
+    // Có filter → CHỈ vẽ tuyến được chọn
+    let drawnCount = 0;
+    features.forEach(feature => {
+        if (!feature.geometry) return;
+
+        const props     = feature.properties;
+        const featureId = String(feature.id ?? props.id ?? '');
+
+        const isSelected = filterArr.includes(featureId);
+
+        // Bỏ qua tuyến không được chọn
+        if (!isSelected) return;
+
+        drawnCount++;
+        const latLngs = feature.geometry.coordinates.map(c => [c[1], c[0]]);
+        const color   = props.color || '#3388ff';
+
+        L.polyline(latLngs, {
+            color,
+            weight:  6,
+            opacity: 1,
+        }).bindPopup(`
+            <div class="popup-content">
+                <h5 style="color:${color}">Tuyến ${props.route_number}</h5>
+                <p><strong>${props.name}</strong></p>
+                <p>${props.start_point} → ${props.end_point}</p>
+                <p><i class="bi bi-geo-alt"></i> ${props.total_stops} trạm</p>
+            </div>
+        `).addTo(routesLayer);
+    });
+
+    console.log(`[displayRoutes] filter=${filterRouteId}, drawn=${drawnCount}/${features.length}`);
+}
+
+// ─── Address Search (Nominatim) ───────────────────────────────────────────────
+let addressMarker = null;
+let searchDebounceTimer = null;
+
+async function searchAddress() {
+    const query = document.getElementById('search-input').value.trim();
+    if (query.length < 2) {
+        showNotification('Nhập ít nhất 2 ký tự để tìm kiếm', 'warning');
+        return;
+    }
+
+    showLoading('Đang tìm kiếm địa chỉ...');
+    const container = document.getElementById('search-results');
+
     try {
-        const res  = await fetch(`${API.stops}search/?q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-        displaySearchResults(data);
+        // Parallel: search address (Nominatim) + search stop name
+        const [nomRes, stopRes] = await Promise.allSettled([
+            fetch(`${NOMINATIM}/search?q=${encodeURIComponent(query)}&countrycodes=vn&format=json&limit=5&addressdetails=1`, {
+                headers: { 'Accept-Language': 'vi' }
+            }),
+            fetch(`${API.stops}search/?q=${encodeURIComponent(query)}`)
+        ]);
+
+        const nomData  = nomRes.status === 'fulfilled'  ? await nomRes.value.json()  : [];
+        const stopData = stopRes.status === 'fulfilled' ? await stopRes.value.json() : [];
+
+        const results = [];
+
+        // Address results
+        nomData.forEach(item => {
+            results.push({
+                type:    'address',
+                name:    item.display_name.split(',')[0],
+                address: item.display_name,
+                lat:     parseFloat(item.lat),
+                lng:     parseFloat(item.lon),
+            });
+        });
+
+        // Stop name results
+        (Array.isArray(stopData) ? stopData : (stopData.results || [])).forEach(stop => {
+            results.push({
+                type:    'stop',
+                name:    stop.name,
+                address: stop.address || 'Trạm dừng xe buýt',
+                lat:     stop.latitude,
+                lng:     stop.longitude,
+            });
+        });
+
+        displayAddressResults(results, container);
     } catch (e) {
         showNotification('Lỗi khi tìm kiếm', 'error');
+        console.error(e);
+    } finally {
+        hideLoading();
     }
 }
 
-function displaySearchResults(results) {
-    const container = document.getElementById('search-results');
+// Simple text search (old name kept for backwards compatibility)
+async function searchStops() {
+    await searchAddress();
+}
+
+function displayAddressResults(results, container) {
     if (!results || results.length === 0) {
         container.innerHTML = `<div class="text-center py-4 text-muted"><i class="bi bi-search" style="font-size:2rem"></i><p class="mt-2 mb-0">Không tìm thấy kết quả</p></div>`;
         return;
     }
-    container.innerHTML = results.map(stop => `
-        <div class="result-item" onclick="focusOnStop(${stop.latitude}, ${stop.longitude}, '${stop.name.replace(/'/g,"\\'")}')">
-            <div class="result-icon"><i class="bi bi-geo-alt-fill"></i></div>
+    container.innerHTML = results.map(r => `
+        <div class="result-item" onclick="focusOnLocation(${r.lat}, ${r.lng}, '${(r.name || '').replace(/'/g, "\\'")}', '${(r.address || '').replace(/'/g, "\\'")}')">
+            <div class="result-icon" style="background:${r.type === 'stop' ? '#0066cc' : '#00b894'}">
+                <i class="bi bi-${r.type === 'stop' ? 'geo-alt-fill' : 'map-pin-fill'}"></i>
+            </div>
             <div class="result-info">
-                <h6>${stop.name}</h6>
-                <p>${stop.address || 'Không có địa chỉ'}</p>
+                <h6>${r.name}</h6>
+                <p>${r.address}</p>
             </div>
         </div>`).join('');
 }
 
-function focusOnStop(lat, lng, name) {
+function focusOnLocation(lat, lng, name, address) {
     map.setView([lat, lng], 17);
-    stopsLayer.eachLayer(layer => {
-        if (layer.feature && layer.feature.properties.name === name) {
-            layer.openPopup();
-        }
-    });
+
+    if (addressMarker) map.removeLayer(addressMarker);
+    addressMarker = L.marker([lat, lng], {
+        icon: L.divIcon({
+            className: '',
+            html: `<div style="background:#e74c3c;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.5)"></div>`,
+            iconSize: [16, 16], iconAnchor: [8, 8]
+        })
+    }).addTo(map);
+
+    addressMarker.bindPopup(`
+        <div class="popup-content">
+            <h5><i class="bi bi-map-pin-fill text-danger me-1"></i>${name}</h5>
+            <p class="small text-muted">${address}</p>
+            <hr class="my-1">
+            <div class="d-flex gap-2 small fw-semibold">
+                <span><i class="bi bi-geo text-primary me-1"></i>Lng: <strong>${parseFloat(lng).toFixed(6)}</strong></span>
+                <span><i class="bi bi-geo text-success me-1"></i>Lat: <strong>${parseFloat(lat).toFixed(6)}</strong></span>
+            </div>
+        </div>`).openPopup();
+
+    showNotification(`📍 ${name} | Lng: ${parseFloat(lng).toFixed(5)}, Lat: ${parseFloat(lat).toFixed(5)}`, 'success');
+}
+
+function focusOnStop(lat, lng, name) {
+    focusOnLocation(lat, lng, name, '');
 }
 
 // ─── Nearest Stops ────────────────────────────────────────────────────────────
@@ -235,25 +376,74 @@ async function findNearestStop() {
         showNotification('Trình duyệt không hỗ trợ định vị', 'error');
         return;
     }
-    showNotification('Đang xác định vị trí...', 'info');
+    showLoading('Đang xác định vị trí của bạn...');
     navigator.geolocation.getCurrentPosition(async pos => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
         placeUserMarker(lat, lng);
+
         try {
             const res  = await fetch(`${API.nearestStops}?lat=${lat}&lng=${lng}&limit=5`);
             const data = await res.json();
+            routeResultLayer.clearLayers();
+
             if (data.nearest_stops && data.nearest_stops.length > 0) {
                 showNearestStopsResults(data.nearest_stops);
                 const nearest = data.nearest_stops[0];
-                map.fitBounds([[lat, lng], [nearest.latitude, nearest.longitude]], { padding: [50, 50] });
+
+                try {
+                    const osrmRes  = await fetch(`https://router.project-osrm.org/route/v1/driving/${lng},${lat};${nearest.longitude},${nearest.latitude}?overview=full&geometries=geojson`);
+                    const osrmData = await osrmRes.json();
+
+                    if (osrmData.routes && osrmData.routes.length > 0) {
+                        const route       = osrmData.routes[0];
+                        const distance    = route.distance;
+                        const travelMin   = Math.ceil(route.duration / 60);
+
+                        L.geoJSON(route.geometry, {
+                            style: { color: '#e74c3c', weight: 5, opacity: 0.8 }
+                        }).addTo(routeResultLayer);
+
+                        showInfoPanel('Thông tin dẫn đường', `
+                            <div class="p-2">
+                                <h6 class="mb-3"><i class="bi bi-geo-alt-fill text-danger me-2"></i>Đến: ${nearest.name}</h6>
+                                <div class="mb-2"><i class="bi bi-shuffle me-2"></i><strong>Quãng đường:</strong> ${formatDistance(distance)}</div>
+                                <div class="mb-2"><i class="bi bi-clock-history me-2"></i><strong>Thời gian (ô tô):</strong> ~${travelMin} phút</div>
+                                <div class="mb-3 small text-muted">
+                                    <i class="bi bi-pin-map me-2"></i><strong>Toạ độ trạm:</strong><br>
+                                    Lng: ${nearest.longitude.toFixed(6)} | Lat: ${nearest.latitude.toFixed(6)}
+                                </div>
+                                <button class="btn btn-sm btn-outline-secondary w-100" onclick="clearRouteResult()">
+                                    <i class="bi bi-trash me-1"></i>Xóa đường đi
+                                </button>
+                            </div>
+                        `);
+                        showNotification(`Tìm thấy đường đi (${formatDistance(distance)})`, 'success');
+                    } else {
+                        L.polyline([[lat, lng], [nearest.latitude, nearest.longitude]], {
+                            color: '#e74c3c', weight: 3, opacity: 0.7, dashArray: '5, 10'
+                        }).addTo(routeResultLayer);
+                    }
+                } catch (osrmErr) {
+                    console.error('OSRM Error:', osrmErr);
+                    L.polyline([[lat, lng], [nearest.latitude, nearest.longitude]], {
+                        color: '#e74c3c', weight: 3, opacity: 0.7, dashArray: '5, 10'
+                    }).addTo(routeResultLayer);
+                }
+
+                map.fitBounds([[lat, lng], [nearest.latitude, nearest.longitude]], { padding: [100, 100] });
             } else {
                 showNotification('Không tìm thấy trạm nào gần đây', 'warning');
             }
         } catch (e) {
             showNotification('Lỗi khi tìm trạm gần nhất', 'error');
+        } finally {
+            hideLoading();
         }
-    }, err => showNotification('Không thể xác định vị trí: ' + err.message, 'error'));
+    }, err => {
+        hideLoading();
+        showNotification('Không thể xác định vị trí: ' + err.message, 'error');
+    });
 }
 
 function placeUserMarker(lat, lng) {
@@ -271,7 +461,7 @@ function showNearestStopsResults(stops) {
     document.getElementById('search-results').innerHTML = `
         <h6 class="mb-3"><i class="bi bi-crosshair me-2"></i>Trạm gần bạn nhất</h6>
         ${stops.map((s, i) => `
-            <div class="result-item" onclick="focusOnStop(${s.latitude}, ${s.longitude}, '${s.name.replace(/'/g,"\\'")}')">
+            <div class="result-item" onclick="focusOnStop(${s.latitude}, ${s.longitude}, '${s.name.replace(/'/g, "\\'")}')">
                 <div class="result-icon" style="background:${i === 0 ? '#00b894' : '#0066cc'}">${i + 1}</div>
                 <div class="result-info">
                     <h6>${s.name}</h6>
@@ -353,63 +543,87 @@ function showRoutesForStop(stopId) {
         showNotification('Trạm này không có tuyến nào đi qua', 'warning');
         return;
     }
+    // Highlight các tuyến đi qua trạm, mờ phần còn lại
     displayRoutes(allRoutes, routeIds);
-    const features = allRoutes.filter(r => routeIds.includes(r.id));
+    // Zoom vào bounding box của các tuyến đó
+    const features = allRoutes.filter(r => routeIds.includes(r.id || r.properties?.id));
     if (features.length > 0) {
         const latLngs = features.flatMap(r => (r.geometry?.coordinates || []).map(c => [c[1], c[0]]));
-        if (latLngs.length) map.fitBounds(latLngs, { padding: [20, 20] });
+        if (latLngs.length) map.fitBounds(latLngs, { padding: [30, 30] });
     }
     showNotification(`Đang hiển thị ${routeIds.length} tuyến đi qua trạm`, 'success');
 }
 
-// ─── Route Filter Chips ───────────────────────────────────────────────────────
+// ─── Route Filter ─────────────────────────────────────────────────────────────
 function filterByRoute(routeId) {
-    document.querySelectorAll('.route-chip').forEach(c => {
-        c.classList.toggle('active', c.dataset.route == routeId);
-    });
     selectedRouteId = routeId;
     displayStops(allStops, routeId);
-    displayRoutes(allRoutes, routeId === 'all' ? null : routeId);
+
+    if (!routeId || routeId === 'all') {
+        displayAllRoutes(allRoutes); // Tất cả tuyến mờ nhạt
+    } else {
+        displayRoutes(allRoutes, routeId); // Highlight tuyến chọn, mờ phần còn lại
+
+        // Zoom vào tuyến được chọn
+        const selected = allRoutes.find(r => (r.id || r.properties?.id) === parseInt(routeId));
+        if (selected && selected.geometry) {
+            const latLngs = selected.geometry.coordinates.map(c => [c[1], c[0]]);
+            if (latLngs.length) map.fitBounds(latLngs, { padding: [40, 40] });
+        }
+    }
 }
 
 // ─── Route Finder Autocomplete ────────────────────────────────────────────────
 function setupRouteFinderAutocomplete() {
-    setupAutocomplete(
+    setupStopAutocomplete(
         document.getElementById('start-stop-input'),
         'start-suggestions', 'start-stop-id');
-    setupAutocomplete(
+    setupStopAutocomplete(
         document.getElementById('end-stop-input'),
         'end-suggestions', 'end-stop-id');
 }
 
-function setupAutocomplete(input, suggestionsId, valueId) {
+function setupStopAutocomplete(input, suggestionsId, valueId) {
     if (!input) return;
     let timer;
-    let lastResults = [];
 
     input.addEventListener('input', function () {
         clearTimeout(timer);
-        // Clear the hidden ID when user modifies the text manually
         document.getElementById(valueId).value = '';
-        const q = this.value.trim();
+        const q   = this.value.trim();
         const box = document.getElementById(suggestionsId);
         if (q.length < 2) { box.style.display = 'none'; return; }
+
         timer = setTimeout(async () => {
             try {
-                const res  = await fetch(`${API.stops}?search=${encodeURIComponent(q)}`);
-                const data = await res.json();
-                lastResults = data.results || data;
-                if (lastResults.length > 0) {
-                    // Auto-select if exactly 1 result
-                    if (lastResults.length === 1) {
-                        selectStop(lastResults[0].id, lastResults[0].name, valueId, input.id, suggestionsId);
-                        return;
-                    }
-                    box.innerHTML = lastResults.slice(0, 10).map(s => `
+                // Search both stops and addresses
+                const [stopRes, nomRes] = await Promise.allSettled([
+                    fetch(`${API.stops}?search=${encodeURIComponent(q)}`),
+                    fetch(`${NOMINATIM}/search?q=${encodeURIComponent(q)}&countrycodes=vn&format=json&limit=3`, {
+                        headers: { 'Accept-Language': 'vi' }
+                    })
+                ]);
+
+                const stopData = stopRes.status === 'fulfilled' ? await stopRes.value.json() : [];
+                const nomData  = nomRes.status === 'fulfilled'  ? await nomRes.value.json()  : [];
+
+                const items = [];
+
+                (Array.isArray(stopData) ? stopData : (stopData.results || [])).slice(0, 6).forEach(s => {
+                    items.push({ id: `stop_${s.id}`, label: s.name, sub: s.address || 'Trạm dừng xe buýt', lat: s.latitude, lng: s.longitude, isStop: true, stopId: s.id });
+                });
+
+                nomData.slice(0, 3).forEach(item => {
+                    items.push({ id: `addr_${item.place_id}`, label: item.display_name.split(',')[0], sub: item.display_name, lat: parseFloat(item.lat), lng: parseFloat(item.lon), isStop: false });
+                });
+
+                if (items.length > 0) {
+                    box.innerHTML = items.map(s => `
                         <div class="suggestion-item"
-                             onclick="selectStop('${s.id}','${s.name.replace(/'/g,"\\'")}','${valueId}','${input.id}','${suggestionsId}')">
-                            <strong>${s.name}</strong>
-                            <small>${s.address || 'Không có địa chỉ'}</small>
+                             onclick="selectRouteFinderStop('${s.id}', '${(s.label || '').replace(/'/g, "\\'")}', '${valueId}', '${input.id}', '${suggestionsId}', ${s.lat}, ${s.lng}, ${s.isStop})">
+                            <i class="bi bi-${s.isStop ? 'geo-alt-fill text-primary' : 'map-pin text-success'} me-1"></i>
+                            <strong>${s.label}</strong>
+                            <small>${s.sub}</small>
                         </div>`).join('');
                     box.style.display = 'block';
                 } else {
@@ -419,25 +633,15 @@ function setupAutocomplete(input, suggestionsId, valueId) {
         }, 300);
     });
 
-    // On Enter: auto-pick the first result if no ID is set yet
-    input.addEventListener('keydown', async function(e) {
+    input.addEventListener('keydown', function(e) {
         if (e.key !== 'Enter') return;
         e.preventDefault();
-        const currentId = document.getElementById(valueId).value;
-        if (currentId) return; // already selected
         const q = this.value.trim();
         if (q.length < 2) return;
-        try {
-            const res  = await fetch(`${API.stops}?search=${encodeURIComponent(q)}`);
-            const data = await res.json();
-            const list = data.results || data;
-            if (list.length > 0) {
-                selectStop(list[0].id, list[0].name, valueId, input.id, suggestionsId);
-                showNotification(`Đã chọn: ${list[0].name}`, 'info');
-            } else {
-                showNotification('Không tìm thấy trạm phù hợp', 'warning');
-            }
-        } catch(e) {}
+        // auto-pick first suggestion visible
+        const box = document.getElementById(suggestionsId);
+        const first = box.querySelector('.suggestion-item');
+        if (first) first.click();
     });
 
     document.addEventListener('click', e => {
@@ -447,10 +651,18 @@ function setupAutocomplete(input, suggestionsId, valueId) {
     });
 }
 
-function selectStop(id, name, valueId, inputId, suggestionsId) {
-    document.getElementById(valueId).value = id;
-    document.getElementById(inputId).value = name;
+// Store lat/lng for non-stop locations used in route finding
+const _tempLocations = {};
+
+function selectRouteFinderStop(id, name, valueId, inputId, suggestionsId, lat, lng, isStop) {
+    document.getElementById(valueId).value   = id;
+    document.getElementById(inputId).value   = name;
     document.getElementById(suggestionsId).style.display = 'none';
+    _tempLocations[id] = { lat, lng, name };
+}
+
+function selectStop(id, name, valueId, inputId, suggestionsId) {
+    selectRouteFinderStop(`stop_${id}`, name, valueId, inputId, suggestionsId, null, null, true);
 }
 
 async function useCurrentLocation(type) {
@@ -461,110 +673,213 @@ async function useCurrentLocation(type) {
             const res  = await fetch(`${API.nearestStops}?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}&limit=1`);
             const data = await res.json();
             if (data.nearest_stops && data.nearest_stops.length > 0) {
-                const s = data.nearest_stops[0];
+                const s       = data.nearest_stops[0];
                 const inputId = type === 'start' ? 'start-stop-input' : 'end-stop-input';
                 const valueId = type === 'start' ? 'start-stop-id'    : 'end-stop-id';
-                document.getElementById(inputId).value = s.name + ' (Gần bạn)';
-                document.getElementById(valueId).value = s.id;
+                const sugId   = type === 'start' ? 'start-suggestions' : 'end-suggestions';
+                selectRouteFinderStop(`stop_${s.id}`, s.name + ' (Gần bạn)', valueId, inputId, sugId, s.latitude, s.longitude, true);
                 showNotification(`Đã chọn: ${s.name}`, 'success');
             }
         } catch (e) { showNotification('Lỗi khi tìm trạm', 'error'); }
     }, err => showNotification('Không thể xác định vị trí', 'error'));
 }
 
+// Helper: parse stop ID from composed ID like "stop_5" or "addr_xxx"
+function _parseStopId(composedId) {
+    if (!composedId) return null;
+    if (composedId.startsWith('stop_')) return parseInt(composedId.replace('stop_', ''));
+    return null;
+}
+
 // ─── Find Route ───────────────────────────────────────────────────────────────
 async function findRoute() {
-    const startId = document.getElementById('start-stop-id').value;
-    const endId   = document.getElementById('end-stop-id').value;
+    const startId  = document.getElementById('start-stop-id').value;
+    const endId    = document.getElementById('end-stop-id').value;
+
     if (!startId || !endId) {
         showNotification('Vui lòng chọn điểm đi và điểm đến từ danh sách gợi ý', 'warning');
         return;
     }
-    if (startId === endId) {
+
+    const startStopId = _parseStopId(startId);
+    const endStopId   = _parseStopId(endId);
+
+    if (!startStopId || !endStopId) {
+        showNotification('Tìm đường chỉ hỗ trợ giữa hai trạm xe buýt. Vui lòng chọn trạm xe buýt (icon xanh dương)', 'warning');
+        return;
+    }
+    if (startStopId === endStopId) {
         showNotification('Điểm đi và điểm đến không được trùng nhau', 'warning');
         return;
     }
 
-    showNotification('Đang tìm tuyến...', 'info');
+    showLoading('Đang tính toán lộ trình tối ưu...');
 
     try {
-        const res  = await fetch(`${API.findRoute}?start_stop_id=${startId}&end_stop_id=${endId}`);
+        const res  = await fetch(`${API.findRoute}?start_stop_id=${startStopId}&end_stop_id=${endStopId}`);
         const data = await res.json();
         routeResultLayer.clearLayers();
 
-        if (data.routes_found === 0) {
+        // Ẩn tuyến nền để bản đồ clean
+        routesLayer.clearLayers();
+
+        if (!data.routes || data.routes_found === 0) {
             showNotification('Không tìm thấy tuyến xe nối hai trạm này', 'warning');
+            hideLoading();
             return;
         }
 
         const allLatLngs = [];
 
-        data.routes.forEach(route => {
+        data.routes.forEach((route, routeIdx) => {
             if (route.type === 'direct') {
-                const latLngs = route.stops.map(s => [s.lat, s.lng]);
-                allLatLngs.push(...latLngs);
-                L.polyline(latLngs, { color: route.color, weight: 6, opacity: 0.9, dashArray: '10,8' }).addTo(routeResultLayer);
-                route.stops.forEach((stop, idx) => {
-                    L.circleMarker([stop.lat, stop.lng], {
-                        radius: 9, fillColor: route.color, color: '#fff', weight: 2, fillOpacity: 1
-                    }).bindPopup(`<div class="popup-content"><h6>${idx + 1}. ${stop.name}</h6></div>`).addTo(routeResultLayer);
-                });
+                _drawSegment(route.stops, route.color, routeResultLayer, allLatLngs);
+                _markTerminals(route.stops, route.color, routeResultLayer);
+
             } else if (route.type === 'transfer') {
-                // Draw transfer stop marker
+                // Draw 2 segments
+                route.segments.forEach(seg => {
+                    _drawSegment(seg.stops, seg.color, routeResultLayer, allLatLngs);
+                });
+                // Transfer stop marker
                 const ts = route.transfer_stop;
-                allLatLngs.push([ts.lat, ts.lng]);
-                L.circleMarker([ts.lat, ts.lng], {
-                    radius: 12, fillColor: '#f39c12', color: '#fff', weight: 3, fillOpacity: 1
-                }).bindPopup(`<div class="popup-content"><strong>Điểm chuyển: ${ts.name}</strong></div>`).addTo(routeResultLayer);
+                if (ts) {
+                    allLatLngs.push([ts.lat, ts.lng]);
+                    L.circleMarker([ts.lat, ts.lng], {
+                        radius: 13, fillColor: '#f59e0b', color: '#fff', weight: 3, fillOpacity: 1
+                    }).bindPopup(`<div class="popup-content"><strong>🔄 Chuyển tuyến tại:<br>${ts.name}</strong></div>`).addTo(routeResultLayer);
+                }
+
+            } else if (route.type === 'transfer2') {
+                // Draw 3 segments
+                route.segments.forEach(seg => {
+                    _drawSegment(seg.stops, seg.color, routeResultLayer, allLatLngs);
+                });
+                // 2 transfer stop markers
+                (route.transfer_stops || []).forEach(ts => {
+                    if (!ts) return;
+                    allLatLngs.push([ts.lat, ts.lng]);
+                    L.circleMarker([ts.lat, ts.lng], {
+                        radius: 13, fillColor: '#a78bfa', color: '#fff', weight: 3, fillOpacity: 1
+                    }).bindPopup(`<div class="popup-content"><strong>🔄 Chuyển tuyến tại:<br>${ts.name}</strong></div>`).addTo(routeResultLayer);
+                });
             }
         });
 
-        // Also mark start / end
+        // Start / End markers
         const startStop = data.start_stop;
         const endStop   = data.end_stop;
-        allLatLngs.push([startStop.lat, startStop.lng], [endStop.lat, endStop.lng]);
-
-        L.circleMarker([startStop.lat, startStop.lng], { radius: 12, fillColor:'#27ae60', color:'#fff', weight:3, fillOpacity:1 })
-          .bindPopup(`<div class="popup-content"><h6>🟢 Điểm đi<br>${startStop.name}</h6></div>`).addTo(routeResultLayer);
-        L.circleMarker([endStop.lat, endStop.lng], { radius: 12, fillColor:'#e74c3c', color:'#fff', weight:3, fillOpacity:1 })
-          .bindPopup(`<div class="popup-content"><h6>🔴 Điểm đến<br>${endStop.name}</h6></div>`).addTo(routeResultLayer);
+        if (startStop) {
+            allLatLngs.push([startStop.lat, startStop.lng]);
+            L.circleMarker([startStop.lat, startStop.lng], { radius: 12, fillColor: '#27ae60', color: '#fff', weight: 3, fillOpacity: 1 })
+              .bindPopup(`<div class="popup-content"><h6>🟢 Điểm đi<br>${startStop.name}</h6></div>`).addTo(routeResultLayer);
+        }
+        if (endStop) {
+            allLatLngs.push([endStop.lat, endStop.lng]);
+            L.circleMarker([endStop.lat, endStop.lng], { radius: 12, fillColor: '#e74c3c', color: '#fff', weight: 3, fillOpacity: 1 })
+              .bindPopup(`<div class="popup-content"><h6>🔴 Điểm đến<br>${endStop.name}</h6></div>`).addTo(routeResultLayer);
+        }
 
         if (allLatLngs.length > 0) map.fitBounds(allLatLngs, { padding: [60, 60] });
 
-        // Info panel
-        showInfoPanel('Kết quả tìm đường', `
-            <p><strong>Từ:</strong> ${startStop.name}</p>
-            <p><strong>Đến:</strong> ${endStop.name}</p><hr>
-            <p><strong>Tìm thấy ${data.routes_found} kết quả:</strong></p>
-            ${data.routes.map(r => r.type === 'direct' ? `
-                <div class="d-flex align-items-center mb-2 p-2 border rounded">
-                    <span class="route-tag me-2" style="background:${r.color};color:#fff;border-color:${r.color};padding:.25rem .75rem">${r.route_number}</span>
-                    <div><div class="small fw-semibold">${r.route_name}</div><div class="small text-muted">Đi thẳng – ${r.total_stops} trạm</div></div>
-                </div>` : `
-                <div class="mb-2 p-2 border rounded bg-light">
-                    <div class="small text-muted mb-1">Cần chuyển 1 tuyến tại:</div>
-                    <div class="fw-semibold small mb-1">${r.transfer_stop.name}</div>
-                    <div class="d-flex align-items-center gap-1">
-                        <span class="route-tag" style="background:${r.segments[0].color};color:#fff;border-color:${r.segments[0].color}">${r.segments[0].route_number}</span>
-                        <i class="bi bi-arrow-right"></i>
-                        <span class="route-tag" style="background:${r.segments[1].color};color:#fff;border-color:${r.segments[1].color}">${r.segments[1].route_number}</span>
+        // Build info panel HTML
+        const routeHtml = data.routes.map((r, idx) => {
+            if (r.type === 'direct') {
+                return `
+                <div class="mb-2 p-2 border rounded">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="route-tag" style="background:${r.color};color:#fff;border-color:${r.color};padding:.2rem .6rem">${r.route_number}</span>
+                        <div class="small"><div class="fw-semibold">${r.route_name}</div><div class="text-muted">Đi thẳng – ${r.total_stops} trạm</div></div>
                     </div>
-                </div>`).join('')}
+                </div>`;
+            } else if (r.type === 'transfer') {
+                return `
+                <div class="mb-2 p-2 border rounded bg-light">
+                    <div class="small text-muted mb-1">Chuyển 1 tuyến tại: <strong>${r.transfer_stop?.name || ''}</strong></div>
+                    <div class="d-flex align-items-center gap-1 flex-wrap">
+                        <span class="route-tag" style="background:${r.segments[0].color};color:#fff;border-color:${r.segments[0].color}">${r.segments[0].route_number}</span>
+                        <span class="small text-muted">${r.segments[0].total_stops} trạm</span>
+                        <i class="bi bi-arrow-right text-warning"></i>
+                        <span class="route-tag" style="background:${r.segments[1].color};color:#fff;border-color:${r.segments[1].color}">${r.segments[1].route_number}</span>
+                        <span class="small text-muted">${r.segments[1].total_stops} trạm</span>
+                    </div>
+                </div>`;
+            } else if (r.type === 'transfer2') {
+                const ts = r.transfer_stops || [];
+                return `
+                <div class="mb-2 p-2 border rounded bg-light">
+                    <div class="small text-muted mb-1">Chuyển 2 tuyến</div>
+                    <div class="d-flex align-items-center gap-1 flex-wrap">
+                        ${r.segments.map((s, si) => `
+                            <span class="route-tag" style="background:${s.color};color:#fff;border-color:${s.color}">${s.route_number}</span>
+                            ${si < r.segments.length-1 ? `<i class="bi bi-arrow-right text-purple"></i>` : ''}
+                        `).join('')}
+                    </div>
+                    <div class="small text-muted mt-1">Chuyển tại: ${ts.map(t => t?.name || '').filter(Boolean).join(' → ')}</div>
+                </div>`;
+            }
+            return '';
+        }).join('');
+
+        // Warnings khi trạm gốc không thuộc tuyến
+        const warningHtml = (data.warnings && data.warnings.length > 0)
+            ? `<div class="alert alert-warning py-1 px-2 small mb-2">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                ${data.warnings.map(w => `<div>${w}</div>`).join('')}
+               </div>`
+            : '';
+
+        showInfoPanel('Kết quả tìm đường', `
+            ${warningHtml}
+            <p><strong>Từ:</strong> ${startStop?.name || ''}</p>
+            <p><strong>Đến:</strong> ${endStop?.name || ''}</p><hr>
+            <p><strong>Tìm thấy ${data.routes_found} lộ trình:</strong></p>
+            ${routeHtml}
             <button class="btn btn-sm btn-outline-secondary mt-2 w-100" onclick="clearRouteResult()">
                 <i class="bi bi-x me-1"></i>Xóa kết quả
             </button>`);
 
-        showNotification(`Tìm thấy ${data.routes_found} tuyến`, 'success');
+        if (data.warnings && data.warnings.length > 0) {
+            showNotification(data.warnings[0], 'warning');
+        }
+        showNotification(`Tìm thấy ${data.routes_found} lộ trình`, 'success');
 
     } catch (e) {
         console.error('findRoute error:', e);
         showNotification('Lỗi khi tìm tuyến', 'error');
+    } finally {
+        hideLoading();
     }
+}
+
+function _drawSegment(stops, color, layer, latLngsAccum) {
+    if (!stops || stops.length < 2) return;
+    const latLngs = stops.map(s => [s.lat, s.lng]);
+    latLngsAccum.push(...latLngs);
+    L.polyline(latLngs, { color, weight: 6, opacity: 0.9, dashArray: '10,6' }).addTo(layer);
+    stops.forEach((stop, idx) => {
+        if (idx === 0 || idx === stops.length - 1) return; // terminals
+        L.circleMarker([stop.lat, stop.lng], {
+            radius: 5, fillColor: color, color: '#fff', weight: 1.5, fillOpacity: 0.9
+        }).bindPopup(`<div class="popup-content"><small>${stop.name}</small></div>`).addTo(layer);
+    });
+}
+
+function _markTerminals(stops, color, layer) {
+    // Internal use for direct routes only - terminals handled separately
 }
 
 function clearRouteResult() {
     routeResultLayer.clearLayers();
     closeInfoPanel();
+    // Khôi phục tuyến nền
+    const sel = document.getElementById('route-select-filter');
+    const filterVal = sel ? sel.value : 'all';
+    if (filterVal && filterVal !== 'all') {
+        displayRoutes(allRoutes, filterVal);
+    } else {
+        displayAllRoutes(allRoutes);
+    }
 }
 
 // ─── Info Panel ───────────────────────────────────────────────────────────────
@@ -579,8 +894,28 @@ function closeInfoPanel() {
 }
 
 function toggleSearchPanel() {
-    document.querySelector('.search-panel').classList.toggle('collapsed');
+    const panel = document.querySelector('.search-panel');
+    panel.classList.toggle('collapsed');
+    // On mobile, close navbar when opening panel
+    if (window.innerWidth <= 768) {
+        const navCollapse = document.getElementById('navbarNav');
+        if (navCollapse && navCollapse.classList.contains('show')) {
+            bootstrap.Collapse.getOrCreateInstance(navCollapse).hide();
+        }
+    }
 }
+
+// Auto-collapse search panel on mobile
+function _autoCollapseOnMobile() {
+    const panel = document.querySelector('.search-panel');
+    if (!panel) return;
+    if (window.innerWidth <= 768) {
+        panel.classList.add('collapsed');
+    } else {
+        panel.classList.remove('collapsed');
+    }
+}
+window.addEventListener('load', _autoCollapseOnMobile);
 
 // ─── Map Controls ─────────────────────────────────────────────────────────────
 function locateUser() {
@@ -598,8 +933,18 @@ function resetView() {
     map.setView([10.8231, 106.6297], 13);
     bufferLayer.clearLayers();
     routeResultLayer.clearLayers();
-    routesLayer.clearLayers();
+    selectedRouteId = null;
+    // Vẽ lại tất cả tuyến mờ nhạt
+    displayAllRoutes(allRoutes);
+    // Hiển thị lại tất cả trạm
+    displayStops(allStops);
+    if (addressMarker) { map.removeLayer(addressMarker); addressMarker = null; }
+    if (userMarker)    { map.removeLayer(userMarker);    userMarker    = null; }
     closeInfoPanel();
+    // Reset dropdown
+    const sel = document.getElementById('route-select-filter');
+    if (sel) sel.value = 'all';
+    showNotification('Bản đồ đã được đặt lại', 'info');
 }
 
 // ─── Notifications ────────────────────────────────────────────────────────────
@@ -614,12 +959,11 @@ function showNotification(message, type = 'info') {
         padding:10px 18px;border-radius:8px;
         display:flex;align-items:center;gap:10px;
         box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:9999;
-        animation:slideIn .3s ease-out;font-size:.9rem;`;
+        animation:slideIn .3s ease-out;font-size:.9rem;max-width:340px;word-break:break-word;`;
     document.body.appendChild(n);
-    setTimeout(() => { n.style.animation = 'slideOut .3s ease-out'; setTimeout(() => n.remove(), 300); }, 3000);
+    setTimeout(() => { n.style.animation = 'slideOut .3s ease-out'; setTimeout(() => n.remove(), 300); }, 4000);
 }
 
-// Keyframe styles injected once
 (function injectAnimations() {
     const s = document.createElement('style');
     s.textContent = `
@@ -629,8 +973,27 @@ function showNotification(message, type = 'info') {
 })();
 
 // ─── DOM Ready ────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     setupRouteFinderAutocomplete();
+
+    const urlParams  = new URLSearchParams(window.location.search);
+    const focusRoute = urlParams.get('focus_route');
+
+    await loadStops();
+    await loadRoutes(); // tự động gọi displayAllRoutes() bên trong
+
+    if (focusRoute) {
+        // Highlight tuyến được focus, mờ phần còn lại
+        displayRoutes(allRoutes, focusRoute);
+        const routeSelect = document.getElementById('route-select-filter');
+        if (routeSelect) routeSelect.value = focusRoute;
+        const route = allRoutes.find(r => (r.id || r.properties?.id) == focusRoute);
+        if (route && route.geometry) {
+            const latLngs = route.geometry.coordinates.map(c => [c[1], c[0]]);
+            map.fitBounds(latLngs, { padding: [50, 50] });
+        }
+    }
+
     const si = document.getElementById('search-input');
     if (si) si.addEventListener('keypress', e => { if (e.key === 'Enter') searchStops(); });
 });

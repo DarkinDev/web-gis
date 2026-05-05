@@ -1,0 +1,23 @@
+\chapter{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN TƯƠNG LAI}
+
+\section{Tổng kết và ý nghĩa thực tiễn của đề tài}
+
+Đề tài "Hệ thống WebGIS quản lý và tra cứu tuyến xe buýt thông minh (BusGIS)" đã đi sâu nghiên cứu và ứng dụng thành công các công nghệ thông tin địa lý vào lĩnh vực giao thông vận tải. Sản phẩm đầu ra không chỉ đơn thuần là một website thông tin mà là một hệ thống bản đồ số tương tác (WebGIS) toàn diện, bao gồm cả phân hệ quản lý dữ liệu không gian phức tạp và phân hệ phân tích địa lý trực quan cho người dùng cuối. 
+
+Việc chuyển đổi từ phương pháp quản lý, tra cứu thủ công sang hệ thống bản đồ số trực tuyến mang lại nhiều ý nghĩa thiết thực. Đối với người dân, hệ thống giúp tiết kiệm thời gian, tăng cường mức độ chủ động trong việc lựa chọn phương tiện giao thông công cộng, từ đó góp phần giảm thiểu sử dụng xe cá nhân, giảm ùn tắc giao thông và bảo vệ môi trường. Đối với cơ quan quản lý nhà nước và doanh nghiệp vận tải, BusGIS cung cấp một nền tảng số hóa tập trung, hỗ trợ lưu trữ an toàn, theo dõi phản hồi hành khách và ra quyết định tối ưu hóa mạng lưới trạm tuyến dựa trên bằng chứng dữ liệu không gian trực quan.
+
+Toàn bộ đồ án đã hoàn thành các mục tiêu ban đầu đề ra: ứng dụng thành thạo PostgreSQL/PostGIS trong việc tổ chức mô hình dữ liệu địa lý, khai thác mạnh mẽ framework Django cho kiến trúc Backend và xây dựng giao diện hiển thị không gian sinh động qua LeafletJS. Quá trình thực hiện đề tài đã giúp củng cố kiến thức nền tảng về hệ thống thông tin địa lý, đồng thời nâng cao kỹ năng lập trình và khả năng giải quyết các bài toán thực tiễn.
+
+\section{Đề xuất hướng mở rộng và phát triển tương lai}
+
+Dựa trên những nền tảng đã xây dựng, hệ thống BusGIS sở hữu tiềm năng rất lớn để mở rộng và nâng cấp trong tương lai nhằm đáp ứng nhu cầu giao thông thông minh (Smart Mobility) của một đô thị hiện đại. Một số định hướng phát triển cụ thể bao gồm:
+
+\begin{itemize}
+    \item \textbf{Tích hợp hệ thống theo dõi thời gian thực (Real-time GPS Tracking):} Lắp đặt hoặc kết nối với hệ thống định vị trên các xe buýt đang vận hành để hiển thị vị trí thực tế của xe trên bản đồ. Tính năng này sẽ giúp hành khách ước tính chính xác thời gian xe đến trạm, cải thiện đáng kể trải nghiệm người dùng.
+    \item \textbf{Phát triển ứng dụng trên thiết bị di động (Mobile App):} Chuyển đổi và đóng gói nền tảng WebGIS hiện tại thành ứng dụng Native (iOS/Android) hoặc PWA (Progressive Web App) để tận dụng các phần cứng di động như la bàn, GPS, thông báo đẩy (Push Notifications), giúp người dùng tra cứu thuận tiện mọi lúc mọi nơi.
+    \item \textbf{Ứng dụng Trí tuệ nhân tạo (AI) và Phân tích Dữ liệu Lớn (Big Data):} Thu thập dữ liệu tìm kiếm, lưu lượng truy cập và đánh giá của người dùng để dự đoán các điểm nóng giao thông, phân tích nhu cầu đi lại theo giờ cao điểm. Từ đó đề xuất cho ban quản lý mở thêm tuyến mới hoặc điều chỉnh tần suất chuyến.
+    \item \textbf{Tích hợp đa phương thức giao thông (Multi-modal Routing):} Nâng cấp thuật toán định tuyến để kết hợp xe buýt với các phương tiện công cộng khác như tàu điện ngầm (Metro), xe đạp công cộng hoặc xe ôm công nghệ (Ride-hailing), cung cấp lộ trình di chuyển xuyên suốt cho hành khách từ cửa nhà đến đích đến.
+    \item \textbf{Bổ sung tính năng tương tác cộng đồng:} Cho phép người dùng báo cáo trực tiếp sự cố giao thông (kẹt xe, ngập nước, tai nạn) lên bản đồ theo thời gian thực để hệ thống tự động tính toán lại lộ trình và cảnh báo cho các hành khách khác đang có dự định đi qua khu vực đó.
+\end{itemize}
+
+Việc tiếp tục nghiên cứu và hoàn thiện các tính năng trên sẽ đưa BusGIS trở thành một hệ sinh thái giao thông công cộng mạnh mẽ, góp phần đắc lực vào công cuộc chuyển đổi số và xây dựng đô thị thông minh (Smart City) tại Việt Nam.

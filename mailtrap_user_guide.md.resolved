@@ -1,0 +1,37 @@
+# Hướng dẫn chi tiết sử dụng Mailtrap.io cho Đồ án Django
+
+Mailtrap là công cụ giúp bạn "bẫy" (intercept) email để kiểm tra nội dung mà không cần gửi đến email thật. Dưới đây là các bước thao tác chi tiết:
+
+---
+
+## Bước 1: Đăng nhập / Đăng ký
+1.  Truy cập [Mailtrap.io](https://mailtrap.io/).
+2.  Nhấn **Sign Up** (nếu chưa có tài khoản) hoặc **Login**.
+    *   *Mẹo:* Bạn nên chọn **Login with Google** để đăng nhập nhanh nhất.
+
+## Bước 2: Truy cập Hộp thư thử nghiệm (Inboxes)
+1.  Sau khi đăng nhập thành công, tại thanh menu bên trái, tìm mục **Email Testing**.
+2.  Click vào **Inboxes**.
+3.  Bạn sẽ thấy một hộp thư mặc định tên là **My Inbox**. Hãy click vào đó.
+
+## Bước 3: Lấy thông tin cấu hình cho Django
+Đây là bước quan trọng nhất để kết nối code của bạn với Mailtrap.
+1.  Tại giao diện của **My Inbox**, nhìn sang phần **SMTP Settings**.
+2.  Ở mục **Integrations**, click vào ô chọn (thường đang hiện là *cURL* hoặc *Select tech*).
+3.  Chọn **Django** từ danh sách thả xuống.
+4.  Mailtrap sẽ tự động hiện ra các dòng code mẫu. Bạn chỉ cần copy đúng 2 dòng này để dán vào file [settings.py](file:///d:/gis-web/web-gis/bus_management/settings.py):
+    *   `EMAIL_HOST_USER`
+    *   `EMAIL_HOST_PASSWORD`
+
+## Bước 4: Kiểm tra Email gửi đến
+Sau khi bạn đã cấu hình xong trong Django và thực hiện gửi mail (ví dụ: bấm nút "Quên mật khẩu" trên web của bạn):
+1.  Quay lại trang **My Inbox** trên Mailtrap.
+2.  Email bạn vừa gửi sẽ xuất hiện ngay lập tức trong danh sách bên trái.
+3.  Click vào email đó để xem nội dung (HTML, Text, hoặc Raw data).
+4.  Tại đây bạn có thể kiểm tra xem tiêu đề, nội dung và các liên kết trong mail có đúng như mong muốn không.
+
+---
+
+### Lưu ý khi Báo cáo với Thầy:
+*   **An toàn:** Thầy có thể hỏi tại sao không dùng Gmail thật? 
+*   **Trả lời:** Báo với thầy là dùng Mailtrap chuyên nghiệp hơn trong quá trình phát triển (Development), vì nó giúp tránh việc gửi spam mail đến người dùng thật khi đang test và không bị Google chặn do bảo mật kém (Less secure apps).

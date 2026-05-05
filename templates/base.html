@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
     <meta name="description" content="Hệ thống WebGIS quản lý xe buýt thông minh">
     <title>{% block title %}Bus Management WebGIS{% endblock %}</title>
     
@@ -19,12 +19,46 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/main.css?v=3">
     
+    <style>
+        /* Global Loading Spinner */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 99999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #fff;
+        }
+        .spinner-custom {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top: 5px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="spinner-custom"></div>
+        <div class="fw-bold">Đang tải dữ liệu...</div>
+    </div>
+
+    <!-- Sidebar / Navigation -->
     <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'home' %}">
@@ -60,6 +94,13 @@
                         </a>
                     </li>
                     {% endif %}
+                    {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'users' in request.path %}active{% endif %}" href="{% url 'user-management' %}">
+                            <i class="bi bi-people-fill me-1"></i>Tài khoản
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
                 
                 <div class="navbar-stats d-none d-lg-flex">
@@ -91,6 +132,39 @@
                 </div>
             </div>
         </div>
+    </nav>
+
+    <!-- Mobile Bottom Navigation Bar (≤768px only) -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+        <a href="{% url 'home' %}" class="mobile-nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <i class="bi bi-map"></i>
+            <span>Bản đồ</span>
+        </a>
+        <a href="{% url 'routes-list' %}" class="mobile-nav-item {% if request.resolver_match.url_name == 'routes-list' %}active{% endif %}">
+            <i class="bi bi-signpost-2"></i>
+            <span>Tuyến xe</span>
+        </a>
+        <a href="{% url 'stops-list' %}" class="mobile-nav-item {% if request.resolver_match.url_name == 'stops-list' %}active{% endif %}">
+            <i class="bi bi-geo-alt"></i>
+            <span>Trạm dừng</span>
+        </a>
+        {% if user.is_staff %}
+        <a href="{% url 'management' %}" class="mobile-nav-item {% if request.path == '/management/' %}active{% endif %}">
+            <i class="bi bi-gear"></i>
+            <span>Quản lý</span>
+        </a>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <a href="{% url 'profile' %}" class="mobile-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+            <i class="bi bi-person-circle"></i>
+            <span>Tài khoản</span>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="mobile-nav-item">
+            <i class="bi bi-box-arrow-in-right"></i>
+            <span>Đăng nhập</span>
+        </a>
+        {% endif %}
     </nav>
 
     <!-- Main Content -->

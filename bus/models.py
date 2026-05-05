@@ -246,6 +246,25 @@ class RouteStop(models.Model):
     def __str__(self):
         return f"{self.route.route_number} - {self.stop.name} (#{self.order})"
 
+# ─── Review ────────────────────────────────────────────────────────────────
+class Review(models.Model):
+    """Đánh giá và nhận xét"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Người dùng')
+    route = models.ForeignKey(BusRoute, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Tuyến xe', related_name='reviews')
+    stop = models.ForeignKey(BusStop, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Trạm dừng', related_name='reviews')
+    rating = models.PositiveIntegerField(default=5, verbose_name='Điểm đánh giá')
+    comment = models.TextField(verbose_name='Nhận xét')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Đánh giá'
+        verbose_name_plural = 'Đánh giá'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.rating} sao"
+
+
 # ─── User Profile ────────────────────────────────────────────────────────────
 
 class UserProfile(models.Model):

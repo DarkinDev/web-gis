@@ -14,27 +14,29 @@
     <div class="container py-4">
         <!-- Search and Filter -->
         <div class="filter-bar mb-4">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control" id="route-search"
-                            placeholder="Tìm theo số hiệu hoặc tên tuyến...">
+            <form method="GET" action="{% url 'routes-list' %}">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" name="q" value="{{ q }}"
+                                placeholder="Tìm theo số hiệu hoặc tên tuyến...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="status" onchange="this.form.submit()">
+                            <option value="all" {% if status == 'all' %}selected{% endif %}>Tất cả trạng thái</option>
+                            <option value="active" {% if status == 'active' %}selected{% endif %}>Đang hoạt động</option>
+                            <option value="inactive" {% if status == 'inactive' %}selected{% endif %}>Tạm ngưng</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-filter me-1"></i>Áp dụng bộ lọc
+                        </button>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <select class="form-select" id="status-filter">
-                        <option value="all">Tất cả trạng thái</option>
-                        <option value="active">Đang hoạt động</option>
-                        <option value="inactive">Tạm ngưng</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <a href="{% url 'home' %}" class="btn btn-primary w-100">
-                        <i class="bi bi-map me-1"></i>Xem trên bản đồ
-                    </a>
-                </div>
-            </div>
+            </form>
         </div>
 
         <!-- Routes Grid -->
@@ -97,7 +99,7 @@
         <nav class="mt-5 d-flex justify-content-center">
             <ul class="pagination pagination-lg shadow-sm">
                 {% if routes.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ routes.previous_page_number }}"><i class="bi bi-chevron-left"></i></a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ routes.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status %}&status={{ status }}{% endif %}"><i class="bi bi-chevron-left"></i></a></li>
                 {% else %}
                 <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
                 {% endif %}
@@ -106,12 +108,12 @@
                     {% if routes.number == i %}
                     <li class="page-item active"><span class="page-link">{{ i }}</span></li>
                     {% elif i > routes.number|add:'-3' and i < routes.number|add:'3' %}
-                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}{% if q %}&q={{ q }}{% endif %}{% if status %}&status={{ status }}{% endif %}">{{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
 
                 {% if routes.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ routes.next_page_number }}"><i class="bi bi-chevron-right"></i></a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ routes.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status %}&status={{ status }}{% endif %}"><i class="bi bi-chevron-right"></i></a></li>
                 {% else %}
                 <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-right"></i></span></li>
                 {% endif %}
@@ -123,23 +125,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('route-search');
-        const routeItems = document.querySelectorAll('.route-item');
-
-        searchInput.addEventListener('input', function () {
-            const query = this.value.toLowerCase();
-            routeItems.forEach(item => {
-                const number = item.dataset.routeNumber.toLowerCase();
-                const name = item.dataset.name.toLowerCase();
-                if (number.includes(query) || name.includes(query)) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
-    });
-</script>
+<!-- Logic tìm kiếm đã được chuyển sang server-side để hỗ trợ tìm kiếm trên toàn bộ các trang -->
 {% endblock %}

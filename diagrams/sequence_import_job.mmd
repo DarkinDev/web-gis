@@ -1,0 +1,17 @@
+%% Sequence - Import job processing
+
+sequenceDiagram
+  participant Admin
+  participant Backend
+  participant Queue
+  participant Worker
+  participant DB
+
+  Admin->>Backend: Upload import file
+  Backend->>Queue: Enqueue import job
+  Worker->>Queue: Fetch job
+  Worker->>Backend: Request file (or read from storage)
+  Worker->>DB: Upsert routes/stops
+  DB-->>Worker: OK
+  Worker->>Backend: Post import summary
+  Backend-->>Admin: Notify import result

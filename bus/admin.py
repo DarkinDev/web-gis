@@ -7,7 +7,7 @@ from django.contrib.gis.admin import GISModelAdmin
 from django.utils.html import format_html
 from django.utils import timezone
 from leaflet.admin import LeafletGeoAdmin
-from .models import BusRoute, BusStop, RouteStop
+from .models import BusRoute, BusStop, RouteStop, UserProfile, Review
 from . import notifications
 
 
@@ -256,6 +256,17 @@ class BusStopAdmin(LeafletGeoAdmin):
 
 
 # ─── RouteStop Admin ──────────────────────────────────────────────────────────
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone_number')
+    search_fields = ('user__username', 'phone_number')
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'route', 'stop', 'rating', 'created_at')
+    list_filter = ('rating', 'created_at')
+    search_fields = ('user__username', 'comment')
 
 @admin.register(RouteStop)
 class RouteStopAdmin(admin.ModelAdmin):

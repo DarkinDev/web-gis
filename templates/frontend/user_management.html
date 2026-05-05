@@ -1,0 +1,476 @@
+{% extends 'base.html' %}
+
+{% block title %}Quản lý Người dùng - BusGIS{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header" style="background: linear-gradient(135deg, #6c5ce7cc, #6c5ce7);">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1><i class="bi bi-people-fill me-2"></i>Quản lý Tài khoản</h1>
+                    <p class="mb-0">Thống kê và quản lý người dùng hệ thống</p>
+                </div>
+                <a href="{% url 'management' %}" class="btn btn-outline-light">
+                    <i class="bi bi-arrow-left me-1"></i>Quay lại Quản lý
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+
+        <!-- Thống kê -->
+        <div class="row g-4 mb-4">
+            <div class="col-sm-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #3b82f6 !important;">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:56px;height:56px;background:#dbeafe;flex-shrink:0">
+                            <i class="bi bi-people-fill fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Tổng người dùng</div>
+                            <div class="fs-2 fw-bold text-dark">{{ total_users }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #22c55e !important;">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:56px;height:56px;background:#dcfce7;flex-shrink:0">
+                            <i class="bi bi-person-check-fill fs-4 text-success"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Đang hoạt động</div>
+                            <div class="fs-2 fw-bold text-dark">{{ active_users }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #a855f7 !important;">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:56px;height:56px;background:#f3e8ff;flex-shrink:0">
+                            <i class="bi bi-person-badge-fill fs-4" style="color:#a855f7"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Nhân viên (Staff)</div>
+                            <div class="fs-2 fw-bold text-dark">{{ staff_users }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100" style="border-left: 4px solid #f97316 !important;">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:56px;height:56px;background:#ffedd5;flex-shrink:0">
+                            <i class="bi bi-person-plus-fill fs-4 text-warning"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Mới trong 7 ngày</div>
+                            <div class="fs-2 fw-bold text-dark">{{ new_users_last_week }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Biểu đồ phân quyền -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 pt-4 pb-0">
+                        <h5 class="fw-semibold mb-0"><i class="bi bi-pie-chart-fill me-2 text-primary"></i>Phân bố vai trò</h5>
+                    </div>
+                    <div class="card-body">
+                        {% with admin_users=users|length %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small">👤 Người dùng (User)</span>
+                                <span class="small fw-bold">{{ total_users|add:"-"|add:staff_users }} người</span>
+                            </div>
+                            <div class="progress" style="height:8px;">
+                                <div class="progress-bar bg-primary" style="width: {% if total_users > 0 %}{% widthratio total_users|add:"-0" total_users 100 %}{% else %}0{% endif %}%"></div>
+                            </div>
+                        </div>
+                        {% endwith %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small">🛡️ Nhân viên (Staff)</span>
+                                <span class="small fw-bold">{{ staff_users }} người</span>
+                            </div>
+                            <div class="progress" style="height:8px;">
+                                <div class="progress-bar bg-success" style="width: {% if total_users > 0 %}{% widthratio staff_users total_users 100 %}{% else %}0{% endif %}%"></div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="mt-3">
+                            <p class="text-muted small mb-1">📊 Tỉ lệ hoạt động</p>
+                            <div class="progress mb-1" style="height:12px;">
+                                <div class="progress-bar bg-success" role="progressbar"
+                                     style="width: {% if total_users > 0 %}{% widthratio active_users total_users 100 %}{% else %}0{% endif %}%">
+                                </div>
+                            </div>
+                            <small class="text-muted">{{ active_users }}/{{ total_users }} tài khoản đang hoạt động</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Đăng ký gần đây -->
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 pt-4 pb-0">
+                        <h5 class="fw-semibold mb-0"><i class="bi bi-clock-history me-2 text-success"></i>Tài khoản mới nhất</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% for u in users|slice:":5" %}
+                            <div class="list-group-item border-0 px-4 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold"
+                                         style="width:38px;height:38px;font-size:0.9rem;flex-shrink:0">
+                                        {{ u.username|first|upper }}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-medium">{{ u.username }}</div>
+                                        <div class="text-muted small">{{ u.email|default:"Chưa có email" }}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        {% if u.is_superuser %}
+                                            <span class="badge" style="background:#fee2e2;color:#dc2626;">Admin</span>
+                                        {% elif u.is_staff %}
+                                            <span class="badge" style="background:#f3e8ff;color:#7c3aed;">Staff</span>
+                                        {% else %}
+                                            <span class="badge" style="background:#dbeafe;color:#1d4ed8;">User</span>
+                                        {% endif %}
+                                        <div class="text-muted" style="font-size:0.7rem;">{{ u.date_joined|date:"d/m/Y" }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng danh sách đầy đủ -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-4 pb-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-semibold mb-0"><i class="bi bi-table me-2 text-primary"></i>Danh sách tất cả tài khoản <span class="badge bg-primary rounded-pill ms-2" style="font-size:0.8rem;">{{ total_users }}</span></h5>
+                    <a href="{% url 'export-users-excel' %}" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-file-earmark-excel me-1"></i> Xuất Excel
+                    </a>
+                </div>
+                
+                <form method="get" class="d-flex gap-2" style="max-width: 400px;">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="q" class="form-control border-start-0 ps-0" placeholder="Tìm theo tên, email..." value="{{ search_query }}">
+                        {% if search_query %}
+                        <a href="{% url 'user-management' %}" class="btn border border-start-0 text-muted"><i class="bi bi-x-lg"></i></a>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tìm</button>
+                </form>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="px-4">#</th>
+                                <th>Tên đăng nhập</th>
+                                <th>Họ tên</th>
+                                <th>Email</th>
+                                <th>Vai trò</th>
+                                <th>Ngày tham gia</th>
+                                <th>Trạng thái</th>
+                                <th class="text-end px-4">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in users %}
+                            <tr>
+                                <td class="px-4 text-muted">{{ users.start_index|add:forloop.counter0 }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                                             style="width:30px;height:30px;font-size:0.75rem;flex-shrink:0">
+                                            {{ u.username|first|upper }}
+                                        </div>
+                                        <span class="fw-medium">{{ u.username }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-muted">{{ u.first_name }} {{ u.last_name }}</td>
+                                <td class="text-muted">{{ u.email|default:"-" }}</td>
+                                <td>
+                                    {% if u.is_superuser %}
+                                        <span class="badge rounded-pill" style="background:#fee2e2;color:#dc2626;"><i class="bi bi-shield-fill me-1"></i>Admin</span>
+                                    {% elif u.is_staff %}
+                                        <span class="badge rounded-pill" style="background:#f3e8ff;color:#7c3aed;"><i class="bi bi-person-badge me-1"></i>Staff</span>
+                                    {% else %}
+                                        <span class="badge rounded-pill" style="background:#dbeafe;color:#1d4ed8;"><i class="bi bi-person me-1"></i>User</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted small">{{ u.date_joined|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    {% if u.is_active %}
+                                        <span class="badge bg-success-subtle text-success rounded-pill" id="status-badge-{{ u.id }}"><i class="bi bi-circle-fill me-1" style="font-size:0.5rem"></i>Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary-subtle text-secondary rounded-pill" id="status-badge-{{ u.id }}"><i class="bi bi-circle-fill me-1" style="font-size:0.5rem"></i>Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end px-4">
+                                    {% if not u.is_superuser %}
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                            <li>
+                                                <button class="dropdown-item d-flex align-items-center gap-2"
+                                                    data-action="email" data-user-id="{{ u.id }}" data-username="{{ u.username }}" data-email="{{ u.email|default:'' }}">
+                                                    <i class="bi bi-envelope text-primary"></i> Đổi Email
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item d-flex align-items-center gap-2"
+                                                    data-action="reset-pw" data-user-id="{{ u.id }}" data-username="{{ u.username }}">
+                                                    <i class="bi bi-key text-info"></i> Reset Mật khẩu
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item d-flex align-items-center gap-2"
+                                                    data-action="toggle-staff" data-user-id="{{ u.id }}" data-username="{{ u.username }}">
+                                                    <i class="bi bi-person-badge" style="color:#7c3aed;"></i> Cấp/Gỡ quyền Staff
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item d-flex align-items-center gap-2"
+                                                    data-action="toggle-status" data-user-id="{{ u.id }}" data-username="{{ u.username }}">
+                                                    <i class="bi bi-lock text-warning"></i> Khóa/Mở khóa
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <button class="dropdown-item text-danger d-flex align-items-center gap-2"
+                                                    data-action="delete" data-user-id="{{ u.id }}" data-username="{{ u.username }}">
+                                                    <i class="bi bi-trash"></i> Xóa vĩnh viễn
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-muted small">Protected</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="bi bi-people fs-1 mb-2 d-block"></i>
+                                    Chưa có người dùng nào
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Phân trang -->
+                {% if users.has_other_pages %}
+                <div class="d-flex justify-content-between align-items-center px-4 py-3 border-top bg-light">
+                    <div class="text-muted small">
+                        Hiển thị từ {{ users.start_index }} đến {{ users.end_index }} trong tổng số {{ paginator.count }}
+                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-sm mb-0">
+                            {% if users.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}"><i class="bi bi-chevron-double-left"></i></a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ users.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}"><i class="bi bi-chevron-left"></i></a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-double-left"></i></span></li>
+                                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
+                            {% endif %}
+                            
+                            <li class="page-item active"><span class="page-link">{{ users.number }}</span></li>
+                            
+                            {% if users.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ users.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}"><i class="bi bi-chevron-right"></i></a></li>
+                                <li class="page-item"><a class="page-link" href="?page={{ users.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}"><i class="bi bi-chevron-double-right"></i></a></li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-right"></i></span></li>
+                                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-double-right"></i></span></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Modal Đổi Email -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-semibold"><i class="bi bi-envelope-fill text-primary me-2"></i>Đổi Email</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">Tài khoản: <strong id="emailModalUsername"></strong></p>
+                <label class="form-label fw-medium">Email mới</label>
+                <input type="email" id="newEmailInput" class="form-control" placeholder="Nhập email mới...">
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="emailModalConfirmBtn">
+                    <i class="bi bi-check-lg me-1"></i>Xác nhận
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Xác nhận -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-semibold" id="confirmModalTitle">Xác nhận</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage" class="mb-0"></p>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-sm" id="confirmModalOkBtn">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function getCsrfToken() {
+    const cookieValue = document.cookie.split(';')
+        .map(c => c.trim())
+        .find(c => c.startsWith('csrftoken='));
+    return cookieValue ? cookieValue.split('=')[1] : '';
+}
+
+const emailModal = new bootstrap.Modal(document.getElementById('emailModal'));
+const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+
+// Listen on data-action buttons
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    
+    const action   = btn.dataset.action;
+    const userId   = btn.dataset.userId;
+    const username = btn.dataset.username;
+    const email    = btn.dataset.email || '';
+    
+    // Wait for dropdown to fully close before showing modal
+    setTimeout(() => {
+        if (action === 'email') {
+            document.getElementById('emailModalUsername').textContent = username;
+            document.getElementById('newEmailInput').value = email;
+            document.getElementById('emailModalConfirmBtn').onclick = () => submitEmail(userId, username);
+            emailModal.show();
+        } else if (action === 'reset-pw') {
+            showConfirm(
+                'Reset Mật khẩu',
+                `Reset mật khẩu của "${username}" về mặc định <strong>123456</strong>?`,
+                'btn-info',
+                () => doPost(`/mgmt/users/${userId}/reset-password/`, null, 'Reset mật khẩu thành công')
+            );
+        } else if (action === 'toggle-staff') {
+            showConfirm(
+                'Cấp / Gỡ quyền Staff',
+                `Bạn muốn cấp hoặc gỡ quyền Staff của tài khoản "${username}"?`,
+                'btn-warning',
+                () => doPost(`/mgmt/users/${userId}/toggle-staff/`, null, null, true)
+            );
+        } else if (action === 'toggle-status') {
+            showConfirm(
+                'Khóa / Mở khóa tài khoản',
+                `Bạn muốn khóa hoặc mở khóa tài khoản "${username}"?`,
+                'btn-warning',
+                () => doPost(`/mgmt/users/${userId}/toggle-status/`, null, null, true)
+            );
+        } else if (action === 'delete') {
+            showConfirm(
+                'Xóa tài khoản',
+                `<span class="text-danger fw-bold">CẢNH BÁO:</span> Xóa vĩnh viễn tài khoản "${username}"? Không thể hoàn tác!`,
+                'btn-danger',
+                () => doPost(`/mgmt/users/${userId}/delete/`, null, null, true)
+            );
+        }
+    }, 200);
+});
+
+function showConfirm(title, message, btnClass, onOk) {
+    document.getElementById('confirmModalTitle').innerHTML = title;
+    document.getElementById('confirmModalMessage').innerHTML = message;
+    const okBtn = document.getElementById('confirmModalOkBtn');
+    okBtn.className = `btn btn-sm ${btnClass}`;
+    okBtn.onclick = () => { confirmModal.hide(); onOk(); };
+    confirmModal.show();
+}
+
+async function submitEmail(userId, username) {
+    const newEmail = document.getElementById('newEmailInput').value.trim();
+    emailModal.hide();
+    await doPost(`/mgmt/users/${userId}/update-email/`, { email: newEmail }, null, true);
+}
+
+async function doPost(url, body, successMsg, reload) {
+    try {
+        const opts = {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() }
+        };
+        if (body) {
+            opts.headers['Content-Type'] = 'application/json';
+            opts.body = JSON.stringify(body);
+        }
+        const res = await fetch(url, opts);
+        const data = await res.json();
+        if (data.success) {
+            showToast(successMsg || data.message, 'success');
+            if (reload) setTimeout(() => location.reload(), 1000);
+        } else {
+            showToast('Lỗi: ' + data.message, 'danger');
+        }
+    } catch(e) {
+        showToast('Lỗi kết nối: ' + e, 'danger');
+    }
+}
+
+function showToast(message, type = 'info') {
+    document.querySelectorAll('.action-toast').forEach(t => t.remove());
+    const div = document.createElement('div');
+    div.className = `action-toast position-fixed bottom-0 end-0 m-4 alert alert-${type} shadow-lg`;
+    div.style.cssText = 'z-index:9999;min-width:280px;font-size:0.9rem;';
+    div.innerHTML = message;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 3500);
+}
+</script>
+{% endblock %}

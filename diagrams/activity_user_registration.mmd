@@ -1,0 +1,11 @@
+%% Activity - Đăng ký người dùng
+
+flowchart TD
+  Start((Start)) --> FillForm["User fills registration form"]
+  FillForm --> Validate["Validate inputs (email, password)"]
+  Validate -- Fail --> ShowErrors["Return validation errors"]
+  Validate -- OK --> CreateUser["Create User & UserProfile"]
+  CreateUser --> SendConfirm["Send confirmation email"]
+  SendConfirm --> Confirm["User clicks confirm link"]
+  Confirm --> Activated["Activate account"]
+  Activated --> End((End))

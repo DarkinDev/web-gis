@@ -47,7 +47,7 @@ body { background: #f4f6fb; color: #333; }
     width: 16px; height: 16px; border-radius: 50%;
     display: inline-block; border: 1px solid rgba(0,0,0,.1);
 }
-.badge-status-active { background: #d1f5e8; color: #00875a; }
+.badge-status-active { background: #d1f7e3 !important; color: #0f5132 !important; border: 1px solid #198754 !important; font-weight: 600; }
 .badge-status-inactive { background: #ffeaea; color: #c00; }
 .btn-icon { width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; }
 .search-bar { max-width: 280px; }
@@ -61,6 +61,48 @@ body { background: #f4f6fb; color: #333; }
     animation: toastIn .3s ease;
 }
 @keyframes toastIn { from{transform:translateX(110%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+/* Tab styles for route modal */
+.nav-tabs-route { border-bottom: 2px solid #e0e0e0; }
+.nav-tabs-route .nav-link {
+    border: none; color: #6c757d; font-weight: 600; font-size: .88rem;
+    padding: 10px 20px; border-bottom: 2px solid transparent; margin-bottom: -2px;
+}
+.nav-tabs-route .nav-link.active { color: #0066cc; border-bottom-color: #0066cc; }
+.nav-tabs-route .nav-link:hover { color: #004499; }
+
+/* Stop list inside route modal */
+.route-stop-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border: 1px solid #e8e8e8; border-radius: 10px;
+    margin-bottom: 8px; background: #fafbfc;
+    transition: all .2s;
+}
+.route-stop-item:hover { background: #eef3ff; border-color: #b0c8ff; }
+.route-stop-order {
+    width: 30px; height: 30px; background: #0066cc; color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .82rem; flex-shrink: 0;
+}
+.route-stop-info { flex: 1; min-width: 0; }
+.route-stop-info .name { font-weight: 600; font-size: .88rem; }
+.route-stop-info .meta { font-size: .75rem; color: #6c757d; }
+.route-stop-remove { color: #e74c3c; cursor: pointer; flex-shrink: 0; font-size: 1rem; }
+.route-stop-remove:hover { color: #c0392b; }
+
+/* Nominatim search in stop modal */
+.nominatim-results {
+    max-height: 180px; overflow-y: auto;
+    border: 1px solid #ddd; border-radius: 8px;
+    background: white; margin-bottom: 12px;
+}
+.nominatim-results .nom-item {
+    padding: 8px 12px; cursor: pointer;
+    border-bottom: 1px solid #f0f0f0; font-size: .85rem;
+}
+.nominatim-results .nom-item:last-child { border-bottom: none; }
+.nominatim-results .nom-item:hover { background: #f0f7ff; }
+.nominatim-results .nom-item .addr { color: #6c757d; font-size: .75rem; }
 </style>
 {% endblock %}
 
@@ -73,9 +115,16 @@ body { background: #f4f6fb; color: #333; }
                 <h1><i class="bi bi-gear-fill me-2"></i>Quản lý Hệ thống</h1>
                 <p class="mb-0 opacity-75">Thêm, sửa, xóa tuyến xe và trạm dừng</p>
             </div>
-            <a href="{% url 'home' %}" class="btn btn-light btn-sm">
-                <i class="bi bi-map me-1"></i> Xem bản đồ
-            </a>
+            <div class="d-flex gap-2">
+                {% if user.is_superuser %}
+                <a href="{% url 'user-management' %}" class="btn btn-warning btn-sm fw-bold">
+                    <i class="bi bi-people-fill me-1"></i> Quản lý Tài khoản
+                </a>
+                {% endif %}
+                <a href="{% url 'home' %}" class="btn btn-light btn-sm">
+                    <i class="bi bi-map me-1"></i> Xem bản đồ
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -101,8 +150,14 @@ body { background: #f4f6fb; color: #333; }
     <div class="section-card">
         <div class="section-header">
             <h5><i class="bi bi-signpost-split me-2 text-primary"></i>Tuyến Xe Buýt</h5>
-            <div class="d-flex gap-2 align-items-center">
+            <div class="d-flex gap-2 align-items-center flex-wrap">
                 <input type="text" class="form-control form-control-sm search-bar" id="routeSearch" placeholder="Tìm tuyến...">
+                <button class="btn btn-outline-success btn-sm" onclick="exportRoutesExcel()" title="Xuất Excel">
+                    <i class="bi bi-file-earmark-excel me-1"></i>Xuất Excel
+                </button>
+                <button class="btn btn-outline-warning btn-sm" onclick="openImportModal('routes')" title="Nhập Excel">
+                    <i class="bi bi-upload me-1"></i>Nhập Excel
+                </button>
                 <button class="btn btn-primary btn-sm" onclick="openRouteModal()">
                     <i class="bi bi-plus-lg me-1"></i>Thêm tuyến
                 </button>
@@ -123,10 +178,10 @@ body { background: #f4f6fb; color: #333; }
                         <td>{{ route.name }}</td>
                         <td class="text-muted small">{{ route.start_point }} → {{ route.end_point }}</td>
                         <td class="small">{{ route.operating_hours }}</td>
-                        <td><span class="color-dot" style="background:{{ route.color }}" title="{{ route.color }}"></span></td>
+                        <td><span class="color-dot" style="background:{{ route.color|default:'#3388ff' }}" title="{{ route.color }}"></span></td>
                         <td>
                             {% if route.is_deleted %}
-                                <span class="badge rounded-pill px-2" style="background:#e74c3c;color:white;">Đã xóa</span>
+                                <span class="badge bg-danger rounded-pill px-2 text-white">Đã xóa</span>
                             {% elif route.is_active %}
                                 <span class="badge badge-status-active rounded-pill px-2">Hoạt động</span>
                             {% else %}
@@ -153,7 +208,7 @@ body { background: #f4f6fb; color: #333; }
             <nav>
                 <ul class="pagination pagination-sm mb-0">
                     {% if routes.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?route_page={{ routes.previous_page_number }}&stop_page={{ stops.number }}">Trước</a></li>
+                    <li class="page-item"><a class="page-link" href="?route_page={{ routes.previous_page_number }}">Trước</a></li>
                     {% else %}
                     <li class="page-item disabled"><span class="page-link">Trước</span></li>
                     {% endif %}
@@ -162,12 +217,12 @@ body { background: #f4f6fb; color: #333; }
                         {% if routes.number == i %}
                         <li class="page-item active"><span class="page-link">{{ i }}</span></li>
                         {% elif i > routes.number|add:'-3' and i < routes.number|add:'3' %}
-                        <li class="page-item"><a class="page-link" href="?route_page={{ i }}&stop_page={{ stops.number }}">{{ i }}</a></li>
+                        <li class="page-item"><a class="page-link" href="?route_page={{ i }}">{{ i }}</a></li>
                         {% endif %}
                     {% endfor %}
 
                     {% if routes.has_next %}
-                    <li class="page-item"><a class="page-link" href="?route_page={{ routes.next_page_number }}&stop_page={{ stops.number }}">Tiếp</a></li>
+                    <li class="page-item"><a class="page-link" href="?route_page={{ routes.next_page_number }}">Tiếp</a></li>
                     {% else %}
                     <li class="page-item disabled"><span class="page-link">Tiếp</span></li>
                     {% endif %}
@@ -181,14 +236,20 @@ body { background: #f4f6fb; color: #333; }
     <div class="section-card">
         <div class="section-header">
             <h5><i class="bi bi-geo-alt-fill me-2 text-success"></i>Trạm Dừng</h5>
-            <div class="d-flex gap-2 align-items-center">
+            <div class="d-flex gap-2 align-items-center flex-wrap">
                 <input type="text" class="form-control form-control-sm search-bar" id="stopSearch" placeholder="Tìm trạm...">
+                <button class="btn btn-outline-success btn-sm" onclick="exportStopsExcel()" title="Xuất Excel">
+                    <i class="bi bi-file-earmark-excel me-1"></i>Xuất Excel
+                </button>
+                <button class="btn btn-outline-warning btn-sm" onclick="openImportModal('stops')" title="Nhập Excel">
+                    <i class="bi bi-upload me-1"></i>Nhập Excel
+                </button>
                 <button class="btn btn-success btn-sm" onclick="openStopModal()">
                     <i class="bi bi-plus-lg me-1"></i>Thêm trạm
                 </button>
             </div>
         </div>
-        <div class="table-responsive" style="max-height:500px;overflow-y:auto;">
+        <div class="table-responsive" style="max-height:700px;overflow-y:auto;">
             <table class="table table-hover mb-0" id="stopTable">
                 <thead style="position:sticky;top:0;z-index:1;">
                     <tr>
@@ -226,41 +287,17 @@ body { background: #f4f6fb; color: #333; }
                 </tbody>
             </table>
         </div>
-        <!-- Pagination Trạm dừng -->
-        {% if stops.has_other_pages %}
-        <div class="px-3 py-2 border-top d-flex justify-content-between align-items-center bg-light">
-            <span class="small text-muted">Trang {{ stops.number }} / {{ stops.paginator.num_pages }}</span>
-            <nav>
-                <ul class="pagination pagination-sm mb-0">
-                    {% if stops.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?stop_page={{ stops.previous_page_number }}&route_page={{ routes.number }}">Trước</a></li>
-                    {% else %}
-                    <li class="page-item disabled"><span class="page-link">Trước</span></li>
-                    {% endif %}
-                    
-                    {% for i in stops.paginator.page_range %}
-                        {% if stops.number == i %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                        {% elif i > stops.number|add:'-3' and i < stops.number|add:'3' %}
-                        <li class="page-item"><a class="page-link" href="?stop_page={{ i }}&route_page={{ routes.number }}">{{ i }}</a></li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if stops.has_next %}
-                    <li class="page-item"><a class="page-link" href="?stop_page={{ stops.next_page_number }}&route_page={{ routes.number }}">Tiếp</a></li>
-                    {% else %}
-                    <li class="page-item disabled"><span class="page-link">Tiếp</span></li>
-                    {% endif %}
-                </ul>
-            </nav>
+        <div class="px-3 py-1 border-top bg-light text-end">
+            <span class="small text-muted"><i class="bi bi-info-circle me-1"></i>Hiển thị tất cả {{ stops|length }} trạm dừng. Sử dụng thanh cuộn để xem thêm.</span>
         </div>
-        {% endif %}
     </div>
 </div>
 
-<!-- Route Modal -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- Route Modal (with TABS: Thông tin + Trạm dừng) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="routeModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="routeModalTitle">Thêm Tuyến Xe</h5>
@@ -268,49 +305,105 @@ body { background: #f4f6fb; color: #333; }
             </div>
             <div class="modal-body">
                 <input type="hidden" id="routeId">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Số tuyến <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="routeNumber" placeholder="VD: 01">
+
+                <!-- Tabs -->
+                <ul class="nav nav-tabs-route mb-3" id="routeTabs">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-route-info">
+                            <i class="bi bi-info-circle me-1"></i>Thông tin tuyến
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-route-stops" id="tabRouteStopsBtn">
+                            <i class="bi bi-geo-alt me-1"></i>Trạm dừng <span class="badge bg-primary ms-1" id="routeStopCount">0</span>
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- TAB 1: Route Info -->
+                    <div class="tab-pane fade show active" id="tab-route-info">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Số tuyến <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="routeNumber" placeholder="VD: 01">
+                            </div>
+                            <div class="col-md-9">
+                                <label class="form-label">Tên tuyến <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="routeName" placeholder="VD: Bến Thành - Suối Tiên">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Điểm đầu</label>
+                                <input type="text" class="form-control" id="routeStart" placeholder="Tên điểm đầu">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Điểm cuối</label>
+                                <input type="text" class="form-control" id="routeEnd" placeholder="Tên điểm cuối">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Giờ hoạt động</label>
+                                <input type="text" class="form-control" id="routeHours" value="05:00 - 22:00">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Tần suất</label>
+                                <input type="text" class="form-control" id="routeFreq" value="10-15 phút/chuyến">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Giá vé (VNĐ)</label>
+                                <input type="number" class="form-control" id="routePrice" value="7000">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Màu tuyến</label>
+                                <input type="color" class="form-control form-control-color" id="routeColor" value="#3388ff">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Trạng thái</label>
+                                <select class="form-select" id="routeActive">
+                                    <option value="true">Đang hoạt động</option>
+                                    <option value="false">Dừng hoạt động</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Mô tả</label>
+                                <textarea class="form-control" id="routeDesc" rows="2"></textarea>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-9">
-                        <label class="form-label">Tên tuyến <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="routeName" placeholder="VD: Bến Thành - Suối Tiên">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Điểm đầu</label>
-                        <input type="text" class="form-control" id="routeStart" placeholder="Tên điểm đầu">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Điểm cuối</label>
-                        <input type="text" class="form-control" id="routeEnd" placeholder="Tên điểm cuối">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Giờ hoạt động</label>
-                        <input type="text" class="form-control" id="routeHours" value="05:00 - 22:00">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Tần suất</label>
-                        <input type="text" class="form-control" id="routeFreq" value="10-15 phút/chuyến">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Giá vé (VNĐ)</label>
-                        <input type="number" class="form-control" id="routePrice" value="7000">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Màu tuyến</label>
-                        <input type="color" class="form-control form-control-color" id="routeColor" value="#3388ff">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Trạng thái</label>
-                        <select class="form-select" id="routeActive">
-                            <option value="true">Đang hoạt động</option>
-                            <option value="false">Dừng hoạt động</option>
-                        </select>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Mô tả</label>
-                        <textarea class="form-control" id="routeDesc" rows="2"></textarea>
+
+                    <!-- TAB 2: Route Stops Management -->
+                    <div class="tab-pane fade" id="tab-route-stops">
+                        <div class="row g-3">
+                            <!-- Left: Stop list -->
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <label class="form-label mb-0 fw-bold">Danh sách trạm trên tuyến</label>
+                                    <button type="button" class="btn btn-outline-success btn-sm" onclick="exportRouteStopsExcel()" id="btnExportRouteStops" style="display:none;">
+                                        <i class="bi bi-file-earmark-excel me-1"></i>Xuất Excel
+                                    </button>
+                                </div>
+                                <!-- Search to add stop -->
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" id="addStopSearch" placeholder="Tìm trạm để thêm vào tuyến..." autocomplete="off">
+                                </div>
+                                <div id="addStopSuggestions" style="display:none;max-height:160px;overflow-y:auto;border:1px solid #ddd;border-radius:8px;background:white;margin-bottom:12px;"></div>
+
+                                <!-- Assigned stops list -->
+                                <div id="routeStopsList" style="max-height:350px;overflow-y:auto;">
+                                    <div class="text-center text-muted py-4" id="noStopsMsg">
+                                        <i class="bi bi-geo-alt" style="font-size:2rem;opacity:.3"></i>
+                                        <p class="mb-0 mt-2">Chưa có trạm nào</p>
+                                        <p class="small">Tìm và thêm trạm bên trên</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Mini Map showing route line -->
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold mb-2">Bản đồ tuyến</label>
+                                <div id="route-mini-map" style="height:420px;border-radius:12px;border:1px solid #ddd;box-shadow:inset 0 0 10px rgba(0,0,0,.08);"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -324,15 +417,30 @@ body { background: #f4f6fb; color: #333; }
     </div>
 </div>
 
-<!-- Stop Modal -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- Stop Modal (with Nominatim Search + fixed coordinates) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="stopModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header" style="background:linear-gradient(135deg,#00b894,#009874);">
                 <h5 class="modal-title" id="stopModalTitle">Thêm Trạm Dừng</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                <!-- Address Search -->
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-search me-1"></i>Tìm kiếm địa chỉ</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="stopAddrSearch" placeholder="Nhập địa chỉ để tìm toạ độ (VD: Bến Thành, Q.1, HCM)" autocomplete="off">
+                        <button class="btn btn-outline-success" type="button" onclick="searchStopAddress()"><i class="bi bi-search"></i></button>
+                    </div>
+                </div>
+                <div id="stopNominatimResults" class="nominatim-results" style="display:none;"></div>
+
+                <!-- Map for coordinate selection -->
+                <div id="mgmt-map" style="height: 250px; width: 100%; border-radius: 12px; margin-bottom: 20px; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); border: 1px solid #ddd;"></div>
+                
                 <input type="hidden" id="stopId">
                 <div class="row g-3">
                     <div class="col-12">
@@ -356,11 +464,13 @@ body { background: #f4f6fb; color: #333; }
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Vĩ độ (Latitude) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="stopLat" step="0.000001" placeholder="10.8231">
+                        <input type="text" inputmode="decimal" class="form-control" id="stopLat" placeholder="VD: 10.8231 hoặc -33.8688">
+                        <div class="form-text">Giá trị từ -90 đến 90</div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Kinh độ (Longitude) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="stopLng" step="0.000001" placeholder="106.6297">
+                        <input type="text" inputmode="decimal" class="form-control" id="stopLng" placeholder="VD: 106.6297 hoặc -73.9857">
+                        <div class="form-text">Giá trị từ -180 đến 180</div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-check">
@@ -402,13 +512,220 @@ body { background: #f4f6fb; color: #333; }
         </div>
     </div>
 </div>
+
+<!-- Import Excel Modal -->
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,#f39c12,#e67e22);">
+                <h5 class="modal-title text-white" id="importModalTitle">
+                    <i class="bi bi-upload me-2"></i>Nhập dữ liệu từ Excel
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info py-2 mb-3">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <span id="importInstructionsText">Tải file Excel đúng định dạng để nhập dữ liệu hàng loạt.</span>
+                </div>
+                <div id="importColGuide" class="mb-3"></div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Chọn file Excel (.xlsx)</label>
+                    <input type="file" class="form-control" id="importFileInput" accept=".xlsx,.xls">
+                </div>
+                <div id="importResult" style="display:none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-warning text-white" onclick="submitImport()">
+                    <i class="bi bi-upload me-1"></i>Bắt đầu nhập
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
 const routeModal  = new bootstrap.Modal(document.getElementById('routeModal'));
 const stopModal   = new bootstrap.Modal(document.getElementById('stopModal'));
 const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+// ── Excel Export — fetch blob + download ─────────────────────────────────────
+function downloadBlob(blob, filename) {
+    // Universal method: create a temporary anchor to trigger download
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    // Cleanup
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 200);
+    toast('Đã tải file ' + filename, 'success');
+}
+
+async function exportRoutesExcel() {
+    toast('Đang tạo file Excel tuyến xe...', 'success');
+    try {
+        const res = await fetch('/mgmt/export/routes/tuyen_xe.xlsx', { credentials: 'same-origin' });
+        if (!res.ok) throw new Error('Lỗi tải dữ liệu (HTTP ' + res.status + ')');
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('text/html')) throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+        const blob = await res.blob();
+        downloadBlob(blob, 'tuyen_xe.xlsx');
+    } catch(e) { toast('Lỗi: ' + e.message, 'error'); }
+}
+
+async function exportStopsExcel() {
+    toast('Đang tạo file Excel trạm dừng...', 'success');
+    try {
+        const res = await fetch('/mgmt/export/stops/tram_dung.xlsx', { credentials: 'same-origin' });
+        if (!res.ok) throw new Error('Lỗi tải dữ liệu (HTTP ' + res.status + ')');
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('text/html')) throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+        const blob = await res.blob();
+        downloadBlob(blob, 'tram_dung.xlsx');
+    } catch(e) { toast('Lỗi: ' + e.message, 'error'); }
+}
+
+// ── Management Map (Stop Modal) ──────────────────────────────────────────────
+let mgmtMap;
+let mgmtMarker;
+
+function initMgmtMap() {
+    if (mgmtMap) return;
+    mgmtMap = L.map('mgmt-map').setView([10.8231, 106.6297], 13);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(mgmtMap);
+
+    mgmtMarker = L.marker([10.8231, 106.6297], { draggable: true }).addTo(mgmtMap);
+
+    mgmtMap.on('click', function(e) {
+        updateStopCoords(e.latlng.lat, e.latlng.lng);
+    });
+
+    mgmtMarker.on('dragend', function(e) {
+        const pos = mgmtMarker.getLatLng();
+        updateStopCoords(pos.lat, pos.lng);
+    });
+}
+
+function updateStopCoords(lat, lng) {
+    document.getElementById('stopLat').value = parseFloat(lat).toFixed(6);
+    document.getElementById('stopLng').value = parseFloat(lng).toFixed(6);
+    mgmtMarker.setLatLng([lat, lng]);
+}
+
+document.getElementById('stopModal').addEventListener('shown.bs.modal', function() {
+    initMgmtMap();
+    mgmtMap.invalidateSize();
+});
+
+// ── Route Mini Map ───────────────────────────────────────────────────────────
+let routeMiniMap;
+let routeMiniLine;
+let routeMiniMarkers = [];
+
+function initRouteMiniMap() {
+    if (routeMiniMap) return;
+    routeMiniMap = L.map('route-mini-map').setView([10.8231, 106.6297], 13);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(routeMiniMap);
+}
+
+function refreshRouteMiniMap(stopsData, routeColor) {
+    if (!routeMiniMap) return;
+    // Clear previous
+    if (routeMiniLine) { routeMiniMap.removeLayer(routeMiniLine); routeMiniLine = null; }
+    routeMiniMarkers.forEach(m => routeMiniMap.removeLayer(m));
+    routeMiniMarkers = [];
+
+    if (!stopsData || stopsData.length === 0) {
+        routeMiniMap.setView([10.8231, 106.6297], 13);
+        return;
+    }
+
+    const latlngs = stopsData.map(s => [s.latitude, s.longitude]);
+    const color = routeColor || '#3388ff';
+
+    // Draw route polyline
+    routeMiniLine = L.polyline(latlngs, { color, weight: 5, opacity: 0.9 }).addTo(routeMiniMap);
+
+    // Stop markers
+    stopsData.forEach((s, idx) => {
+        const isTerminal = idx === 0 || idx === stopsData.length - 1;
+        const m = L.circleMarker([s.latitude, s.longitude], {
+            radius: isTerminal ? 10 : 6,
+            fillColor: isTerminal ? (idx === 0 ? '#27ae60' : '#e74c3c') : color,
+            color: '#fff',
+            weight: 2,
+            fillOpacity: 1
+        }).bindPopup(`<b>${s.order}. ${s.name}</b>`).addTo(routeMiniMap);
+        routeMiniMarkers.push(m);
+    });
+
+    routeMiniMap.fitBounds(latlngs, { padding: [30, 30] });
+}
+
+document.getElementById('tabRouteStopsBtn').addEventListener('shown.bs.tab', function() {
+    initRouteMiniMap();
+    setTimeout(() => routeMiniMap.invalidateSize(), 100);
+});
+
+// ── Nominatim Address Search (Stop Modal) ────────────────────────────────────
+let nomSearchTimer;
+async function searchStopAddress() {
+    const q = document.getElementById('stopAddrSearch').value.trim();
+    if (q.length < 2) { toast('Nhập ít nhất 2 ký tự', 'warning'); return; }
+
+    const container = document.getElementById('stopNominatimResults');
+    container.innerHTML = '<div class="p-2 text-center text-muted small"><i class="bi bi-hourglass-split me-1"></i>Đang tìm...</div>';
+    container.style.display = 'block';
+
+    try {
+        const res  = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&countrycodes=vn&format=json&limit=5&addressdetails=1`, {
+            headers: { 'Accept-Language': 'vi' }
+        });
+        const data = await res.json();
+
+        if (data.length === 0) {
+            container.innerHTML = '<div class="p-2 text-center text-muted small">Không tìm thấy</div>';
+            return;
+        }
+
+        container.innerHTML = data.map(item => `
+            <div class="nom-item" onclick="selectNomResult(${item.lat}, ${item.lon}, '${(item.display_name || '').replace(/'/g, "\\'")}')">
+                <i class="bi bi-map-pin me-1 text-success"></i>
+                <strong>${(item.display_name || '').split(',')[0]}</strong>
+                <div class="addr">${item.display_name}</div>
+                <div class="small text-primary mt-1">Lng: ${parseFloat(item.lon).toFixed(6)} | Lat: ${parseFloat(item.lat).toFixed(6)}</div>
+            </div>`).join('');
+    } catch(e) {
+        container.innerHTML = '<div class="p-2 text-center text-danger small">Lỗi kết nối</div>';
+    }
+}
+
+function selectNomResult(lat, lon, displayName) {
+    updateStopCoords(lat, lon);
+    document.getElementById('stopAddr').value = displayName;
+    if (!document.getElementById('stopName').value) {
+        document.getElementById('stopName').value = displayName.split(',')[0];
+    }
+    mgmtMap.setView([lat, lon], 16);
+    document.getElementById('stopNominatimResults').style.display = 'none';
+    document.getElementById('stopAddrSearch').value = '';
+    toast('Đã cập nhật toạ độ từ địa chỉ', 'success');
+}
+
+document.getElementById('stopAddrSearch').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); searchStopAddress(); }
+});
 
 // ── Search Filters ──────────────────────────────────────────────────────────
 document.getElementById('routeSearch').addEventListener('input', function() {
@@ -451,6 +768,23 @@ function openRouteModal(id=null) {
     document.getElementById('routeActive').value = 'true';
     document.getElementById('routeDesc').value = '';
     document.getElementById('routeModalTitle').textContent = 'Thêm Tuyến Xe';
+    document.getElementById('routeStopCount').textContent = '0';
+
+    // Reset stops tab
+    document.getElementById('routeStopsList').innerHTML = document.getElementById('noStopsMsg') ?
+        `<div class="text-center text-muted py-4" id="noStopsMsg"><i class="bi bi-geo-alt" style="font-size:2rem;opacity:.3"></i><p class="mb-0 mt-2">Chưa có trạm nào</p><p class="small">Lưu tuyến trước, sau đó sửa tuyến để thêm trạm</p></div>` :
+        '';
+
+    // Hide stops tab for new routes
+    document.getElementById('tabRouteStopsBtn').classList.add('disabled');
+    document.getElementById('tabRouteStopsBtn').style.opacity = '0.5';
+    document.getElementById('tabRouteStopsBtn').style.pointerEvents = 'none';
+    document.getElementById('btnExportRouteStops').style.display = 'none';
+
+    // Activate first tab
+    const firstTab = document.querySelector('#routeTabs .nav-link:first-child');
+    bootstrap.Tab.getOrCreateInstance(firstTab).show();
+
     routeModal.show();
 }
 
@@ -469,8 +803,144 @@ async function editRoute(id) {
     document.getElementById('routeActive').value      = String(data.is_active);
     document.getElementById('routeDesc').value        = data.description;
     document.getElementById('routeModalTitle').textContent = `Sửa Tuyến ${data.route_number}`;
+
+    // Enable stops tab for existing routes
+    document.getElementById('tabRouteStopsBtn').classList.remove('disabled');
+    document.getElementById('tabRouteStopsBtn').style.opacity = '1';
+    document.getElementById('tabRouteStopsBtn').style.pointerEvents = 'auto';
+    document.getElementById('btnExportRouteStops').style.display = 'inline-block';
+
     routeModal.show();
+
+    // Load route stops
+    loadRouteStopsForModal(data.id, data.color);
 }
+
+async function loadRouteStopsForModal(routeId, routeColor) {
+    try {
+        const res  = await fetch(`/mgmt/routes/${routeId}/stops/`);
+        const data = await res.json();
+        const stops = data.stops || [];
+        document.getElementById('routeStopCount').textContent = stops.length;
+        renderRouteStopsList(stops, routeId);
+        // Update mini map when stops tab shown
+        if (routeMiniMap) {
+            refreshRouteMiniMap(stops, routeColor);
+        }
+        // Store for lazy map update
+        window._currentRouteStops = stops;
+        window._currentRouteColor = routeColor;
+        window._currentRouteId    = routeId;
+    } catch(e) {
+        console.error('Error loading route stops:', e);
+    }
+}
+
+async function exportRouteStopsExcel() {
+    if (!window._currentRouteId) return;
+    toast('Đang tạo file Excel trạm dừng...', 'success');
+    try {
+        const res = await fetch(`/mgmt/export/routes/${window._currentRouteId}/stops.xlsx`, { credentials: 'same-origin' });
+        if (!res.ok) throw new Error('Lỗi tải dữ liệu (HTTP ' + res.status + ')');
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('text/html')) throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+        const blob = await res.blob();
+        downloadBlob(blob, `tram_dung_tuyen_${document.getElementById('routeNumber').value}.xlsx`);
+    } catch(e) { toast('Lỗi: ' + e.message, 'error'); }
+}
+
+function renderRouteStopsList(stops, routeId) {
+    const container = document.getElementById('routeStopsList');
+    if (stops.length === 0) {
+        container.innerHTML = `<div class="text-center text-muted py-4"><i class="bi bi-geo-alt" style="font-size:2rem;opacity:.3"></i><p class="mb-0 mt-2">Chưa có trạm nào</p><p class="small">Tìm và thêm trạm bên trên</p></div>`;
+        return;
+    }
+    container.innerHTML = stops.map(s => `
+        <div class="route-stop-item" data-rs-id="${s.route_stop_id}">
+            <div class="route-stop-order">${s.order}</div>
+            <div class="route-stop-info">
+                <div class="name">${s.name}</div>
+                <div class="meta">${s.address || ''} <span class="text-primary">Lng: ${parseFloat(s.longitude).toFixed(4)} | Lat: ${parseFloat(s.latitude).toFixed(4)}</span></div>
+            </div>
+            <div class="route-stop-remove" title="Xóa khỏi tuyến" onclick="removeRouteStop(${routeId}, ${s.route_stop_id}, '${(s.name || '').replace(/'/g, "\\'")}')">
+                <i class="bi bi-x-circle-fill"></i>
+            </div>
+        </div>`).join('');
+}
+
+// ── Add Stop to Route ────────────────────────────────────────────────────────
+let addStopTimer;
+document.getElementById('addStopSearch').addEventListener('input', function() {
+    clearTimeout(addStopTimer);
+    const q   = this.value.trim();
+    const box = document.getElementById('addStopSuggestions');
+    if (q.length < 2) { box.style.display = 'none'; return; }
+    addStopTimer = setTimeout(async () => {
+        try {
+            const res  = await fetch(`/api/stops/?search=${encodeURIComponent(q)}`);
+            const data = await res.json();
+            const items = Array.isArray(data) ? data : (data.results || []);
+            if (items.length > 0) {
+                box.innerHTML = items.slice(0, 8).map(s => `
+                    <div class="nom-item" onclick="addStopToRoute(${s.id}, '${(s.name || '').replace(/'/g, "\\'")}')">
+                        <i class="bi bi-geo-alt-fill text-primary me-1"></i>
+                        <strong>${s.name}</strong>
+                        <span class="text-muted ms-1 small">${s.address || ''}</span>
+                    </div>`).join('');
+                box.style.display = 'block';
+            } else {
+                box.innerHTML = '<div class="p-2 text-center text-muted small">Không tìm thấy trạm</div>';
+                box.style.display = 'block';
+            }
+        } catch(e) { console.error(e); }
+    }, 300);
+});
+
+async function addStopToRoute(stopId, stopName) {
+    const routeId = document.getElementById('routeId').value;
+    if (!routeId) { toast('Vui lòng lưu tuyến trước khi thêm trạm', 'warning'); return; }
+    try {
+        const res = await fetch(`/mgmt/routes/${routeId}/stops/add/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ stop_id: stopId })
+        });
+        const data = await res.json();
+        if (data.success) {
+            toast(data.message);
+            document.getElementById('addStopSearch').value = '';
+            document.getElementById('addStopSuggestions').style.display = 'none';
+            loadRouteStopsForModal(routeId, window._currentRouteColor || '#3388ff');
+        } else {
+            toast(data.error || 'Lỗi', 'error');
+        }
+    } catch(e) { toast('Lỗi kết nối', 'error'); }
+}
+
+async function removeRouteStop(routeId, rsId, name) {
+    if (!confirm(`Xóa trạm "${name}" khỏi tuyến này?`)) return;
+    try {
+        const res = await fetch(`/mgmt/routes/${routeId}/stops/${rsId}/remove/`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+            toast(data.message);
+            loadRouteStopsForModal(routeId, window._currentRouteColor || '#3388ff');
+        } else {
+            toast(data.error || 'Lỗi', 'error');
+        }
+    } catch(e) { toast('Lỗi kết nối', 'error'); }
+}
+
+// Lazy: update mini map when tab switches to stops
+document.getElementById('tabRouteStopsBtn').addEventListener('shown.bs.tab', function() {
+    initRouteMiniMap();
+    setTimeout(() => {
+        routeMiniMap.invalidateSize();
+        if (window._currentRouteStops) {
+            refreshRouteMiniMap(window._currentRouteStops, window._currentRouteColor);
+        }
+    }, 150);
+});
 
 async function saveRoute() {
     const id = document.getElementById('routeId').value;
@@ -527,7 +997,16 @@ function openStopModal() {
     document.getElementById('stopActive').value = 'true';
     document.getElementById('stopShelter').checked = false;
     document.getElementById('stopBench').checked = false;
+    document.getElementById('stopAddrSearch').value = '';
+    document.getElementById('stopNominatimResults').style.display = 'none';
     document.getElementById('stopModalTitle').textContent = 'Thêm Trạm Dừng';
+    
+    if (mgmtMap) {
+        const defaultPos = [10.8231, 106.6297];
+        mgmtMap.setView(defaultPos, 13);
+        mgmtMarker.setLatLng(defaultPos);
+    }
+    
     stopModal.show();
 }
 
@@ -543,25 +1022,50 @@ async function editStop(id) {
     document.getElementById('stopActive').value     = String(data.is_active);
     document.getElementById('stopShelter').checked  = data.has_shelter;
     document.getElementById('stopBench').checked    = data.has_bench;
+    document.getElementById('stopAddrSearch').value = '';
+    document.getElementById('stopNominatimResults').style.display = 'none';
     document.getElementById('stopModalTitle').textContent = `Sửa Trạm "${data.name}"`;
+    
+    if (mgmtMap) {
+        mgmtMap.setView([data.latitude, data.longitude], 16);
+        mgmtMarker.setLatLng([data.latitude, data.longitude]);
+    }
+    
     stopModal.show();
 }
 
 async function saveStop() {
     const id = document.getElementById('stopId').value;
+    const latStr = document.getElementById('stopLat').value.trim();
+    const lngStr = document.getElementById('stopLng').value.trim();
+    const lat = parseFloat(latStr);
+    const lng = parseFloat(lngStr);
+
+    // Validate coordinates
+    if (!document.getElementById('stopName').value.trim()) {
+        toast('Vui lòng nhập tên trạm!', 'error'); return;
+    }
+    if (isNaN(lat) || isNaN(lng)) {
+        toast('Toạ độ không hợp lệ! Vui lòng nhập số.', 'error'); return;
+    }
+    if (lat < -90 || lat > 90) {
+        toast('Vĩ độ (Latitude) phải từ -90 đến 90!', 'error'); return;
+    }
+    if (lng < -180 || lng > 180) {
+        toast('Kinh độ (Longitude) phải từ -180 đến 180!', 'error'); return;
+    }
+
     const body = {
         name:        document.getElementById('stopName').value.trim(),
         code:        document.getElementById('stopCode').value.trim(),
         address:     document.getElementById('stopAddr').value.trim(),
-        latitude:    parseFloat(document.getElementById('stopLat').value),
-        longitude:   parseFloat(document.getElementById('stopLng').value),
+        latitude:    lat,
+        longitude:   lng,
         is_active:   document.getElementById('stopActive').value === 'true',
         has_shelter: document.getElementById('stopShelter').checked,
         has_bench:   document.getElementById('stopBench').checked,
     };
-    if (!body.name || isNaN(body.latitude) || isNaN(body.longitude)) {
-        toast('Vui lòng điền tên trạm và tọa độ hợp lệ!', 'error'); return;
-    }
+
     const url = id ? `/mgmt/stops/${id}/update/` : '/mgmt/stops/create/';
     const res  = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
     const data = await res.json();
@@ -587,6 +1091,102 @@ async function restoreStop(id, name) {
         const data = await res.json();
         if (data.success) { toast(data.message); setTimeout(()=>location.reload(), 800); }
         else toast(data.error, 'error');
+    }
+}
+
+// ── Excel Import ─────────────────────────────────────────────────────────────
+let _importType = 'routes'; // 'routes' | 'stops'
+const importModal = new bootstrap.Modal(document.getElementById('importModal'));
+
+function openImportModal(type) {
+    _importType = type;
+    document.getElementById('importFileInput').value = '';
+    document.getElementById('importResult').style.display = 'none';
+    document.getElementById('importResult').innerHTML = '';
+
+    if (type === 'routes') {
+        document.getElementById('importModalTitle').innerHTML =
+            '<i class="bi bi-upload me-2"></i>Nhập Tuyến Xe từ Excel';
+        document.getElementById('importInstructionsText').textContent =
+            'File Excel cần có các cột đúng thứ tự: Số tuyến | Tên tuyến | Điểm đầu | Điểm cuối | Giờ HĐ | Màu (#hex) | Trạng thái';
+        document.getElementById('importColGuide').innerHTML = `
+            <table class="table table-sm table-bordered small mb-0">
+                <thead class="table-primary"><tr>
+                    <th>Số tuyến*</th><th>Tên tuyến*</th><th>Điểm đầu</th>
+                    <th>Điểm cuối</th><th>Giờ HĐ</th><th>Màu</th><th>Trạng thái</th>
+                </tr></thead>
+                <tbody><tr class="text-muted">
+                    <td>01</td><td>Bến Thành - Suối Tiên</td><td>Bến Thành</td>
+                    <td>Suối Tiên</td><td>05:00 - 22:00</td><td>#3388ff</td><td>Hoạt động</td>
+                </tr></tbody>
+            </table>
+            <div class="form-text mt-1">* Bắt buộc. Trạng thái: "Hoạt động" hoặc "Dừng". Nếu số tuyến đã tồn tại → cập nhật.</div>`;
+    } else {
+        document.getElementById('importModalTitle').innerHTML =
+            '<i class="bi bi-upload me-2"></i>Nhập Trạm Dừng từ Excel';
+        document.getElementById('importInstructionsText').textContent =
+            'File Excel cần có các cột đúng thứ tự: Tên trạm | Mã | Địa chỉ | Tọa độ (Lat, Lng) | Mái che | Trạng thái';
+        document.getElementById('importColGuide').innerHTML = `
+            <table class="table table-sm table-bordered small mb-0">
+                <thead class="table-success"><tr>
+                    <th>Tên trạm*</th><th>Mã</th><th>Địa chỉ</th>
+                    <th>Tọa độ (Lat, Lng)*</th><th>Mái che</th><th>Trạng thái</th>
+                </tr></thead>
+                <tbody><tr class="text-muted">
+                    <td>Bến Thành</td><td>BS001</td><td>1 Công trường Quách Thị Trang</td>
+                    <td>10.772489, 106.698089</td><td>Có</td><td>Hoạt động</td>
+                </tr></tbody>
+            </table>
+            <div class="form-text mt-1">* Bắt buộc. Mái che: "Có"/"Không". Nếu Mã đã tồn tại → cập nhật.</div>`;
+    }
+
+    importModal.show();
+}
+
+async function submitImport() {
+    const file = document.getElementById('importFileInput').files[0];
+    if (!file) { toast('Vui lòng chọn file Excel', 'warning'); return; }
+
+    const url = _importType === 'routes' ? '/mgmt/import/routes/' : '/mgmt/import/stops/';
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Đang nhập...';
+
+    try {
+        const res  = await fetch(url, { method: 'POST', body: formData,
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' } });
+        const data = await res.json();
+
+        const resultDiv = document.getElementById('importResult');
+        resultDiv.style.display = 'block';
+
+        if (data.success) {
+            let errHtml = '';
+            if (data.errors && data.errors.length > 0) {
+                errHtml = `<div class="mt-2"><b class="text-danger">Lỗi (${data.errors.length}):</b><ul class="small mb-0 text-danger">` +
+                    data.errors.slice(0, 10).map(e => `<li>${e}</li>`).join('') +
+                    (data.errors.length > 10 ? `<li>... và ${data.errors.length - 10} lỗi khác</li>` : '') +
+                    '</ul></div>';
+            }
+            resultDiv.innerHTML = `
+                <div class="alert alert-success mb-0">
+                    <i class="bi bi-check-circle me-2"></i><b>${data.message}</b>
+                    <div class="mt-1 small">✅ Tạo mới: <b>${data.created}</b> &nbsp;|&nbsp; 🔄 Cập nhật: <b>${data.updated}</b></div>
+                    ${errHtml}
+                </div>`;
+            toast(data.message, 'success');
+            setTimeout(() => location.reload(), 2000);
+        } else {
+            resultDiv.innerHTML = `<div class="alert alert-danger mb-0"><i class="bi bi-x-circle me-2"></i>${data.error}</div>`;
+        }
+    } catch(e) {
+        toast('Lỗi kết nối: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-upload me-1"></i>Bắt đầu nhập';
     }
 }
 </script>
