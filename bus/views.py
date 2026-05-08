@@ -41,47 +41,52 @@ class BusRouteViewSet(viewsets.ReadOnlyModelViewSet):
         If not, build a LineString from the ordered RouteStop coordinates.
         """
         import json
+        import traceback
         from django.contrib.gis.geos import LineString
 
         queryset = self.get_queryset()
         features = []
 
         for route in queryset:
-            route_stops = (
-                RouteStop.objects
-                .filter(route=route)
-                .order_by('order')
-                .select_related('stop')
-            )
+            try:
+                route_stops = (
+                    RouteStop.objects
+                    .filter(route=route)
+                    .order_by('order')
+                    .select_related('stop')
+                )
 
-            if route.geometry:
-                geom_json = json.loads(route.geometry.json)
-            else:
-                # Build LineString from stop coordinates
-                coords = [
-                    (rs.stop.location.x, rs.stop.location.y)
-                    for rs in route_stops
-                    if rs.stop.location
-                ]
-                if len(coords) < 2:
-                    continue  # skip routes with insufficient stop data
-                line = LineString(coords, srid=4326)
-                geom_json = json.loads(line.json)
+                if route.geometry:
+                    geom_json = json.loads(route.geometry.json)
+                else:
+                    # Build LineString from stop coordinates
+                    coords = [
+                        (rs.stop.location.x, rs.stop.location.y)
+                        for rs in route_stops
+                        if rs.stop.location
+                    ]
+                    if len(coords) < 2:
+                        continue  # skip routes with insufficient stop data
+                    line = LineString(coords, srid=4326)
+                    geom_json = json.loads(line.json)
 
-            features.append({
-                'type': 'Feature',
-                'id': route.id,
-                'geometry': geom_json,
-                'properties': {
+                features.append({
+                    'type': 'Feature',
                     'id': route.id,
-                    'route_number': route.route_number,
-                    'name': route.name,
-                    'color': route.color,
-                    'start_point': route.start_point,
-                    'end_point': route.end_point,
-                    'total_stops': route.total_stops,
-                }
-            })
+                    'geometry': geom_json,
+                    'properties': {
+                        'id': route.id,
+                        'route_number': route.route_number,
+                        'name': route.name,
+                        'color': route.color,
+                        'start_point': route.start_point,
+                        'end_point': route.end_point,
+                        'total_stops': route.total_stops,
+                    }
+                })
+            except Exception as e:
+                print(f"[WARN] Skip route {route.route_number}: {e}")
+                continue
 
         return Response({
             'type': 'FeatureCollection',
