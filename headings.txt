@@ -1,0 +1,94 @@
+Heading 1: LỜI MỞ ĐẦU
+Heading 1: TỔNG QUAN ĐỀ TÀI
+Heading 2: Lý do chọn đề tài
+Heading 2: Mục tiêu nghiên cứu
+Heading 2: Đối tượng và Phạm vi nghiên cứu
+Heading 2: Phương pháp nghiên cứu 
+Heading 2: Kết cấu của đề tài 
+Heading 1: CƠ SỞ LÝ THUYẾT
+Heading 2: Hệ thống thông tin địa lý (GIS)
+Heading 2:  Thuật toán Haversine – tính khoảng cách địa lý
+Heading 2: WebGIS
+Heading 2: Bản đồ trực tuyến
+Heading 2:  Công nghệ sử dụng trong đồ án
+Heading 1: DỮ LIỆU SỬ DỤNG
+Heading 2: Nguồn dữ liệu
+Heading 3:  Dữ liệu mạng lưới giao thông từ OpenStreetMap
+Heading 2:  Cấu trúc cơ sở dữ liệu GIS (Data Schema)
+Heading 2: Tiền xử lý dữ liệu
+Heading 1:  PHƯƠNG PHÁP XÂY DỰNG HỆ THỐNG
+Heading 2: Kiến trúc hệ thống
+Heading 2: Data Flow / Pipeline
+Heading 2: Mô hình dữ liệu
+Heading 3: ERD các thực thể chính
+Heading 3:  ERD mở rộng (thực thể phụ)
+Heading 3: Phân tích thiết kế cơ sở dữ liệu
+Heading 2: Chức năng hệ thống (Use Case)
+Heading 3: Use Case tổng quan
+Heading 3: Use Case Đăng nhập
+Heading 3: Use Case Đăng xuất
+Heading 3: Use Case Xem bản đồ
+Heading 3: Use Case Tìm tuyến theo vị trí
+Heading 3: Use Case Tìm tuyến theo tên
+Heading 3: Use Case Xem chi tiết tuyến
+Heading 3: Use Case Xem chi tiết trạm
+Heading 3: Use Case Đánh dấu tuyến yêu thích
+Heading 3: Use Case Báo cáo sự cố
+Heading 3: Use Case Đặt lại mật khẩu
+Heading 3: Use Case Import dữ liệu
+Heading 3: Use Case Quản lý tuyến (CRUD)
+Heading 3: Use Case Quản lý trạm (CRUD)
+Heading 3: Use Case Khôi phục tuyến đã xoá
+Heading 3: Use Case Gửi thông báo tới user
+Heading 3: Use Case Lập lịch import định kỳ
+Heading 3: Use Case Xem lịch sử import
+Heading 3: Use Case Quản lý quyền người dùng
+Heading 3: Use Case Xuất dữ liệu tuyến/trạm
+Heading 3: Use Case Nhập dữ liệu tuyến/trạm 
+Heading 3: Use Case xác thực
+Heading 2: UML (Sequence + Activity)
+Heading 3: Sơ đồ Sequence tổng quan
+Heading 3: Sequence — Tìm tuyến
+Heading 3: Sequence — Import dữ liệu
+Heading 3: Sequence — Gửi thông báo
+Heading 3: Sơ đồ Active tổng quan
+Heading 3: Activity — Tìm tuyến
+Heading 3: Activity — Import dữ liệu
+Heading 3: Activity — Đăng ký người dùng
+Heading 3: Activity — Đặt lại mật khẩu
+Heading 3: Cơ chế Phân quyền (Django Permissions & Authentication) 
+Heading 3: Cơ chế Phân trang (Pagination Implementation) 
+Heading 2:  Quy trình xử lý dữ liệu
+Heading 2:  Chức năng hệ thống chuyên biệt
+Heading 3: Hiển thị bản đồ giao thông vô hạn (Infinite Map View): 
+Heading 3: Cơ chế Phân quyền (Django Permissions & Authentication)
+Heading 3: Cơ chế Phân trang (Pagination Implementation)
+Heading 3: Tìm tra cứu theo vị trí khoảng cách khu vực:
+Heading 3: Tra cứu theo mã số tuyến đặc tả
+Heading 1:  XÂY DỰNG WEBSITE
+Heading 2: Phân hệ giao diện tương tác Người dùng (Guest Web UI) 
+Heading 3: Trang Giới thiệu hệ thống (Landing Page) 
+Heading 3: Giao diện Trang chủ và nền tảng Bản đồ số (Leaflet Map) 
+Heading 3: Danh mục truy xuất Tuyến xe buýt và Trạm dừng 
+Heading 3: Chi tiết thông tin cấu trúc một Tuyến xe cụ thể 
+Heading 2: Nhóm công cụ Phân tích Không gian (GIS Tools) 
+Heading 3: Tra cứu và tìm hướng đi định tuyến (Routing - Find Route) 
+Heading 3: Chức năng quét Trạm gần nhất trong bán kính (Nearest Stops)
+Heading 3: Đánh giá không gian mạng lưới dịch vụ (Buffer Zone)
+Heading 2:  Phân hệ Xác thực hệ thống và Chiến lược Bảo mật (Authentication)
+Heading 3: Trang Đăng nhập (Authentication Gateway)
+Heading 3: Giao diện Quản trị Hồ sơ cá nhân (Profile View) 
+Heading 3: Khôi phục mật khẩu thông qua Email (Reset Pass)
+Heading 2:  Công nghệ bản đồ 
+Heading 1:  KẾT QUẢ ĐẠT ĐƯỢC VÀ ĐÁNH GIÁ
+Heading 2: Đánh giá thiết kế Giao diện UI/UX và Trải nghiệm người dùng
+Heading 2: Đánh giá Kết quả Phân tích chức năng lõi (GIS Search & Result)
+Heading 3: Kết quả tra cứu Trạm bán kính hẹp (Nearest Buffer Query) 
+Heading 3: Kết quả thuật toán Thiết lập định tuyến động (Routing Engine) 
+Heading 2: Đánh giá cơ chế Phân quyền, Đồng bộ dữ liệu và Hiệu năng
+Heading 1: ĐÁNH GIÁ CHẤT LƯỢNG HỆ THỐNG
+Heading 2: Các ưu điểm đạt được của đề tài
+Heading 2: Các hạn chế còn tồn đọng
+Heading 1: KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN TƯƠNG LAI
+Heading 2: Tổng kết và ý nghĩa thực tiễn của đề tài 
+Heading 2: Đề xuất hướng mở rộng và phát triển tương lai 

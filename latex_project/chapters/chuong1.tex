@@ -1,0 +1,50 @@
+\chapter{TỔNG QUAN ĐỀ TÀI}
+
+\section{Lý do chọn đề tài}
+
+Trong bối cảnh đô thị hóa diễn ra mạnh mẽ và dân số tại các thành phố lớn tăng nhanh, vấn đề ùn tắc giao thông và ô nhiễm môi trường đang trở thành những thách thức cấp bách. Hệ thống giao thông công cộng, đặc biệt là mạng lưới xe buýt, đóng vai trò then chốt trong việc giải quyết các vấn đề này. Tuy nhiên, việc tra cứu thông tin tuyến xe, trạm dừng và lộ trình di chuyển tại nhiều thành phố hiện nay vẫn còn gặp nhiều hạn chế. Người dân thường gặp khó khăn trong việc tìm kiếm tuyến xe phù hợp, dẫn đến sự e ngại khi tiếp cận với phương tiện công cộng.
+
+Bên cạnh đó, sự bùng nổ của công nghệ thông tin và bản đồ số đã mở ra những hướng đi mới trong việc quản lý và cung cấp dịch vụ hành khách. Hệ thống Thông tin Địa lý (GIS) kết hợp với nền tảng Web (WebGIS) cho phép trực quan hóa dữ liệu không gian một cách sinh động, cung cấp khả năng tra cứu trực tuyến và tương tác trực tiếp trên bản đồ. Các hệ thống hiện tại trên thị trường đôi khi giao diện chưa thân thiện, hoặc thiếu đi các tính năng phân tích không gian nâng cao như tìm trạm gần nhất theo bán kính hay đánh giá mức độ bao phủ của trạm.
+
+Xuất phát từ những thực tiễn trên, việc nghiên cứu và xây dựng một nền tảng WebGIS hiện đại, tích hợp công cụ phân tích không gian mạnh mẽ là thực sự cần thiết. Đề tài "Hệ thống WebGIS quản lý và tra cứu tuyến xe buýt thông minh (BusGIS)" được lựa chọn nhằm cung cấp một giải pháp toàn diện. Hệ thống không chỉ hỗ trợ người dùng cuối dễ dàng tiếp cận thông tin mạng lưới xe buýt mà còn cung cấp cho nhà quản lý các công cụ để giám sát, đánh giá và quy hoạch luồng tuyến hiệu quả hơn.
+
+Việc ứng dụng các công nghệ mã nguồn mở tiên tiến như Django, PostgreSQL/PostGIS và LeafletJS trong phát triển hệ thống cũng giúp tối ưu chi phí triển khai. Đây là cơ hội để vận dụng những kiến thức đã học vào thực tiễn, giải quyết một bài toán có ý nghĩa xã hội cao, góp phần thúc đẩy thói quen sử dụng giao thông công cộng hướng tới xây dựng thành phố thông minh và phát triển bền vững.
+
+\section{Mục tiêu nghiên cứu}
+
+Mục tiêu tổng quát của đề tài là xây dựng thành công ứng dụng WebGIS hỗ trợ việc tra cứu, định tuyến và quản lý mạng lưới xe buýt, đáp ứng yêu cầu xử lý dữ liệu không gian thời gian thực. Cụ thể, đề tài hướng đến các mục tiêu chi tiết sau:
+
+\begin{itemize}
+    \item Nghiên cứu và ứng dụng thành công các công nghệ WebGIS hiện đại (Django, PostGIS, Leaflet) vào bài toán quản lý giao thông.
+    \item Xây dựng cơ sở dữ liệu không gian lưu trữ mạng lưới tuyến, trạm dừng xe buýt tối ưu cho việc truy vấn.
+    \item Phát triển thuật toán định tuyến và tìm kiếm trạm gần nhất dựa trên tọa độ GPS của người dùng.
+    \item Xây dựng giao diện tương tác thân thiện, trực quan, hỗ trợ hiển thị bản đồ mượt mà trên nhiều thiết bị.
+    \item Cung cấp phân hệ quản trị hệ thống cho phép thêm, sửa, xóa tuyến/trạm và theo dõi phản hồi người dùng.
+\end{itemize}
+
+\section{Đối tượng và Phạm vi nghiên cứu}
+
+\textbf{Đối tượng nghiên cứu:}
+\begin{itemize}
+    \item Hệ thống Thông tin Địa lý (GIS) và kiến trúc ứng dụng WebGIS.
+    \item Các thuật toán phân tích không gian: tính toán khoảng cách (Haversine), tìm đường đi ngắn nhất, phân tích vùng đệm (Buffer).
+    \item Mô hình quan hệ cơ sở dữ liệu không gian PostGIS.
+    \item Nền tảng framework Django và thư viện hiển thị bản đồ LeafletJS.
+\end{itemize}
+
+\textbf{Phạm vi nghiên cứu:}
+\begin{itemize}
+    \item \textit{Phạm vi dữ liệu:} Tập trung thu thập, tiền xử lý và số hóa dữ liệu mạng lưới xe buýt tại khu vực Thành phố Hồ Chí Minh (dựa trên nguồn dữ liệu mở OpenStreetMap).
+    \item \textit{Phạm vi chức năng:} Hệ thống giới hạn ở các chức năng tra cứu thông tin tuyến, trạm, định tuyến giữa hai điểm, quản lý dữ liệu, đăng ký tài khoản và đánh giá tuyến/trạm.
+\end{itemize}
+
+\section{Phương pháp nghiên cứu}
+
+Để đạt được các mục tiêu đề ra, đề tài áp dụng các phương pháp nghiên cứu sau:
+
+\begin{itemize}
+    \item \textbf{Phương pháp nghiên cứu tài liệu:} Tìm hiểu các giáo trình, tài liệu học thuật và tài liệu kỹ thuật liên quan đến GIS, WebGIS, thiết kế cơ sở dữ liệu và kỹ thuật lập trình web.
+    \item \textbf{Phương pháp phân tích và thiết kế hệ thống:} Khảo sát yêu cầu người dùng, mô hình hóa dữ liệu (ERD), thiết kế kiến trúc hệ thống và xây dựng biểu đồ Use Case, Sequence, Activity UML.
+    \item \textbf{Phương pháp thực nghiệm:} Cài đặt môi trường, lập trình xây dựng ứng dụng (Coding), triển khai cơ sở dữ liệu không gian thực tế và tiến hành kiểm thử (Testing) để đánh giá độ chính xác của các thuật toán phân tích.
+    \item \textbf{Phương pháp chuyên gia:} Tham khảo ý kiến và sự hướng dẫn của giảng viên để tinh chỉnh các chức năng, đảm bảo hệ thống bám sát các yêu cầu thực tiễn.
+\end{itemize}

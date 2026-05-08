@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Đăng ký tài khoản - BusGIS{% endblock %}
+
+{% block content %}
+<div style="min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); display:flex; align-items:center; justify-content:center; padding: 2rem 1rem;">
+    <div style="width:100%; max-width:460px;">
+
+        <!-- Logo -->
+        <div class="text-center mb-4">
+            <div style="font-size:2.5rem; color:#3b82f6; margin-bottom:0.5rem;">
+                <i class="bi bi-bus-front-fill"></i>
+            </div>
+            <h2 style="color:#fff; font-size:1.8rem; font-weight:700; margin:0;">BusGIS</h2>
+            <p style="color:#94a3b8; margin:0.25rem 0 0;">Tạo tài khoản mới để sử dụng hệ thống</p>
+        </div>
+
+        <!-- Card -->
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 2rem; backdrop-filter: blur(10px);">
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show mb-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if form.errors %}
+            <div class="alert alert-danger mb-3" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Có lỗi xảy ra:</strong>
+                <ul class="mb-0 mt-1 ps-3">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'register' %}">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label" style="color:#cbd5e1; font-size:0.875rem;">Tên đăng nhập</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#94a3b8;">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <input type="text" name="username" id="id_username"
+                               class="form-control"
+                               style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#f1f5f9;"
+                               placeholder="Tên đăng nhập" required
+                               value="{{ form.username.value|default:'' }}">
+                    </div>
+                    {% if form.username.errors %}
+                    <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" style="color:#cbd5e1; font-size:0.875rem;">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#94a3b8;">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input type="email" name="email" id="id_email"
+                               class="form-control"
+                               style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#f1f5f9;"
+                               placeholder="email@example.com"
+                               value="{{ form.email.value|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" style="color:#cbd5e1; font-size:0.875rem;">Mật khẩu</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#94a3b8;">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password" name="password1" id="id_password1"
+                               class="form-control"
+                               style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#f1f5f9;"
+                               placeholder="Ít nhất 8 ký tự" required>
+                        <button class="btn" type="button" id="togglePwd1"
+                                style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#94a3b8;">
+                            <i class="bi bi-eye" id="eyeIcon1"></i>
+                        </button>
+                    </div>
+                    {% if form.password1.errors %}
+                    <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label" style="color:#cbd5e1; font-size:0.875rem;">Xác nhận mật khẩu</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#94a3b8;">
+                            <i class="bi bi-lock-fill"></i>
+                        </span>
+                        <input type="password" name="password2" id="id_password2"
+                               class="form-control"
+                               style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#f1f5f9;"
+                               placeholder="Nhập lại mật khẩu" required>
+                        <button class="btn" type="button" id="togglePwd2"
+                                style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); color:#94a3b8;">
+                            <i class="bi bi-eye" id="eyeIcon2"></i>
+                        </button>
+                    </div>
+                    {% if form.password2.errors %}
+                    <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" style="font-size:1rem; border-radius:10px;">
+                    <i class="bi bi-person-plus me-2"></i>Tạo tài khoản
+                </button>
+            </form>
+
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 1.5rem 0;">
+
+            <p class="text-center mb-0" style="color:#94a3b8; font-size:0.875rem;">
+                Đã có tài khoản?
+                <a href="{% url 'login' %}" style="color:#3b82f6; text-decoration:none; font-weight:600;">
+                    Đăng nhập ngay
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control::placeholder { color: #475569 !important; }
+.form-control:focus {
+    background: rgba(255,255,255,0.12) !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 0.2rem rgba(59,130,246,0.25) !important;
+    color: #f1f5f9 !important;
+}
+</style>
+
+<script>
+document.getElementById('togglePwd1').addEventListener('click', function() {
+    const inp = document.getElementById('id_password1');
+    const icon = document.getElementById('eyeIcon1');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    icon.className = inp.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+});
+document.getElementById('togglePwd2').addEventListener('click', function() {
+    const inp = document.getElementById('id_password2');
+    const icon = document.getElementById('eyeIcon2');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    icon.className = inp.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+});
+</script>
+{% endblock %}

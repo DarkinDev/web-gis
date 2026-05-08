@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Đăng nhập — BusGIS{% endblock %}
+
+{% block content %}
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-light);padding:80px 16px 40px;">
+  <div style="width:100%;max-width:420px;background:var(--bg-white);border:1px solid var(--border-color);border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden;">
+    <div style="background:var(--bg-dark);border-bottom:1px solid var(--border-color);padding:36px 40px 28px;text-align:center;">
+      <i class="bi bi-bus-front-fill" style="font-size:2.5rem;color:var(--primary-color);"></i>
+      <h2 style="margin:10px 0 4px;color:var(--text-primary);font-weight:700;">BusGIS</h2>
+      <p style="color:var(--text-secondary);margin:0;font-size:14px;">Đăng nhập vào hệ thống</p>
+    </div>
+    <div style="padding:36px 40px;">
+      {% if form.errors %}
+      <div style="background:rgba(239, 68, 68, 0.1);border:1px solid var(--danger-color);border-radius:8px;padding:12px 16px;margin-bottom:20px;color:var(--danger-color);font-size:14px;">
+        <i class="bi bi-exclamation-circle me-2"></i>Tên đăng nhập hoặc mật khẩu không đúng.
+      </div>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <div style="margin-bottom:18px;">
+          <label style="display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Tên đăng nhập</label>
+          <input type="text" name="username" autofocus required
+            style="width:100%;background:var(--bg-light);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;padding:10px 14px;font-size:14px;outline:none;box-sizing:border-box;transition:border .2s;"
+            onfocus="this.style.borderColor='var(--primary-color)'" onblur="this.style.borderColor='var(--border-color)'">
+        </div>
+        <div style="margin-bottom:10px;">
+          <label style="display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Mật khẩu</label>
+          <input type="password" name="password" required
+            style="width:100%;background:var(--bg-light);color:var(--text-primary);border:1px solid var(--border-color);border-radius:8px;padding:10px 14px;font-size:14px;outline:none;box-sizing:border-box;transition:border .2s;"
+            onfocus="this.style.borderColor='var(--primary-color)'" onblur="this.style.borderColor='var(--border-color)'">
+        </div>
+        <div style="text-align:right;margin-bottom:22px;">
+          <a href="{% url 'password_reset' %}" style="color:var(--primary-color);font-size:13px;text-decoration:none;">Quên mật khẩu?</a>
+        </div>
+        <button type="submit"
+          style="width:100%;background:var(--primary-color);color:#fff;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .2s;"
+          onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+\chapter{ĐÁNH GIÁ CHẤT LƯỢNG HỆ THỐNG}
+
+\section{Đánh giá thiết kế Giao diện và Trải nghiệm người dùng}
+
+Kết quả thực nghiệm cho thấy phân hệ giao diện tương tác của BusGIS đã đáp ứng tốt các tiêu chí về thiết kế UI/UX (User Interface / User Experience). Giao diện được xây dựng theo phong cách hiện đại, sử dụng bảng màu tương phản giúp người dùng dễ dàng nhận diện các nút chức năng và thông tin quan trọng. Hệ thống đảm bảo tính tương thích (Responsive) trên đa dạng các thiết bị, từ màn hình máy tính bàn, máy tính bảng cho đến điện thoại di động mà không gây vỡ cấu trúc hay mất mát dữ liệu. 
+
+Bản đồ nền (Basemap) tích hợp từ LeafletJS tải mượt mà, thao tác vuốt, thu phóng diễn ra trơn tru ngay cả khi mạng lưới phải hiển thị đồng thời hàng trăm trạm dừng. Các tính năng hướng dẫn thao tác, thông báo lỗi (ví dụ khi tìm kiếm không có kết quả, đăng nhập sai mật khẩu) được xử lý thông qua các cảnh báo Toast tinh tế, mang lại trải nghiệm sử dụng chuyên nghiệp. Đặc biệt, việc bổ sung hệ thống đánh giá (Review) tạo không gian tương tác hai chiều, giúp người quản trị lắng nghe trực tiếp phản hồi từ phía hành khách.
+
+\section{Đánh giá Kết quả Phân tích chức năng lõi}
+
+Nhóm công cụ phân tích không gian (GIS Tools) – trái tim của hệ thống, hoạt động đạt hiệu quả cao với độ chính xác số liệu đáng tin cậy.
+
+\begin{itemize}
+    \item \textbf{Khả năng định tuyến (Routing Engine):} Thuật toán tìm đường hoạt động ổn định. Khi người dùng nhập địa điểm đi và đến, hệ thống nhanh chóng phân tích và thiết lập đồ thị không gian mạng lưới, trả về danh sách các tuyến xe buýt liên quan. Quá trình tính toán trên Backend diễn ra nhanh, các đường vẽ lộ trình (Polyline) trên bản đồ khớp nối chính xác với địa hình giao thông thực tế.
+    \item \textbf{Tra cứu bán kính không gian (Buffer Query):} Công cụ tìm trạm gần nhất và xác định vùng đệm dựa trên thuật toán Haversine đem lại kết quả chuẩn xác. Việc ứng dụng cấu trúc lưu trữ dữ liệu Point của PostGIS đã giúp tối ưu hóa thời gian quét dữ liệu, cho phép lọc hàng ngàn trạm xe buýt và chỉ trả về những trạm nằm trong giới hạn bán kính được người dùng chỉ định.
+\end{itemize}
+
+\section{Đánh giá cơ chế Phân quyền và Hiệu năng}
+
+Cơ chế phân quyền được thực thi nghiêm ngặt thông qua thư viện Authentication mặc định của Django. Hệ thống phân chia rõ ràng ranh giới giữa chức năng công cộng (Guest), chức năng thành viên (User) và quản trị viên (Admin/Staff). Việc bảo mật các API cập nhật dữ liệu (Thêm, Sửa, Xóa) thông qua token CSRF ngăn chặn hiệu quả các hình thức tấn công giả mạo yêu cầu.
+
+Về mặt hiệu năng, quá trình tải dữ liệu bản đồ diện rộng được cải thiện đáng kể nhờ chiến lược phân trang (Pagination) ở tầng Backend. Thay vì gửi toàn bộ hàng nghìn trạm dừng cùng lúc, hệ thống chỉ phản hồi các gói dữ liệu nhỏ theo yêu cầu hiển thị của khung nhìn bản đồ, từ đó giảm áp lực băng thông mạng và tiết kiệm tài nguyên bộ nhớ trên thiết bị của người dùng.
+
+\section{Các ưu điểm đạt được của đề tài}
+
+Trải qua quá trình nghiên cứu và xây dựng, đề tài đã đạt được các thành quả đáng ghi nhận:
+\begin{itemize}
+    \item Số hóa thành công toàn bộ mạng lưới tuyến xe buýt và vị trí tọa độ các trạm dừng trên địa bàn thử nghiệm vào một hệ quản trị cơ sở dữ liệu không gian tập trung.
+    \item Cung cấp hệ sinh thái tính năng hoàn thiện từ tra cứu thông tin cơ bản đến phân tích, định tuyến không gian phức tạp.
+    \item Xây dựng trang Quản trị (Dashboard) chuyên nghiệp, hỗ trợ Import/Export dữ liệu Excel thuận tiện.
+    \item Kiến trúc mã nguồn mở gọn nhẹ, linh hoạt, dễ dàng mở rộng và tích hợp thêm các dịch vụ bản đồ bên thứ ba trong tương lai.
+\end{itemize}
+
+\section{Các hạn chế còn tồn đọng}
+
+Bên cạnh những kết quả tích cực, hệ thống vẫn còn một số điểm giới hạn cần được khắc phục:
+\begin{itemize}
+    \item Dữ liệu giao thông hiện tại mang tính tĩnh (Static Data), chưa tích hợp được công nghệ theo dõi vị trí GPS thời gian thực (Real-time Tracking) của các phương tiện đang di chuyển trên tuyến.
+    \item Thuật toán định tuyến trung chuyển (chuyển qua 2-3 tuyến xe khác nhau) chưa tính toán được các rào cản giao thông thực tế như mật độ kẹt xe, đường cấm theo giờ.
+    \item Dữ liệu nguồn từ OpenStreetMap đôi khi vẫn còn thiếu sót về các tiện ích chi tiết tại trạm dừng (ví dụ: thông tin bãi đỗ xe máy kế cận, nhà vệ sinh công cộng).
+\end{itemize}

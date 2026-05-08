@@ -1,0 +1,13 @@
+%% Sequence - Notification sending
+
+sequenceDiagram
+  participant System
+  participant Notifier as NotificationService
+  participant Email as EmailProvider
+  participant User
+
+  System->>Notifier: Create notification record
+  Notifier->>Email: Send email (template)
+  Email-->>Notifier: Delivery status
+  Notifier-->>System: Update notification status
+  Notifier-->>User: Email delivered

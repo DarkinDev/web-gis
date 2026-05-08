@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Danh sách tuyến xe - BusGIS{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="bi bi-signpost-2-fill me-2"></i>Danh sách tuyến xe</h1>
+            <p class="lead">Khám phá {{ routes.paginator.count }} tuyến xe buýt hoạt động</p>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <!-- Search and Filter -->
+        <div class="filter-bar mb-4">
+            <form method="GET" action="{% url 'routes-list' %}">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" name="q" value="{{ q }}"
+                                placeholder="Tìm theo số hiệu hoặc tên tuyến...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="status" onchange="this.form.submit()">
+                            <option value="all" {% if status == 'all' %}selected{% endif %}>Tất cả trạng thái</option>
+                            <option value="active" {% if status == 'active' %}selected{% endif %}>Đang hoạt động</option>
+                            <option value="inactive" {% if status == 'inactive' %}selected{% endif %}>Tạm ngưng</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-filter me-1"></i>Áp dụng bộ lọc
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Routes Grid -->
+        <div class="row g-4" id="routes-grid">
+            {% for route in routes %}
+            <div class="col-md-6 col-lg-4 route-item" data-route-number="{{ route.route_number }}"
+                data-name="{{ route.name }}">
+                <div class="route-card">
+                    <div class="route-number" style="background: {{ route.color }}">
+                        {{ route.route_number }}
+                    </div>
+                    <div class="route-info">
+                        <h5>{{ route.name }}</h5>
+                        <div class="route-endpoints">
+                            <div class="endpoint">
+                                <i class="bi bi-geo-fill text-success"></i>
+                                <span>{{ route.start_point }}</span>
+                            </div>
+                            <div class="endpoint-arrow">
+                                <i class="bi bi-arrow-down"></i>
+                            </div>
+                            <div class="endpoint">
+                                <i class="bi bi-geo-fill text-danger"></i>
+                                <span>{{ route.end_point }}</span>
+                            </div>
+                        </div>
+                        <div class="route-meta">
+                            <span><i class="bi bi-clock"></i> {{ route.operating_hours }}</span>
+                            <span><i class="bi bi-hourglass-split"></i> {{ route.frequency }}</span>
+                        </div>
+                        <div class="route-footer">
+                            <span class="ticket-price">
+                                <i class="bi bi-ticket-perforated"></i>
+                                {{ route.ticket_price|floatformat:0 }}đ
+                            </span>
+                            <span class="stop-count">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ route.total_stops }} trạm
+                            </span>
+                        </div>
+                    </div>
+                    <a href="{% url 'route-detail' route.pk %}" class="route-link">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="bi bi-signpost-2"></i>
+                    <h4>Chưa có tuyến xe nào</h4>
+                    <p>Thêm tuyến xe qua trang quản trị</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if routes.has_other_pages %}
+        <nav class="mt-5 d-flex justify-content-center">
+            <ul class="pagination pagination-lg shadow-sm">
+                {% if routes.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ routes.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status %}&status={{ status }}{% endif %}"><i class="bi bi-chevron-left"></i></a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
+                {% endif %}
+
+                {% for i in routes.paginator.page_range %}
+                    {% if routes.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% elif i > routes.number|add:'-3' and i < routes.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}{% if q %}&q={{ q }}{% endif %}{% if status %}&status={{ status }}{% endif %}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if routes.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ routes.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if status %}&status={{ status }}{% endif %}"><i class="bi bi-chevron-right"></i></a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-right"></i></span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Logic tìm kiếm đã được chuyển sang server-side để hỗ trợ tìm kiếm trên toàn bộ các trang -->
+{% endblock %}

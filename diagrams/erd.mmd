@@ -1,0 +1,51 @@
+%% ERD - Entities for Web-GIS Bus
+
+erDiagram
+  USER {
+    int id PK
+    string username
+    string email
+    string password_hash
+    datetime created_at
+  }
+  USERPROFILE {
+    int id PK
+    int user_id FK
+    string full_name
+    string phone
+    text preferences
+  }
+  BUSROUTE {
+    int id PK
+    string code
+    string name
+    text geometry_geojson
+    boolean is_deleted
+  }
+  BUSSTOP {
+    int id PK
+    string code
+    string name
+    decimal lat
+    decimal lon
+  }
+  NOTIFICATION {
+    int id PK
+    int user_id FK
+    string type
+    text content
+    boolean is_sent
+    datetime sent_at
+  }
+  IMPORT_JOB {
+    int id PK
+    string filename
+    string status
+    datetime started_at
+    datetime finished_at
+  }
+
+  USER ||--o{ USERPROFILE : has
+  USER ||--o{ NOTIFICATION : receives
+  BUSROUTE ||--o{ BUSSTOP : has_stops
+  IMPORT_JOB ||--o{ BUSROUTE : creates_or_updates

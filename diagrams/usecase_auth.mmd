@@ -1,0 +1,18 @@
+%% Use Case - Authentication and Profile
+
+graph LR
+  U[User]
+  subgraph Auth[Authentication]
+    UC1[Register]
+    UC2[Login]
+    UC3[Logout]
+    UC4[Password reset]
+    UC5[Confirm email]
+    UC6[Edit profile]
+  end
+
+  U --> UC1
+  U --> UC2
+  U --> UC4
+  U --> UC6
+  UC1 --> UC5

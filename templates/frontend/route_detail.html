@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Tuyến {{ route.route_number }} - {{ route.name }} - BusGIS{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header" style="background: linear-gradient(135deg, {{ route.color }}cc, {{ route.color }});">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'routes-list' %}">Tuyến xe</a></li>
+                    <li class="breadcrumb-item active">{{ route.route_number }}</li>
+                </ol>
+            </nav>
+            <div class="route-header-content">
+                <div class="route-badge">{{ route.route_number }}</div>
+                <div>
+                    <h1>{{ route.name }}</h1>
+                    <p class="mb-0">{{ route.start_point }} ↔ {{ route.end_point }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <div class="row g-4">
+            <!-- Route Info -->
+            <div class="col-lg-4">
+                <div class="info-card">
+                    <h5><i class="bi bi-info-circle me-2"></i>Thông tin tuyến</h5>
+                    <ul class="info-list">
+                        <li>
+                            <span class="label">Giờ hoạt động</span>
+                            <span class="value">{{ route.operating_hours }}</span>
+                        </li>
+                        <li>
+                            <span class="label">Tần suất</span>
+                            <span class="value">{{ route.frequency }}</span>
+                        </li>
+                        <li>
+                            <span class="label">Giá vé</span>
+                            <span class="value text-primary fw-bold">{{ route.ticket_price|floatformat:0 }}đ</span>
+                        </li>
+                        <li>
+                            <span class="label">Số trạm dừng</span>
+                            <span class="value">{{ route.total_stops }} trạm</span>
+                        </li>
+                    </ul>
+                    {% if route.description %}
+                    <div class="route-description mt-3">
+                        <h6>Mô tả</h6>
+                        <p>{{ route.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    <a href="{% url 'home' %}?focus_route={{ route.id }}" class="btn btn-primary w-100 mt-3">
+                        <i class="bi bi-map me-1"></i>Xem trên bản đồ
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stops Timeline -->
+            <div class="col-lg-8">
+                <div class="info-card">
+                    <h5><i class="bi bi-geo-alt me-2"></i>Các trạm dừng</h5>
+                    <div class="stops-timeline">
+                        {% for rs in stops %}
+                        <div
+                            class="timeline-item {% if forloop.first %}first{% endif %} {% if forloop.last %}last{% endif %}">
+                            <div class="timeline-marker" style="background: {{ route.color }}">
+                                {{ rs.order }}
+                            </div>
+                            <div class="timeline-content">
+                                <h6>{{ rs.stop.name }}</h6>
+                                <p class="mb-0 text-muted small">
+                                    {% if rs.stop.address %}
+                                    <i class="bi bi-signpost me-1"></i>{{ rs.stop.address }}
+                                    {% endif %}
+                                </p>
+                                <div class="timeline-meta">
+                                    {% if rs.distance_from_start %}
+                                    <span><i class="bi bi-arrows-move"></i> {{ rs.distance_from_start }} km</span>
+                                    {% endif %}
+                                    {% if rs.estimated_time %}
+                                    <span><i class="bi bi-clock"></i> {{ rs.estimated_time }} phút</span>
+                                    {% endif %}
+                                    {% if rs.stop.has_shelter %}
+                                    <span class="badge bg-success"><i class="bi bi-umbrella"></i> Có mái che</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="empty-state">
+                            <i class="bi bi-geo-alt"></i>
+                            <p>Chưa có trạm dừng nào</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="row g-4 mt-2">
+            <div class="col-12">
+                <div class="info-card">
+                    <h5><i class="bi bi-star me-2"></i>Đánh giá từ người dùng</h5>
+                    
+                    <div class="row">
+                        <div class="col-md-5 mb-4">
+                            <div class="bg-light p-4 rounded border">
+                                <h6>Gửi đánh giá của bạn</h6>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    {% for field in form %}
+                                    <div class="mb-3">
+                                        <label class="form-label text-sm fw-medium">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% if field.errors %}
+                                        <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                    <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-send me-1"></i>Gửi đánh giá</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="reviews-list" style="max-height: 400px; overflow-y: auto;">
+                                {% for review in reviews %}
+                                <div class="review-item border-bottom pb-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <strong><i class="bi bi-person-circle me-1 text-secondary"></i>{{ review.user.username }}</strong>
+                                        <small class="text-muted">{{ review.created_at|date:"d/m/Y H:i" }}</small>
+                                    </div>
+                                    <div class="text-warning mb-2" style="font-size: 0.9rem;">
+                                        {% for i in "12345"|make_list %}
+                                            {% if forloop.counter <= review.rating|add:0 %}
+                                            <i class="bi bi-star-fill"></i>
+                                            {% else %}
+                                            <i class="bi bi-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <p class="mb-0 text-sm">{{ review.comment }}</p>
+                                </div>
+                                {% empty %}
+                                <div class="text-center text-muted py-3">
+                                    <i class="bi bi-chat-left-dots fs-3 mb-2"></i>
+                                    <p>Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

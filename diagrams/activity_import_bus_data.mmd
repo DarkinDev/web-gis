@@ -1,0 +1,12 @@
+%% Activity - Import bus data (admin)
+
+flowchart TD
+  Start((Start)) --> Upload["Admin uploads import file (CSV/JSON)"]
+  Upload --> Validate["Validate file format & schema"]
+  Validate -- Invalid --> Error["Show errors, abort"]
+  Validate -- Valid --> Enqueue["Enqueue import job (celery/task queue)"]
+  Enqueue --> Worker["Worker picks job"]
+  Worker --> Parse["Parse records & validate each record"]
+  Parse --> Upsert["Upsert BusRoute, BusStop, Relations"]
+  Upsert --> Notify["Create import summary & send notification to admin"]
+  Notify --> End((End))

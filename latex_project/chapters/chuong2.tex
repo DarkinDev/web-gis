@@ -1,0 +1,50 @@
+\chapter{CƠ SỞ LÝ THUYẾT VÀ DỮ LIỆU SỬ DỤNG}
+
+\section{Hệ thống thông tin địa lý (GIS)}
+
+Hệ thống thông tin địa lý (Geographic Information System - GIS) là hệ thống bao gồm phần cứng, phần mềm, dữ liệu không gian và các quy trình dùng để thu thập, lưu trữ, quản lý, thao tác, phân tích và hiển thị tất cả các dạng thông tin liên quan đến địa lý. Cốt lõi của GIS là khả năng gắn kết dữ liệu thuộc tính (thông tin dạng chữ, số) với dữ liệu không gian (tọa độ vị trí), cho phép người dùng hình dung, hiểu và diễn giải dữ liệu dưới nhiều hình thức trực quan như bản đồ trực tuyến, báo cáo và đồ thị. Trong quản lý giao thông, GIS đóng vai trò quan trọng trong việc theo dõi mạng lưới hạ tầng, quản lý tuyến xe, phân tích lưu lượng và hỗ trợ đưa ra quyết định tối ưu lộ trình. 
+
+\section{Thuật toán Haversine – Tính khoảng cách địa lý}
+
+Việc tính toán khoảng cách thực tế giữa hai điểm trên bề mặt Trái Đất không thể sử dụng hình học Euclid thông thường do bề mặt Trái Đất có độ cong hình cầu. Trong hệ thống BusGIS, để giải quyết bài toán tìm các trạm dừng nằm trong bán kính phục vụ (Buffer) hoặc đo lường khoảng cách trực tiếp giữa vị trí người dùng và trạm xe buýt gần nhất, hệ thống ứng dụng thuật toán Haversine. Thuật toán này xác định khoảng cách vòng lớn giữa hai điểm trên mặt cầu khi biết tọa độ kinh độ và vĩ độ của chúng.
+
+Công thức Haversine được biểu diễn một cách chính xác theo phương trình sau:
+
+\begin{equation}
+    a = \sin^2\left(\frac{\Delta \varphi}{2}\right) + \cos(\varphi_1) \cdot \cos(\varphi_2) \cdot \sin^2\left(\frac{\Delta \lambda}{2}\right)
+\end{equation}
+
+\begin{equation}
+    c = 2 \cdot \text{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)
+\end{equation}
+
+\begin{equation}
+    d = R \cdot c
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item $d$ là khoảng cách địa lý giữa hai điểm (đơn vị thường dùng là km hoặc mét).
+    \item $R$ là bán kính trung bình của Trái Đất (tương đương khoảng $6,371$ km).
+    \item $\varphi_1, \varphi_2$ lần lượt là vĩ độ của điểm thứ nhất và điểm thứ hai (tính bằng radian).
+    \item $\Delta\varphi = \varphi_2 - \varphi_1$ là hiệu số vĩ độ giữa hai điểm.
+    \item $\Delta\lambda = \lambda_2 - \lambda_1$ là hiệu số kinh độ giữa hai điểm (tính bằng radian).
+\end{itemize}
+
+Bằng việc áp dụng các phương trình trên vào hệ thống, quá trình truy vấn không gian diễn ra nhanh chóng, cho phép hiển thị khoảng cách với độ sai số cực thấp trên nền tảng WebGIS.
+
+\section{WebGIS và Bản đồ trực tuyến}
+
+WebGIS là sự kết hợp giữa kiến trúc mạng World Wide Web và Hệ thống thông tin địa lý, cho phép xử lý, phân tích và chia sẻ dữ liệu không gian thông qua trình duyệt web mà không cần cài đặt phần mềm chuyên dụng. Hệ thống hoạt động theo mô hình Client-Server, nơi máy chủ (Server) đảm nhận nhiệm vụ lưu trữ, truy vấn CSDL không gian và phản hồi kết quả, trong khi máy khách (Client) thực hiện hiển thị giao diện bản đồ, xử lý các tương tác của người dùng. Bản đồ trực tuyến cung cấp giao diện tương tác động, hỗ trợ các thao tác như thu phóng (zoom), di chuyển (pan) và hiển thị thông tin chi tiết qua các lớp dữ liệu (Layers), mang lại trải nghiệm người dùng tối ưu.
+
+\section{Công nghệ sử dụng trong đồ án}
+
+Để phát triển ứng dụng WebGIS quản lý xe buýt, đề tài kết hợp sử dụng các nền tảng công nghệ mạnh mẽ và mã nguồn mở. Toàn bộ logic nghiệp vụ phía máy chủ được phát triển bằng ngôn ngữ Python thông qua Web Framework Django. Việc sử dụng Django cung cấp kiến trúc Model-Template-View vững chắc, tích hợp sẵn các cơ chế bảo mật và giao diện quản trị mạnh mẽ. Thay vì sử dụng cơ sở dữ liệu quan hệ thông thường, hệ thống tích hợp PostgreSQL kết hợp cùng phần mở rộng không gian PostGIS, cho phép lưu trữ và truy vấn trực tiếp các đối tượng hình học như điểm, đường, vùng một cách tối ưu.
+
+Bên cạnh đó, việc xây dựng giao diện tương tác phía người dùng được thực hiện thông qua ngôn ngữ HTML và CSS kết hợp với framework Bootstrap, đảm bảo hiển thị phản hồi nhanh (responsive) trên mọi kích thước màn hình. Đặc biệt, để biểu diễn dữ liệu bản đồ động, thư viện JavaScript LeafletJS được áp dụng. LeafletJS nổi bật với tính mỏng nhẹ, khả năng xử lý hình ảnh bản đồ raster và vector xuất sắc, đồng thời dễ dàng tích hợp các lớp bản đồ cơ sở (basemaps) từ các dịch vụ bản đồ bên thứ ba.
+
+\section{Nguồn dữ liệu và Tiền xử lý}
+
+Toàn bộ dữ liệu phục vụ quá trình nghiên cứu và xây dựng hệ thống BusGIS được khai thác từ kho dữ liệu mở OpenStreetMap. Đây là một dự án bản đồ thế giới mở, cung cấp nguồn dữ liệu không gian phong phú được đóng góp bởi cộng đồng toàn cầu. Thông qua các công cụ truy xuất như Overpass API, hệ thống thu thập được hệ tọa độ chi tiết của các trạm dừng cũng như mảng tọa độ vẽ lộ trình của các tuyến xe buýt đang hoạt động tại khu vực Thành phố Hồ Chí Minh. Dữ liệu thô tải về mang định dạng chuẩn GeoJSON, chứa đầy đủ các thuộc tính không gian và phi không gian cần thiết.
+
+Sau khi thu thập, quy trình tiền xử lý được thực hiện nhằm tinh gọn và đồng nhất hóa dữ liệu trước khi đưa vào cơ sở dữ liệu. Quá trình này bao gồm việc loại bỏ các thuộc tính không cần thiết, chuẩn hóa định dạng văn bản cho tên tuyến và địa chỉ, đồng thời chuyển đổi cấu trúc mạng tuyến thành danh sách tọa độ sắp xếp theo trình tự di chuyển hợp lý. Dữ liệu sau khi xử lý được chuyển đổi sang chuẩn WKT (Well-Known Text) và nạp trực tiếp vào các bảng PostGIS, sẵn sàng cho các thao tác phân tích truy vấn không gian trên giao diện WebGIS.

@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Danh sách trạm dừng - BusGIS{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="bi bi-geo-alt-fill me-2"></i>Danh sách trạm dừng</h1>
+            <p class="lead">{{ stops.paginator.count }} trạm dừng xe buýt</p>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <div class="filter-bar mb-4">
+            <form method="GET" action="{% url 'stops-list' %}">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" name="q" value="{{ q }}"
+                                placeholder="Tìm theo tên, mã hoặc địa chỉ...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" name="feature" onchange="this.form.submit()">
+                            <option value="all" {% if feature == 'all' %}selected{% endif %}>Tất cả tiện ích</option>
+                            <option value="shelter" {% if feature == 'shelter' %}selected{% endif %}>Có mái che</option>
+                            <option value="bench" {% if feature == 'bench' %}selected{% endif %}>Có ghế ngồi</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-filter me-1"></i>Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Stops List -->
+        <div class="row g-3" id="stops-grid">
+            {% for stop in stops %}
+            <div class="col-md-6 col-lg-4 stop-item">
+                <div class="stop-card">
+                    <div class="stop-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div class="stop-info">
+                        <h6>{{ stop.name }}</h6>
+                        {% if stop.code %}
+                        <div class="stop-code mb-1"><span class="badge bg-secondary">Mã: {{ stop.code }}</span></div>
+                        {% endif %}
+                        {% if stop.address %}
+                        <p class="stop-address"><i class="bi bi-signpost me-1"></i>{{ stop.address }}</p>
+                        {% endif %}
+                        <div class="stop-badges">
+                            {% if stop.has_shelter %}
+                            <span class="badge bg-success-subtle text-success"><i class="bi bi-umbrella"></i> Mái
+                                che</span>
+                            {% endif %}
+                            {% if stop.has_bench %}
+                            <span class="badge bg-info-subtle text-info"><i class="bi bi-person-arms-up"></i> Ghế
+                                ngồi</span>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'stop-detail' stop.id %}" class="btn btn-outline-success btn-sm w-100 mt-3">Chi tiết & Đánh giá</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="bi bi-geo-alt"></i>
+                    <h4>Không tìm thấy trạm dừng nào</h4>
+                    <p>Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if stops.has_other_pages %}
+        <nav class="mt-5 d-flex justify-content-center">
+            <ul class="pagination pagination-lg shadow-sm">
+                {% if stops.has_previous %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ stops.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if feature %}&feature={{ feature }}{% endif %}"><i
+                            class="bi bi-chevron-left"></i></a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
+                {% endif %}
+
+                {% for i in stops.paginator.page_range %}
+                {% if stops.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% elif i > stops.number|add:'-3' and i < stops.number|add:'3' %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ i }}{% if q %}&q={{ q }}{% endif %}{% if feature %}&feature={{ feature }}{% endif %}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if stops.has_next %}
+                <li class="page-item"><a class="page-link"
+                        href="?page={{ stops.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if feature %}&feature={{ feature }}{% endif %}"><i
+                            class="bi bi-chevron-right"></i></a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-right"></i></span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Logic tìm kiếm đã được chuyển sang server-side để xử lý dữ liệu lớn (5400+ trạm) hiệu quả hơn -->
+{% endblock %}

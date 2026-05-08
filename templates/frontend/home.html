@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}BusGIS - Hệ thống quản lý xe buýt thông minh{% endblock %}
+
+{% block content %}
+<!-- Map Container -->
+<div id="map-container">
+    <div id="map"></div>
+
+    <!-- Search Panel -->
+    <div class="search-panel">
+        <div class="search-header">
+            <h5><i class="bi bi-search me-2"></i>Tìm kiếm</h5>
+            <button class="btn-close-panel" onclick="toggleSearchPanel()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="search-input-group">
+            <input type="text" id="search-input" class="form-control" placeholder="Tìm trạm hoặc tuyến xe...">
+            <button class="btn btn-primary" onclick="searchStops()">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="action-btn" onclick="findNearestStop()">
+                <i class="bi bi-crosshair"></i>
+                <span>Trạm gần nhất</span>
+            </button>
+            <button class="action-btn" onclick="toggleRouteMode()">
+                <i class="bi bi-arrows-move"></i>
+                <span>Tìm đường</span>
+            </button>
+            <button class="action-btn" onclick="showBufferTool()">
+                <i class="bi bi-circle"></i>
+                <span>Vùng phục vụ</span>
+            </button>
+        </div>
+
+        <!-- Route Finder -->
+        <div id="route-finder" class="route-finder" style="display: none;">
+            <h6><i class="bi bi-arrows-move me-2"></i>Tìm đường đi</h6>
+
+            <div class="mb-2">
+                <label class="form-label small">Điểm đi:</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="start-stop-input" class="form-control" placeholder="Nhập tên trạm đi..."
+                        autocomplete="off">
+                    <input type="hidden" id="start-stop-id">
+                    <button class="btn btn-outline-secondary" type="button" onclick="useCurrentLocation('start')">
+                        <i class="bi bi-geo-alt"></i>
+                    </button>
+                </div>
+                <div id="start-suggestions" class="suggestions-list"></div>
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label small">Điểm đến:</label>
+                <div class="input-group input-group-sm">
+                    <input type="text" id="end-stop-input" class="form-control" placeholder="Nhập tên trạm đến..."
+                        autocomplete="off">
+                    <input type="hidden" id="end-stop-id">
+                </div>
+                <div id="end-suggestions" class="suggestions-list"></div>
+            </div>
+
+            <button class="btn btn-primary w-100 mt-2" onclick="findRoute()">
+                <i class="bi bi-search me-1"></i>Tìm tuyến
+            </button>
+        </div>
+
+        <!-- Buffer Tool -->
+        <div id="buffer-tool" class="buffer-tool" style="display: none;">
+            <h6><i class="bi bi-circle me-2"></i>Vùng phục vụ</h6>
+            <div class="mb-2">
+                <label class="form-label small">Bán kính (mét):</label>
+                <input type="range" class="form-range" id="buffer-radius" min="100" max="2000" value="500"
+                    oninput="updateRadiusLabel()">
+                <div class="d-flex justify-content-between small text-white">
+                    <span>100m</span>
+                    <span id="radius-value">500m</span>
+                    <span>2000m</span>
+                </div>
+            </div>
+            <p class="small text-whiteSửa lại thanh tìm kiếm sao cho tìm hết được tuyến khi nhập từ khoá thay vì tìm chỉ trong trang">Click vào trạm để hiển thị vùng phục vụ</p>
+        </div>
+
+        <!-- Filter by Route -->
+        <div class="route-filter">
+            <h6><i class="bi bi-funnel me-2"></i>Lọc theo tuyến</h6>
+            <div class="route-select-wrapper">
+                <select class="form-select form-select-sm bg-dark text-white border-secondary" 
+                        id="route-select-filter" onchange="filterByRoute(this.value)">
+                    <option value="all">-- Tất cả các tuyến --</option>
+                    {% for route in routes %}
+                    <option value="{{ route.id }}">{{ route.route_number }} - {{ route.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div id="search-results" class="search-results">
+            <!-- Results will be populated by JS -->
+        </div>
+    </div>
+
+    <!-- Toggle Search Button -->
+    <button class="toggle-search-btn" onclick="toggleSearchPanel()">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Map Controls -->
+    <div class="map-controls">
+        <button class="control-btn" onclick="locateUser()" title="Vị trí của tôi">
+            <i class="bi bi-crosshair"></i>
+        </button>
+        <button class="control-btn" onclick="zoomIn()" title="Phóng to">
+            <i class="bi bi-plus-lg"></i>
+        </button>
+        <button class="control-btn" onclick="zoomOut()" title="Thu nhỏ">
+            <i class="bi bi-dash-lg"></i>
+        </button>
+        <button class="control-btn" onclick="resetView()" title="Reset bản đồ">
+            <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+    </div>
+
+    <!-- Info Panel (for route results) -->
+    <div id="info-panel" class="info-panel" style="display: none;">
+        <div class="info-header">
+            <h6 id="info-title">Kết quả</h6>
+            <button class="btn-close-panel" onclick="closeInfoPanel()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div id="info-content" class="info-content">
+            <!-- Content populated by JS -->
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="map-legend">
+        <div class="legend-item">
+            <span class="legend-icon stop-icon"></span>
+            <span>Trạm dừng</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon route-icon"></span>
+            <span>Tuyến xe</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-icon buffer-icon"></span>
+            <span>Vùng phục vụ</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/map.js?v=4"></script>
+<script>
+    // Initialize map after DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        initMap();
+        loadStops();
+        loadRoutes();
+        // populateStopSelects(); // Removed as we use autocomplete now
+    });
+</script>
+
+<style>
+    .suggestions-list {
+        display: none;
+        position: absolute;
+        width: 90%;
+        max-height: 200px;
+        overflow-y: auto;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .suggestion-item {
+        padding: 8px 12px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+    }
+
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .suggestion-item small {
+        display: block;
+        color: #6c757d;
+        font-size: 0.75rem;
+    }
+</style>
+{% endblock %}

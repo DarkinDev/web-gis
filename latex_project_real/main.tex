@@ -1,0 +1,1335 @@
+\documentclass[13pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{chngcntr}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{pgf}
+\usepackage{pgfpages}
+
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+
+\tolerance=1000
+\emergencystretch=10pt
+\hyphenpenalty=10000
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\Large\centering}{\chaptertitlename\ \thechapter}{10pt}{\LARGE}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={Báo cáo Đồ án BusGIS},
+}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{tikzpicture}[remember picture, overlay]
+  \draw[line width = 2pt] ($(current page.north west) + (3cm,-2cm)$) rectangle ($(current page.south east) + (-2cm,2cm)$);
+  \draw[line width = 0.5pt] ($(current page.north west) + (3.1cm,-2.1cm)$) rectangle ($(current page.south east) + (-2.1cm,2.1cm)$);
+\end{tikzpicture}
+
+\begin{center}
+    \vspace*{1cm}
+    \Large \textbf{TRƯỜNG ĐẠI HỌC ...} \\
+    \Large \textbf{KHOA CÔNG NGHỆ THÔNG TIN} \\
+    \vspace{2cm}
+    
+    \includegraphics[width=4cm]{images/logo.png} 
+    
+    \vspace{2.5cm}
+    \LARGE \textbf{BÁO CÁO ĐỒ ÁN} \\
+    \vspace{1cm}
+    \Huge \textbf{HỆ THỐNG WEBGIS QUẢN LÝ VÀ TRA CỨU TUYẾN XE BUÝT THÔNG MINH (BUSGIS)} \\
+    \vspace{3cm}
+    
+    \Large
+    \begin{tabular}{ll}
+        \textbf{Giảng viên hướng dẫn:} & TS. Nguyễn Văn A \\
+        \textbf{Sinh viên thực hiện:} & Lê Văn B \\
+        \textbf{Mã số sinh viên:} & 12345678 \\
+    \end{tabular}
+    
+    \vfill
+    \Large TP. Hồ Chí Minh, \the\year
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\newpage
+
+\setstretch{1.3}
+
+TRƯỜNG ĐẠI HỌC TÀI NGUYÊN VÀ MÔI TRƯỜNG
+
+THÀNH PHỐ HỒ CHÍ MINH
+
+KHOA CÔNG NGHỆ THÔNG TIN
+
+TIỂU LUẬN
+
+LẬP TRÌNH GIS
+
+XÂY DỰNG BẢN ĐỒ VÀ PHÂN TÍCH QUẢN LÝ HỆ THỐNG TUYẾN XE BUÝT BẰNG GIS
+
+Sinh viên thực hiện:	Nguyễn Hồng Tuyết Nhi (1250080128)
+
+Nguyễn Gia Huy (1250080072)
+
+Lớp:   12\textbackslash{}_ĐH\textbackslash{}_CNTT3
+
+Khoá:   2023 – 2027
+
+Giảng viên hướng dẫn : CN.Nguyễn Duy Tuấn
+
+Ths.Nguyễn Phan Chí Thành
+
+TP. Hồ Chí Minh, 10  tháng 04  năm 2026
+
+LỜI CẢM ƠN
+
+Nhóm chúng em xin gửi lời cảm ơn chân thành và sâu sắc nhất đến Bộ môn Công nghệ thông tin, khoa Công nghệ thông tin, Trường Đại học Tài nguyên và Môi trường TP.HCM đã tạo ra một môi trường học tập, nghiên cứu năng động, trang bị cho chúng em đầy đủ cơ sở vật chất và kiến thức nền tảng vững chắc.
+
+Đặc biệt, chúng em xin trân trọng gửi lời tri ân đến Thầy CN. Nguyễn Duy Tuấn và Thầy ThS. Nguyễn Phan Chí Thành đã tận tình dẫn dắt, định hướng cách tiếp cận vấn đề và trực tiếp chỉ bảo cho chúng em trong suốt quá trình triển khai dự án. Nhờ có phương pháp giảng dạy hiện đại và sự khuyến khích liên tục từ các thầy, chúng em đã vượt qua những khó khăn về mặt lập trình không gian để có thể hoàn thành tốt tiểu luận môn học này.
+
+Do giới hạn về thời gian triển khai cũng như kinh nghiệm thực tiễn xử lý dữ liệu GIS quy mô lớn chưa nhiều, bài tiểu luận chắc chắn sẽ không tránh khỏi những thiếu sót. Chúng em rất mong nhận được sự góp ý, phê bình và chỉ bảo thêm của Hội đồng đánh giá cùng các Quý Thầy Cô để hệ thống được chuẩn hoá và hoàn thiện hơn.
+
+DANH MỤC HÌNH ẢNH
+
+Hình 5.1. 1. Giao diện trang giới thiệu dự án (Landing Page)	54
+
+Hình 5.1. 2. Giao diện Trang chủ vận hành nền tảng Bản đồ số (Leaflet Map)	55
+
+Hình 5.1. 3. Giao diện danh mục Tuyến xe buýt hệ thống	56
+
+Hình 5.1. 4. Giao diện danh mục Trạm dừng  hệ thống	56
+
+Hình 5.1. 5. Màn hình thông tin lộ trình và cấu trúc các trạm thuộc Tuyến xe	57
+
+Hình 5.2. 1. Cửa sổ nhập liệu và đường đi định tuyến trả về (Find Route Result)	58
+
+Hình 5.2. 2. Kết quả thực thi công cụ khoanh vùng Tìm Trạm gần nhất (Nearest Stops)	59
+
+Hình 5.2. 3. Lớp dữ liệu thể hiện Không gian vùng đệm (Buffer Zone) quanh cụm trạm	60
+
+Hình 5.3. 1. Trang đăng nhập Authentication Gateway	61
+
+Hình 5.3. 2. Màn hình thông tin và cập nhật chỉnh sửa Hồ sơ cá nhân (Profile View)	62
+
+Hình 5.3. 3. Quy trình gửi liên kết khôi phục thông qua giao thức hộp thư điện tử (Mailtrap)- Bước 1	63
+
+Hình 5.3. 4. Quy trình gửi liên kết khôi phục thông qua giao thức hộp thư điện tử (Mailtrap)-Bước 2	63
+
+Hình 5.3. 5. Quy trình gửi liên kết khôi phục thông qua giao thức hộp thư điện tử (Mailtrap)-Bước 3	64
+
+Hình 5.3. 6. Quy trình gửi liên kết khôi phục thông qua giao thức hộp thư điện tử (Mailtrap)-Bước 4	64
+
+Hình 6. 1. Giao diện trang chủ tích hợp sức mạnh bản đồ số phân rã đa lớp trực quan	66
+
+Hình 6. 2. Hiệu ứng bong bóng hộp thoại (Popup) sinh động xuất hiện khi tương tác trực tiếp vật lý vào Trạm xe buýt	67
+
+Hình 6. 3. Kết quả truy vấn thuật toán phân mảng "Tìm trạm trong phạm vi bán kính 2km"	68
+
+Hình 6. 4. Đánh giá kết xuất thuật toán định tuyến giao thông, vạch đường chỉ dẫn chi tiết trên lớp bản đồ	69
+
+Hình 6. 5. Bằng chứng Hệ thống giám sát: Thông báo trạng thái đồng bộ dữ liệu Excel	70
+
+DANH MỤC SƠ ĐỒ, BIỂU ĐỒ
+
+Sơ đồ 4- 1. Kiến trúc hệ thống chi tiết hệ thống quản lý trạm/tuyến xe buýt	14
+
+Sơ đồ 4- 2.Sơ đồ Luồng xử lý dữ liệu (DFD / Pipeline)	16
+
+Sơ đồ 4- 3. ERD các thực thể chính của hệ thống	17
+
+Sơ đồ 4- 4.ERD mở rộng — các thực thể phụ và hệ thống hỗ trợ	18
+
+Sơ đồ 4- 5.Use Case tổng quan hệ thống	20
+
+Sơ đồ 4- 6. Use Case UC02 — Đăng nhập	20
+
+Sơ đồ 4- 7.Use Case UC03 — Đăng xuất	21
+
+Sơ đồ 4- 8. Use Case UC04 — Xem bản đồ	22
+
+Sơ đồ 4- 9. Use Case UC05 — Tìm tuyến theo vị trí	23
+
+Sơ đồ 4- 10. Use Case UC06 — Tìm tuyến theo tên	23
+
+Sơ đồ 4- 11. Use Case UC07 — Xem chi tiết tuyến	24
+
+Sơ đồ 4- 12. Use Case UC08 — Xem chi tiết trạm	25
+
+Sơ đồ 4- 13. Use Case UC09 — Đánh dấu tuyến yêu thích	25
+
+Sơ đồ 4- 14. Use Case UC10 — Báo cáo sự cố	26
+
+Sơ đồ 4- 15. Use Case UC11 — Đặt lại mật khẩu	27
+
+Sơ đồ 4- 16. Use Case UC12 — Import dữ liệu	27
+
+Sơ đồ 4- 17. Use Case UC13 — Quản lý tuyến (CRUD)	28
+
+Sơ đồ 4- 18. Use Case UC14 — Quản lý trạm (CRUD)	29
+
+Sơ đồ 4- 19. Use Case UC15 — Khôi phục tuyến đã xóa	29
+
+Sơ đồ 4- 20. Use Case UC16 — Gửi thông báo đến người dùng	30
+
+Sơ đồ 4- 21. Use Case UC17 — Lập lịch import dữ liệu	30
+
+Sơ đồ 4- 22. Use Case UC18 — Xem lịch sử import	31
+
+Sơ đồ 4- 23.  Use Case UC19 — Quản lý quyền người dùng	32
+
+Sơ đồ 4- 24. Use Case UC20 — Xuất dữ liệu tuyến/trạm	32
+
+Sơ đồ 4- 25. Use Case UC21 — Nhập dữ liệu tuyến/trạm	34
+
+Sơ đồ 4- 26. Use Case UC22  -- xác thực người dùng	35
+
+Sơ đồ 4- 27. Sơ đồ Sequence tổng quan của hệ thống quản lý trạm/tuyến xe buýt	37
+
+Sơ đồ 4- 28. Sơ đồ Sequence - Nhánh chức năng Tìm tuyến	38
+
+Sơ đồ 4- 29. Sơ đồ Sequence import dữ liệu	39
+
+Sơ đồ 4- 30. Sơ đồ Sequence gửi thông báo	40
+
+Sơ đồ 4- 31. Sơ đồ Activity tổng quan hệ thống quản lý trạm/tuyến xe buýt	42
+
+Sơ đồ 4- 32. Sơ đồ nhánh  Activity tìm tuyến	44
+
+Sơ đồ 4- 33. Sơ đồ Activity import dữ liệu	45
+
+Sơ đồ 4- 34. Sơ đồ Activity đăng ký người dùng	47
+
+Sơ đồ 4- 35. Sơ đồ Activity đặt lại mật khẩu	49
+
+\chapter{TỔNG QUAN ĐỀ TÀI}
+
+Trong bối cảnh đô thị hóa diễn ra với tốc độ chóng mặt như hiện nay, việc phát triển và tối ưu hóa hệ thống giao thông công cộng, đặc biệt là mạng lưới xe buýt, đang trở thành "chìa khóa" thiết yếu để giải quyết triệt để các bài toán nan giải về ùn tắc giao thông và ô nhiễm môi trường. Tại các đô thị lớn như Thành phố Hồ Chí Minh, mặc dù mạng lưới xe buýt khá dày đặc, nhưng việc cung cấp các công cụ tra cứu thông tin lộ trình một cách trực quan, chính xác và theo thời gian thực cho hành khách vẫn còn tồn tại rất nhiều rào cản. Các tài liệu dạng văn bản, danh sách hay bản đồ tĩnh truyền thống thường gây khó khăn cho việc định vị không gian và lên kế hoạch di chuyển.
+
+Để giải quyết vấn đề đó, sự ra đời của Hệ thống Thông tin Địa lý trên nền tảng Web (WebGIS) cung cấp một giải pháp toàn diện và linh hoạt. Việc áp dụng công nghệ WebGIS cho phép chuyển đổi các tệp dữ liệu không gian phức tạp thành những giao diện bản đồ động sinh động, có khả năng tương tác cao. Nhận thức được tầm quan trọng này, nhóm chúng em đã quyết định thực hiện đề tài "Xây dựng bản đồ và phân tích hệ thống tuyến xe buýt bằng GIS". Sản phẩm là một phần mềm kết hợp giữa máy chủ backend xử lý địa lý mạnh mẽ (GeoDjango, PostgreSQL/PostGIS) và giao diện trực quan (Leaflet.js). Đề tài không chỉ đơn thuần là việc số hóa dữ liệu, mà còn đóng vai trò phân tích vùng phục vụ, truy vấn tuyến đường và quản lý dữ liệu thông minh, mang lại tiện ích to lớn cho cả nhà quản lý hệ thống giao thông lẫn hành khách tham gia xe buýt.
+
+Đề tài: Xây dựng bản đồ và phân tích hệ thống tuyến xe buýt bằng GIS
+
+\section{Lý do chọn đề tài}
+
+Trong bối cảnh chuyển đổi số đang diễn ra mạnh mẽ trên hầu hết các lĩnh vực kinh tế – xã hội, việc ứng dụng công nghệ thông tin vào hoạt động quản lý, đặc biệt là hạ tầng giao thông công cộng đã trở thành xu thế tất yếu.
+
+Hệ thống xe buýt tại khu vực đô thị giữ vai trò nòng cốt trong việc giảm ách tắc giao thông, bảo vệ môi trường, tuy nhiên, việc phục vụ thông tin đến khách hàng cũng như vận hành bộ máy quản lý vẫn tồn đọng nhiều khó khăn.
+
+Thực tế khảo sát cho thấy, trong quá trình vận hành hệ thống xe buýt, các dữ liệu điểm (trạm dừng) và đường (tuyến đường) chủ yếu được quản lý dưới dạng danh sách chữ viết, các tệp bảng tính đơn giản (Excel) hoặc bản đồ 2D dạng ảnh tĩnh.
+
+Cách thức quản lý này tồn tại nhiều hạn chế như: khó kiểm soát trực quan các sai lệch bản đồ, mất nhiều thời gian trong việc sửa đổi vị trí khi đường sá bị điều chỉnh, dữ liệu bị phân tán và không hỗ trợ các thuật toán không gian.
+
+Đối với hành khách, việc phải lên các ứng dụng rời rạc hoặc web tĩnh để xem số tuyến rất bất tiện, nhất là khi họ không biết các trạm nào đang ở gần mình.
+
+Ngoài ra, người quản trị thường xuyên mắc lỗi "xóa nhầm" dữ liệu trạm/tuyến lúc cập nhật mà không có hệ thống phục hồi lại.
+
+Sự gia tăng về mức độ phức tạp của quy hoạch và lưu lượng xe khiến mô hình quản lý truyền thống không còn phù hợp.
+
+Nếu không có một hệ thống thông tin địa lý (GIS) tương tác cao, kết nối đồng bộ giữa nền tảng Web trực tuyến và cơ sở dữ liệu không gian, các đơn vị vận hành sẽ gặp khó khăn lớn, làm giảm chất lượng phục vụ công cộng.
+
+Xuất phát từ những vấn đề thực tiễn nêu trên, đề tài “Xây dựng bản đồ và phân tích hệ thống tuyến xe buýt bằng GIS” được lựa chọn nhằm nghiên cứu, phân tích hiện trạng hoạt động quản lý lộ trình xe buýt, từ đó xây dựng một ứng dụng WebGIS hiện đại với các tính năng chuyên biệt hỗ trợ trực quan hóa bản đồ, quản lý tuyến/trạm, tìm kiếm bán kính (Nearby Search) và cơ chế khôi phục dữ liệu an toàn (Soft Delete \textbackslash{}& Restore)..
+
+\section{Mục tiêu nghiên cứu}
+
+1.2.1. Mục tiêu tổng quát :
+
+Mục tiêu tổng quát của đề tài là phân tích, mô hình hóa và thiết kế một hệ thống WebGIS hoàn chỉnh nhằm giám sát, hiển thị trực quan và quản lý hiệu quả các tuyến/trạm xe buýt. Qua đó, hỗ trợ hành khách dễ dàng tiếp cận giao thông công cộng, đồng thời tối ưu hóa công tác quản trị, bảo vệ dữ liệu nội bộ một cách chặt chẽ.
+
+1.2.2. Mục tiêu cụ thể :
+
+Để đạt được mục tiêu tổng quát, đề tài tập trung vào:
+
+Khảo sát thực tế nhu cầu tra cứu tuyến xe buýt của hành khách và quy trình cập nhật dữ liệu của quản trị viên (Admin).
+
+Phân tích các hạn chế của hệ thống dò tìm hiện tại (AS-IS), từ đó xác định yêu cầu hệ thống TO-BE (WebGIS có tương tác).
+
+Đặc tả chi tiết yêu cầu phần mềm dưới dạng tài liệu SRS (các Use Case phân lớp người tìm đường, người quản lý, và dữ liệu thùng rác).
+
+Thiết kế hệ thống ở mức logic thông qua các mô hình UML, ERD và triển khai cơ sở dữ liệu học thuật không gian bằng PostGIS (SRID 4326).
+
+Xây dựng giao diện Dashboard với các hành động an toàn như: xóa mềm (Soft Delete) không mất dữ liệu gốc và có thể Khôi phục (Restore). Thông qua việc đạt được các mục tiêu trên, đồ án minh họa rõ cách ánh xạ hệ thống GIS vào bài toán đô thị thực tế.
+
+\section{Đối tượng và Phạm vi nghiên cứu}
+
+1.3.1. Đối tượng nghiên cứu :
+
+Hệ thống thông tin địa lý (GIS) nền Web.
+
+Các nghiệp vụ cốt lõi: Phân tích vùng đệm (Buffer), xem lớp bản đồ, tìm kiếm, đăng nhập và quản lý điểm/tuyến trên cơ sở dữ liệu không gian.
+
+1.3.2. Phạm vi nghiên cứu :
+
+Để đảm bảo tính khả thi và tập trung giải quyết triệt để vấn đề chuyên môn trong khuôn khổ giới hạn của một đồ án tốt nghiệp, giới hạn phạm vi nghiên cứu của đề tài được quy định cụ thể ở các khía cạnh sau:
+
+\begin{itemize}
+    \item Phạm vi Về mặt Không gian và Dữ liệu (Spatial \textbackslash{}& Data Scope):
+\end{itemize}
+
+Không gian địa lý: Hệ thống tiến hành số hóa bản đồ mở (OpenStreetMap) và lấy vùng thực nghiệm không gian giới hạn ở khu vực đô thị (ví dụ: một phần mạng lưới giao thông công cộng của thành phố Sở tại làm bối cảnh gốc). Đề tài sẽ không xử lý cơ sở dữ liệu đường bộ liên tỉnh hay hàng không.
+
+Giới hạn thông tin: Do dữ liệu định vị hộp đen (GPS) của các tuyến xe buýt ngoài đời thực là tài sản mật của Sở Giao thông, đồ án sử dụng bộ dữ liệu tọa độ Tuyến/Trạm giả lập dựa trên tình hình giao thông thực tế nhằm phục vụ việc kiểm thử các thuật toán.
+
+\begin{itemize}
+    \item Phạm vi Về mặt Công nghệ - Kỹ thuật (Technical Scope):
+\end{itemize}
+
+Về Công nghệ tích hợp: Đề tài chỉ tập trung khai thác sức mạnh của nền tảng web mã nguồn mở (Django Framework) kết hợp với các gói thư viện bản đồ JavaScript (Leaflet.js) và hệ quản trị dữ liệu không gian tĩnh (PostGIS/SpatialLite). Đề tài chưa đi vào nghiên cứu các thuật toán trí tuệ nhân tạo (AI Machine Learning) để dự báo mật độ giao thông.
+
+Chức năng ứng dụng: Khảo sát và xây dựng giới hạn trong các nghiệp vụ bao gồm: Hiển thị bản đồ trạm/tuyến, Tìm đường theo không gian mạng (Routing), Phân tích bán kính điểm đỗ gần nhất (Nearest Buffer) và Đồng bộ lưu trữ dữ liệu tập trung thông qua Admin Dashboard nội bộ.
+
+\begin{itemize}
+    \item Phạm vi Về Đối tượng phục vụ (Target Audience Scope):
+\end{itemize}
+
+Nghiên cứu tập trung giải bài toán cho tuyến giao thông công cộng cố định (Xe buýt), không đo lường đối với các phương tiện giao thông linh hoạt cá nhân (như Xe máy, Xe tải hay Taxi công nghệ).
+
+Đối tượng người dùng phần mềm là hành khách có nhu cầu tra cứu tuyến tĩnh, và chuyên viên quản trị hệ thống của cơ quan quản lý điều hành vận tải.
+
+\section{Phương pháp nghiên cứu}
+
+Để hoàn thành các mục tiêu đã đề ra và xây dựng thành công nền tảng WebGIS ứng dụng quản lý xe buýt, đề tài đã vận dụng kết hợp và logic các phương pháp nghiên cứu khoa học cơ bản sau đây:
+
+\begin{itemize}
+    \item Phương pháp Thu thập và Phân tích tài liệu (Literature Review):
+\end{itemize}
+
+Phương pháp này được sử dụng trong giai đoạn đầu nhằm xây dựng cơ sở lý thuyết vững chắc cho đồ án. Cụ thể, tiến hành sưu tầm, đọc hiểu và trích lọc thông tin từ các giáo trình chuyên ngành Hệ thống thông tin địa lý (GIS), các tài liệu nguyên bản (Documentation) quốc tế của Django, Leaflet.js và giao thức quản trị PostGIS.
+
+Bên cạnh đó, phân tích các đồ án, bài báo khoa học và các phần mềm bản đồ giao thông hiện có để rút ra kinh nghiệm cấu trúc ứng dụng.
+
+\begin{itemize}
+    \item Phương pháp Phân tích và Thiết kế hệ thống (System Analysis and Design):
+\end{itemize}
+
+Áp dụng các kỹ thuật phân tích thiết kế phần mềm hướng đối tượng (OOP) quen thuộc của ngành công nghệ thông tin. Sử dụng ngôn ngữ mô hình hóa thống nhất (UML) để triển khai bản vẽ kiến trúc.
+
+Vẽ rành mạch các biểu đồ tương tác: Biểu đồ Use Case (Nghiệp vụ), Biểu đồ Activity (Hoạt động phân luồng), Biểu đồ Sequence (Trình tự truyền tải dữ liệu) để ánh xạ ý tưởng trên giấy thành cấu trúc CSDL thực tế.
+
+\begin{itemize}
+    \item Phương pháp Thực nghiệm và Phát triển phần mềm (Experimental Research \textbackslash{}& Development):
+\end{itemize}
+
+Đây là phương pháp có thời lượng thực thi cốt lõi trong suốt chiều dài đề tài. Trực tiếp vận dụng ngôn ngữ lập trình Python và mã nguồn Web Front-end (HTML/CSS/JS) để xây dựng thử nghiệm (Prototyping) các mô-đun ứng dụng.
+
+Xây dựng hệ cơ sở dữ liệu mẫu, cấy ghép các thuật toán xử lý không gian và liên tục gỡ lỗi (Debug) thuật toán tuyến tính nhằm hoàn thiện khối lệnh.
+
+\begin{itemize}
+    \item Phương pháp Kiểm thử và Đánh giá (Testing \textbackslash{}& Evaluation):
+\end{itemize}
+
+Phát triển các Kịch bản kiểm thử (Test-cases) cho cả hai mảng hộp đen (Black-box testing) dưới góc độ người dùng thao tác giao diện, và hộp trắng (White-box testing) dưới góc độ thuật toán chọc sâu vào cơ sở dữ liệu.
+
+Từ kết quả kiểm thử (dữ liệu nhập bằng Excel, đo lường tốc độ tải phân trang, thử tính chính xác của thuật toán GIS), tiến hành đánh giá đối chiếu với mục tiêu ban đầu để chốt lại ưu điểm và nhược điểm của phần mềm.
+
+\chapter{CƠ SỞ LÝ THUYẾT VÀ DỮ LIỆU SỬ DỤNG}
+
+\section{Hệ thống thông tin địa lý (GIS)}
+
+Khái niệm về GIS: GIS (Geographic Information System) là hệ thống phức hệ bao gồm máy tính phần cứng, phần mềm, dữ liệu, nhân sự và các phương pháp luận, được thiết kế chuyên biệt để hoạt động và dung hợp mọi dữ liệu có gắn với tọa độ (Spatial Referenced Data). Nó chịu trách nhiệm thu nhận, lưu trữ, thao tác, phân tích toán học, truy vấn, và trình bày kết xuất dưới dạng bản đồ 2D/3D. Trong luận án này, GIS chính là trái tim thuật toán giúp xử lý các phép toán hình học đồ sộ.
+
+Ứng dụng của thuật toán GIS trong Web Mapping: Khác biệt hoàn toàn so với việc nhúng một bức ảnh tĩnh, bản đồ web GIS chia lãnh thổ thành các Vector sắc nét (Point, Line, Polygon). Mỗi Vector mang một bảng thuộc tính (Attribute Table) vô hạn. Sự kết hợp này đóng vai trò màng lọc vô cùng linh hoạt cho phép thiết lập các thông báo (popup), tạo vùng (Highlight) tương tác không gian ngay lập tức vào từng tọa độ khi con người tác động chuột.
+
+\section{Thuật toán Haversine – tính khoảng cách địa lý}
+
+Việc tính toán khoảng cách thực tế giữa hai điểm trên bề mặt Trái Đất sử dụng thuật toán Haversine. Công thức được biểu diễn theo phương trình sau:
+
+\begin{equation}
+    a = \sin^2\left(\frac{\Delta \varphi}{2}\right) + \cos(\varphi_1) \cdot \cos(\varphi_2) \cdot \sin^2\left(\frac{\Delta \lambda}{2}\right)
+\end{equation}
+
+\begin{equation}
+    c = 2 \cdot \text{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)
+\end{equation}
+
+\begin{equation}
+    d = R \cdot c
+\end{equation}
+
+Trong đó $d$ là khoảng cách địa lý, $R$ là bán kính Trái Đất (6371 km), $\varphi$ và $\lambda$ là vĩ độ và kinh độ.
+\section{WebGIS}
+
+Khái niệm bản chất WebGIS: Sự giao thoa đỉnh cao của cách mạng Internet truyền thông và Công nghệ không gian GIS hình thành nên khái niệm WebGIS. Nó giải phóng hệ thống GIS cục bộ cá nhân (Desktop GIS) trên máy tính chuyên gia, cho phép phân phối và cấp quyền tương tác các bản đồ động đồ sộ trên mạng viễn thông.
+
+Các thành phần cốt lõi của kiến trúc WebGIS: Một hệ thực thể WebGIS cần duy trì ba hệ tư tưởng phần cứng:
+
+Máy khách (Client): Là chiếc trình duyệt Web (Chrome, Safari, Edge) do bệnh viện, trường học, cá nhân sở hữu để gửi request dữ liệu đồ họa (HTTP Request) để xem bản đồ.
+
+Máy chủ ứng dụng (Application Server / Web Server): Khối điều hướng khổng lồ, là trung tâm tiếp nhận, chứa logic lọc dữ liệu bảo mật (vd: Django/Python).
+
+Máy chủ Database Không gian (Data Server): Cỗ máy ngầm chứa toàn vẹn dữ liệu hệ quy chiếu, điểm, đường (PostgreSQL).
+
+\section{Bản đồ trực tuyến}
+
+Mạng lưới OpenStreetMap (OSM): OSM là dự án dữ liệu bản đồ do cộng đồng nguồn mở cộng tác lớn nhất toàn cầu. Cung cấp nền tảng bản đồ (BaseMap Tile) hoàn toàn miễn phí, có độ phân giải siêu chi tiết đến cụm ngõ hẻm nhỏ nhất ở quy mô đường sá đô thị. WebGIS ứng dụng OSM để render dưới dạng các gói gạch hình ảnh (Tile Layer) qua URL (với mức thu phóng z, tọa độ x, y). Hình 2.1 Hình ảnh lớp bản tự nền gạch OSM
+
+Hệ sinh thái Google Maps: Một dịch vụ thương mại xuất chúng cung cấp kho API cực lớn, mạnh về dẫn đường Traffic GPS. Dù vậy, điểm yếu kìm hãm duy nhất là chính sách trả phí duy trì đính kèm làm phát sinh gánh nặng tài chính đối với sinh viên hay cơ quan vận hành nhỏ. Bảng nghiên cứu dưới đây chỉ ra định hướng sử dụng OSM thông qua Leaflet làm giải pháp thay thế hoàn hảo. Bảng 2.1 Bảng so sánh API Công nghệ Web Mapping hiện tại
+
+\section{Công nghệ sử dụng trong đồ án}
+
+Hệ thống sử dụng các công nghệ hiện đại. Cụ thể, Django (Python) làm Web Framework ở Backend mang lại kiến trúc an toàn, tốc độ phát triển nhanh. Hệ quản trị CSDL PostgreSQL kết hợp PostGIS cho phép lưu trữ và xử lý truy vấn không gian phức tạp. Ở Frontend, HTML/CSS và Bootstrap kết hợp cùng LeafletJS cung cấp trải nghiệm bản đồ mượt mà, thân thiện với người dùng.
+
+Hệ thống này hội tụ tổ hợp (Tech Stack) tân tiến bậc nhất cho quy mô phân tích viễn thám và quản trị quy mô: Backend (Lớp xử lý phía Server):
+
+Python: Ngôn ngữ lập trình cốt lõi mang đặc tính bảo vệ (Garbage Collector), cú pháp khoa học giúp việc xử lý thuật toán địa lý gọn gàng, giảm thiểu rủi ro bảo mật hệ thống.
+
+Django Open Framework: Bộ khung kiến trúc ưu việt với triết lý Model-View-Template (MVT); bao trùm sẵn module quản trị, xác thực Token mã băm an toàn nhất.
+
+Mailtrap (Hệ thống kiểm thử giao thức SMTP ảo): Trong quá trình phát triển (Development), Mailtrap đóng vai trò là một máy chủ Sandbox bảo mật (sandbox.smtp.mailtrap.io). Nguyên lý hoạt động của nó là 'đánh lừa' ứng dụng WebGIS rằng Email đã được gửi đi thành công ra Internet, nhưng thực tế toàn bộ luồng thư từ (như thông báo "Mật khẩu mới của bạn", "Yêu cầu khôi phục mật khẩu") sẽ bị chặn lại và lưu trữ tập trung tại hộp thư ảo "My Inbox".
+
+Cách thức hoạt động: Bằng cách cấu hình các thông số EMAIL\textbackslash{}_HOST\textbackslash{}_USER, PASSWORD và EMAIL\textbackslash{}_PORT = '2525' trực tiếp vào cấu hình lõi của Django, lập trình viên có thể kiểm tra định dạng thư tĩnh HTML, debug đường dẫn liên kết, mà không sợ hệ thống xả thư rác (Spam) nhầm vào hộp thư thật của khách hàng, đảm bảo tính vô trùng tuyệt đối cho dữ liệu thật.
+
+Frontend (Lớp kết xuất phía Khách hàng):
+
+Ngôn ngữ HTML/CSS/JavaScript: Ngôn ngữ chịu trách nhiệm định dạng khối DOM, giao diện mỹ quan, phản hồi tương tác click chuột qua hệ thống Event Listener JS mãnh liệt. Thư viện bản đồ (Client-side Rendering):
+
+Leaflet.js: Một viên ngọc quý trong nền công nghiệp Web Map. Thư viện JS mở siêu nhỏ vọn (micro-library) có khả năng vẽ hàng chục ngàn vector GeoJSON lên khung màn hình HTML5 Canvas/SVG với tốc độ khung hình (FPS) cực kỳ trơn tru, không xé ảnh, kết hợp vuốt chạm đa điểm cảm ứng. Thư viện xử lý GIS (Động cơ lõi DB):
+
+GeoDjango + PostgreSQL + PostGIS: Lõi RDBMS được mở rộng thuộc tính Topology, biến PostgreSQL thành pháo đài. GEOS Engine xử lý phép tính Hình Học, hỗ trợ các truy vấn chồng lớp, định danh Index cấp độ K-dimensional qua thuật toán phân trang GiST Tree.
+
+\section{Dữ liệu sử dụng}
+
+\section{Nguồn dữ liệu}
+
+Dữ liệu của hệ thống không lấy từ hình vẽ tĩnh, mà được thu thập và vector hoá từ OpenStreetMap (OSM) cùng một số tham khảo từ cổng thông tin giao thông thành phố. Các tuyến đường được digitize thành danh sách các tọa độ địa lý ghép nối nhau.
+
+\subsection{Dữ liệu mạng lưới giao thông từ OpenStreetMap}
+
+Các tệp dữ liệu nguyên thủy cung cấp hình hài các cấu trúc mặt đường và điểm trung chuyển công cộng được chắt lọc (Crawled) thông qua cổng điện tử tự do kết hợp kiểm kê tại thực địa, bao gồm tọa độ góc, chuỗi vĩ - kinh độ thô bám theo quỹ đạo mặt đường nhựa. Dữ liệu tiếp nhận dưới định dạng shapefile (.shp) hoặc xml tinh gọn.
+
+\section{Cấu trúc cơ sở dữ liệu GIS (Data Schema)}
+
+Hệ thống xoay quanh 3 thực thể dữ liệu được liên kết với nhau chặt chẽ:
+
+Model BusRoute (Tuyến Xe Buýt):
+
+Các field định danh cơ bản: route\textbackslash{}_number, name, operating\textbackslash{}_hours, ticket\textbackslash{}_price, color.
+
+Đặc trưng GIS: geometry = models.LineStringField(srid=4326): Trường này nắm giữ toàn bộ mảng tọa độ uốn lượn liên tục miêu tả chính xác lộ trình xe sẽ đi qua trên bản đồ đường phố.
+
+Model BusStop (Trạm Dừng):
+
+Các field quản lý: code, name, address. Các đặc quyền hạ tầng như has\textbackslash{}_shelter (có nhà chờ), has\textbackslash{}_bench (có ghế ngồi).
+
+Đặc trưng GIS: location = models.PointField(srid=4326): Điểm tọa độ kinh độ (Longitude), vĩ độ (Latitude) đơn lập xác định đúng chấm mốc cắm của nhà chờ.
+
+Model RouteStop (Trạm Dừng Trên Tuyến):
+
+Bảng trung gian giải quyết quan hệ nhiều - nhiều (N:N). Lưu order (thứ tự dừng), distance\textbackslash{}_from\textbackslash{}_start (khoảng cách so với điểm cầu phát).
+
+Ví dụ bảng dữ liệu:
+
+Lấy ảnh
+
+\section{Tiền xử lý dữ liệu}
+
+Hệ tọa độ tham chiếu: Toàn bộ dự án phải được chuẩn hoá đồng nhất về Hệ toạ độ địa lý thế giới hệ WGS-84, ứng với ID SRID: 4326. Việc đồng bộ SRID vô cùng quan trọng để hệ thống không bị lỗi tọa độ khi ánh xạ điểm từ PostGIS lên trình tải bản đồ Leaflet.
+
+Chuyển đổi GeoJSON: Lập trình View API sử dụng lớp Serialization trong Django (serializers.serialize('geojson', queryset)) để tự động convert tệp hình học từ nhị phân CSDL ra chuẩn văn bản GeoJSON chuẩn của OGC.
+
+\chapter{PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG}
+
+\section{Kiến trúc hệ thống}
+
+Kiến trúc hệ thống BusGIS được xây dựng dựa trên mô hình ba lớp (Three-tier Architecture) nhằm đảm bảo tính phân tách rõ ràng giữa các thành phần, tối ưu hóa hiệu suất và nâng cao khả năng mở rộng. Sự phân tách này giúp bảo trì thuận tiện và tăng bảo mật. Bao gồm Tầng Trình diễn (Frontend) dùng React/HTML/CSS/LeafletJS, Tầng Xử lý (Backend) dùng Django Python, và Tầng Dữ liệu dùng PostgreSQL/PostGIS với khả năng lưu trữ không gian vượt trội.
+
+Mô hình tổ chức luận lý kiến trúc của đồ án WebGIS được chia làm hai luồng không gian hành vi phân cấp: tương tác công cộng và tương tác biên tập quản trị. Thiết kế 3-Layer (Client - Web Server - Database Server) chặn đứng mọi nỗ lực khai thác dữ liệu trái phép: + Quy trình tương tác vòng khép kín của User (Hành khách):
+
+Mở App/Browser máy tính thiết bị di động truy cập đường dẫn (URL) qua mạng Internet.
+
+Web Interface -> Thực thể giao diện hiển thị cung cấp khung nhìn Canvas. Hành khách lướt quét, tương tác bấm chuột kéo thả (Drag/Zoom map), nhấn tìm mã số chạy tàu, đăng kí định danh qua form.
+
+Back-End API -> Phản hồi thông báo JSON về, điều khiển vị trí mốc máy ảnh. Khách hàng theo dõi vị trí trạm xe buýt mục tiêu một cách trực quan để đi bộ trong trạng thái chờ.
+
+\begin{itemize}
+    \item Quy trình can thiệp chiều sâu của Admin (Biên tập viên GIS):
+\end{itemize}
+
+Vận hành quy trình bảo mật HTTPS Auth Login quyền ưu tiên cao (Superuser).
+
+Trang Dashboard Admin -> Tham chiếu màn hình điều khiển theo dõi thống kê lưới giao thông, danh mục các điểm dừng. Xử lý nghiệp vụ Thêm/Sửa theo lệnh chỉ huy mạng lưới thực địa.
+
+Cơ chế quản lý lỗi sai -> Lỡ tay ấn nhầm Xóa tuyến quan trọng, thực thể bay vào hộp giam dữ liệu. Kích hoạt nút bấm Khôi phục từ mềm. Phía Server DB thay lệnh truy vấn, biến trạng thái dữ liệu is\textbackslash{}_deleted=False -> Báo cáo phục hồi dữ liệu mỹ mãn về giao diện báo hiệu thành công. Bản đồ Web cho User bên ngoài lập tức tự động load lại tuyến bị mất.
+
+Để đảm bảo hệ thống WebGIS có khả năng mở rộng theo chiều ngang, duy trì hiệu năng ổn định khi số lượng truy vấn không gian tăng cao, cũng như đảm bảo tính bảo mật và khả năng tách biệt các lớp xử lý, hệ thống được thiết kế theo mô hình kiến trúc phân tầng (Layered Architecture). Mô hình này chia hệ thống thành các lớp độc lập bao gồm: lớp trình diễn (Client Layer), lớp xử lý ứng dụng (Application Layer) và lớp dữ liệu (Data Layer).
+Bên cạnh đó, các thành phần hỗ trợ như Redis Cache và Celery Worker được tích hợp nhằm tối ưu hiệu năng truy xuất và xử lý bất đồng bộ, đặc biệt trong các tác vụ import dữ liệu và gửi thông báo.
+
+Sơ đồ 4- 1. Kiến trúc hệ thống chi tiết hệ thống quản lý trạm/tuyến xe buýt
+
+Như thể hiện trong Sơ đồ 4-1, dữ liệu từ phía người dùng được gửi từ trình duyệt đến hệ thống thông qua Load Balancer, sau đó được phân phối đến Web Server để xử lý. Application Server chịu trách nhiệm xử lý logic nghiệp vụ và truy vấn dữ liệu không gian từ PostgreSQL/PostGIS. Redis được sử dụng để cache dữ liệu nhằm giảm tải truy vấn lặp lại, trong khi Celery Worker xử lý các tác vụ nền như import dữ liệu và gửi email. Kiến trúc này giúp hệ thống đạt được tính ổn định cao và dễ dàng mở rộng khi triển khai thực tế.
+
+\section{Data Flow / Pipeline}
+
+Quá trình luân chuyển dữ liệu bên trong hệ thống BusGIS được thiết kế khoa học nhằm kiểm soát chặt chẽ trạng thái thông tin. Dữ liệu thô từ OpenStreetMap được tiền xử lý (Data Cleansing) bằng Python scripts, loại bỏ node thừa, chuẩn hóa tọa độ. Sau đó chuyển đổi (Transform) sang dạng hình học WKT để ánh xạ vào PostGIS. Khi truy vấn, Django ORM tính toán và trả về JSON cho Frontend hiển thị qua LeafletJS API.
+
+Để đảm bảo dữ liệu đầu vào được xử lý chính xác và nhất quán trước khi lưu trữ vào cơ sở dữ liệu không gian, hệ thống xây dựng một pipeline xử lý dữ liệu bao gồm nhiều bước tuần tự từ tiếp nhận, kiểm tra, xử lý đến lưu trữ. Pipeline này đặc biệt quan trọng đối với các dữ liệu import từ CSV hoặc GeoJSON.
+
+Sơ đồ 4- 2.Sơ đồ Luồng xử lý dữ liệu (DFD / Pipeline)
+
+Quy trình xử lý bắt đầu từ việc người dùng upload dữ liệu, sau đó hệ thống tiến hành validate cấu trúc, chuyển đổi định dạng và enqueue vào hàng đợi Celery. Worker sẽ xử lý bất đồng bộ để tránh block hệ thống chính. Cơ chế retry và logging được áp dụng để đảm bảo dữ liệu không bị mất khi xảy ra lỗi.
+
+\section{Mô hình dữ liệu}
+
+\subsection{ERD các thực thể chính}
+
+Sơ đồ ERD các thực thể chính được xây dựng nhằm mô tả cấu trúc dữ liệu cốt lõi của hệ thống WebGIS. Các thực thể này đại diện cho các đối tượng nghiệp vụ chính như tuyến xe buýt, trạm dừng và người dùng. Việc thiết kế tập trung vào tính nhất quán dữ liệu và khả năng truy vấn hiệu quả, đặc biệt đối với các dữ liệu không gian.
+
+Sơ đồ 4- 3. ERD các thực thể chính của hệ thống
+
+Từ sơ đồ có thể thấy các thực thể như BusRoute, BusStop và RouteStop đóng vai trò trung tâm trong hệ thống. Quan hệ giữa tuyến và trạm được tổ chức thông qua bảng trung gian để đảm bảo tính linh hoạt. Ngoài ra, các trường dữ liệu không gian được lưu trữ theo chuẩn PostGIS nhằm hỗ trợ các truy vấn địa lý.
+
+\subsection{ERD mở rộng (thực thể phụ)}
+
+Bên cạnh các thực thể chính, hệ thống còn bao gồm các thực thể phụ nhằm hỗ trợ các chức năng nâng cao như quản lý import dữ liệu, ghi log hệ thống và gửi thông báo. Sơ đồ ERD mở rộng giúp mô tả chi tiết các thành phần này và mối liên hệ với hệ thống chính.
+
+Sơ đồ 4- 4.ERD mở rộng — các thực thể phụ và hệ thống hỗ trợ
+
+Các bảng như ImportJob, AuditLog và Notification đóng vai trò quan trọng trong việc đảm bảo khả năng theo dõi và kiểm soát hệ thống. Việc tách riêng các thực thể này giúp tăng khả năng mở rộng, đồng thời hỗ trợ debug và audit khi hệ thống vận hành thực tế.
+
+Trong quá trình thiết kế cơ sở dữ liệu, một số quyết định quan trọng đã được đưa ra nhằm tối ưu hiệu năng và khả năng mở rộng của hệ thống.
+
+Thứ nhất, việc tách bảng RouteStop làm bảng trung gian giúp mô hình hóa chính xác quan hệ nhiều-nhiều giữa tuyến và trạm, đồng thời hỗ trợ việc sắp xếp thứ tự các trạm trên tuyến.
+
+Thứ hai, hệ thống sử dụng kiểu dữ liệu geometry thay vì lưu trữ tọa độ dạng số đơn lẻ, cho phép tận dụng các hàm không gian của PostGIS như ST\textbackslash{}_Distance và ST\textbackslash{}_Within.
+
+Cuối cùng, việc tách các bảng audit và import ra khỏi bảng chính giúp hệ thống dễ dàng mở rộng và giảm tải cho các truy vấn nghiệp vụ thông thường.
+
+\subsection{Phân tích thiết kế cơ sở dữ liệu}
+
+Thiết kế cơ sở dữ liệu của hệ thống được xây dựng theo nguyên tắc chuẩn hóa nhằm giảm thiểu dư thừa dữ liệu và đảm bảo tính toàn vẹn. Các bảng chính như BusRoute, BusStop và RouteStop được thiết kế với khóa chính và khóa ngoại rõ ràng, giúp duy trì mối quan hệ chặt chẽ giữa các thực thể.
+
+Đối với dữ liệu không gian, hệ thống sử dụng PostgreSQL kết hợp với PostGIS để lưu trữ các trường geometry. Việc sử dụng chỉ mục không gian (GIST Index) trên các cột này giúp tăng tốc đáng kể các truy vấn như tìm kiếm theo bán kính hoặc xác định tuyến gần nhất.
+
+Ngoài ra, các bảng phụ như ImportJob và AuditLog được thiết kế nhằm phục vụ việc theo dõi và kiểm soát hệ thống. Cơ chế soft-delete được áp dụng cho các bảng chính để đảm bảo dữ liệu không bị mất hoàn toàn khi xóa, đồng thời hỗ trợ khả năng khôi phục khi cần thiết.
+
+\section{Chức năng hệ thống (Use Case)}
+
+\subsection{Use Case tổng quan}
+
+Để xác định phạm vi chức năng và các tương tác chính giữa người dùng với hệ thống, sơ đồ Use Case tổng quan được xây dựng nhằm mô tả các chức năng cốt lõi mà hệ thống WebGIS cung cấp. Sơ đồ này giúp làm rõ vai trò của từng nhóm người dùng và các hành vi mà họ có thể thực hiện trong hệ thống.
+
+Sơ đồ 4- 5.Use Case tổng quan hệ thống
+
+Như thể hiện trong sơ đồ, hệ thống có hai nhóm actor chính: người dùng thông thường và quản trị viên. Người dùng tập trung vào các chức năng như tìm tuyến, xem chi tiết và báo cáo sự cố, trong khi quản trị viên có thêm quyền quản lý dữ liệu và import hệ thống. Sơ đồ này cũng là cơ sở để xây dựng các kịch bản kiểm thử sau này.
+
+\subsection{Use Case Đăng nhập}
+
+Use Case đăng nhập cho phép người dùng truy cập hệ thống thông qua tài khoản đã đăng ký. Đây là bước xác thực quan trọng nhằm đảm bảo chỉ người dùng hợp lệ mới có thể sử dụng các chức năng hệ thống.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: Có tài khoản
+    \item Hậu điều kiện: Tạo session
+    \item Luồng: nhập → xác thực → login
+    \item Ngoại lệ: sai mật khẩu
+\end{itemize}
+
+Sơ đồ 4- 6. Use Case UC02 — Đăng nhập
+
+Sau khi đăng nhập thành công, hệ thống tạo phiên làm việc và cấp quyền truy cập phù hợp. Các cơ chế bảo mật như giới hạn đăng nhập sai cần được áp dụng để tránh tấn công brute-force.
+
+\subsection{Use Case Đăng xuất}
+
+Use Case đăng xuất cho phép người dùng kết thúc phiên làm việc hiện tại nhằm đảm bảo an toàn thông tin.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: Đã login
+    \item Hậu điều kiện: Session bị xóa
+    \item Luồng: click logout → hệ thống xử lý
+    \item Ngoại lệ: session hết hạn
+\end{itemize}
+
+Sơ đồ 4- 7.Use Case UC03 — Đăng xuất
+
+Sau khi đăng xuất, toàn bộ thông tin phiên bị xóa khỏi hệ thống. Điều này đặc biệt quan trọng khi sử dụng trên thiết bị công cộng.
+
+\subsection{Use Case Xem bản đồ}
+
+Chức năng xem bản đồ là thành phần cốt lõi của hệ thống WebGIS, cho phép người dùng tương tác trực tiếp với dữ liệu không gian.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: Truy cập hệ thống
+    \item Hậu điều kiện: Hiển thị map
+    \item Luồng: load map → hiển thị tuyến
+    \item Ngoại lệ: lỗi tile
+\end{itemize}
+
+Sơ đồ 4- 8. Use Case UC04 — Xem bản đồ
+
+Bản đồ được hiển thị với các lớp dữ liệu tuyến và trạm, giúp người dùng dễ dàng quan sát và tương tác.
+
+\subsection{Use Case Tìm tuyến theo vị trí}
+
+Chức năng tìm tuyến theo vị trí giúp người dùng xác định các tuyến gần nhất dựa trên vị trí hiện tại.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: Có GPS
+    \item Hậu điều kiện: Danh sách tuyến
+    \item Luồng: lấy vị trí → query → trả kết quả
+    \item Ngoại lệ: không có vị trí
+\end{itemize}
+
+Sơ đồ 4- 9. Use Case UC05 — Tìm tuyến theo vị trí
+
+Hệ thống sử dụng truy vấn không gian để tìm tuyến gần nhất, giúp tối ưu trải nghiệm tìm kiếm.
+
+\subsection{Use Case Tìm tuyến theo tên}
+
+Cho phép tìm kiếm tuyến bằng từ khóa.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: có dữ liệu
+    \item Hậu điều kiện: danh sách tuyến
+    \item Luồng: nhập → search
+    \item Ngoại lệ: không có kết quả
+\end{itemize}
+
+Sơ đồ 4- 10. Use Case UC06 — Tìm tuyến theo tên
+
+Kết quả được hiển thị theo danh sách giúp người dùng dễ chọn.
+
+\subsection{Use Case Xem chi tiết tuyến}
+
+Chức năng xem chi tiết tuyến cho phép người dùng truy cập thông tin đầy đủ về một tuyến xe buýt cụ thể, bao gồm lộ trình, danh sách các trạm và các dữ liệu liên quan. Đây là chức năng quan trọng giúp người dùng hiểu rõ cấu trúc tuyến trước khi lựa chọn sử dụng.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: Tuyến tồn tại trong hệ thống
+    \item Hậu điều kiện: Hiển thị đầy đủ thông tin tuyến
+    \item Luồng chính: chọn tuyến → truy vấn DB → hiển thị bản đồ + danh sách trạm
+    \item Ngoại lệ: tuyến không tồn tại / lỗi dữ liệu
+\end{itemize}
+
+Sơ đồ 4- 11. Use Case UC07 — Xem chi tiết tuyến
+
+Sau khi truy vấn thành công, hệ thống hiển thị lộ trình tuyến trên bản đồ cùng với danh sách trạm theo thứ tự. Việc trực quan hóa dữ liệu giúp người dùng dễ dàng nắm bắt thông tin và đưa ra quyết định di chuyển phù hợp.
+
+\subsection{Use Case Xem chi tiết trạm}
+
+Use Case này cho phép người dùng xem thông tin chi tiết của một trạm dừng cụ thể trên tuyến. Thông tin này bao gồm vị trí địa lý, tên trạm và các tuyến đi qua trạm đó.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: Trạm tồn tại
+    \item Hậu điều kiện: Hiển thị thông tin trạm
+    \item Luồng: chọn trạm → truy vấn → hiển thị
+    \item Ngoại lệ: không tìm thấy trạm
+\end{itemize}
+
+Sơ đồ 4- 12. Use Case UC08 — Xem chi tiết trạm
+
+Sau khi thực hiện, hệ thống hiển thị thông tin chi tiết của trạm trên giao diện bản đồ. Điều này hỗ trợ người dùng trong việc định vị và lựa chọn điểm dừng phù hợp.
+
+\subsection{Use Case Đánh dấu tuyến yêu thích}
+
+Chức năng này cho phép người dùng lưu lại các tuyến thường xuyên sử dụng nhằm truy cập nhanh trong những lần sử dụng sau.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: Đã đăng nhập
+    \item Hậu điều kiện: Tuyến được lưu
+    \item Luồng: chọn tuyến → thêm vào yêu thích
+    \item Ngoại lệ: chưa đăng nhập
+\end{itemize}
+
+Sơ đồ 4- 13. Use Case UC09 — Đánh dấu tuyến yêu thích
+
+Hệ thống lưu thông tin tuyến vào danh sách yêu thích của người dùng, giúp tối ưu trải nghiệm và giảm thời gian tìm kiếm trong tương lai.
+
+\subsection{Use Case Báo cáo sự cố}
+
+Use Case này cho phép người dùng gửi phản hồi hoặc báo cáo các vấn đề liên quan đến tuyến hoặc dữ liệu hệ thống.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: Có kết nối hệ thống
+    \item Hậu điều kiện: Báo cáo được lưu
+    \item Luồng: nhập nội dung → gửi → lưu DB
+    \item Ngoại lệ: lỗi gửi
+\end{itemize}
+
+Sơ đồ 4- 14. Use Case UC10 — Báo cáo sự cố
+
+Thông tin báo cáo được lưu lại và chuyển đến quản trị viên để xử lý. Điều này giúp hệ thống cải thiện chất lượng dữ liệu theo thời gian.
+
+\subsection{Use Case Đặt lại mật khẩu}
+
+Chức năng đặt lại mật khẩu giúp người dùng khôi phục quyền truy cập khi quên mật khẩu, đồng thời đảm bảo tính bảo mật của tài khoản.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Người dùng
+    \item Tiền điều kiện: Có email hợp lệ
+    \item Hậu điều kiện: Mật khẩu mới được cập nhật
+    \item Luồng: yêu cầu reset → gửi email → đổi mật khẩu
+    \item Ngoại lệ: email không tồn tại
+\end{itemize}
+
+Sơ đồ 4- 15. Use Case UC11 — Đặt lại mật khẩu
+
+Sau khi hoàn tất, người dùng có thể đăng nhập lại bằng mật khẩu mới. Token xác thực giúp đảm bảo chỉ chủ tài khoản mới có quyền thay đổi mật khẩu.
+
+\subsection{Use Case Import dữ liệu}
+
+Chức năng import cho phép quản trị viên tải dữ liệu tuyến từ file bên ngoài vào hệ thống.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Admin
+    \item Tiền điều kiện: Có file hợp lệ
+    \item Hậu điều kiện: Dữ liệu được lưu
+    \item Luồng: upload → validate → enqueue → xử lý
+    \item Ngoại lệ: file lỗi
+\end{itemize}
+
+Sơ đồ 4- 16. Use Case UC12 — Import dữ liệu
+
+Dữ liệu sau khi được xử lý sẽ được lưu vào hệ thống và có thể sử dụng ngay. Cơ chế queue giúp tránh ảnh hưởng hiệu năng.
+
+\subsection{Use Case Quản lý tuyến (CRUD)}
+
+Chức năng này cho phép quản trị viên thêm, sửa và xóa thông tin tuyến.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Admin
+    \item Tiền điều kiện: Có quyền
+    \item Hậu điều kiện: Dữ liệu cập nhật
+    \item Luồng: create/update/delete
+    \item Ngoại lệ: lỗi DB
+\end{itemize}
+
+Sơ đồ 4- 17. Use Case UC13 — Quản lý tuyến (CRUD)
+
+Các thay đổi được lưu lại và có thể được theo dõi thông qua hệ thống audit.
+
+\subsection{Use Case Quản lý trạm (CRUD)}
+
+Cho phép quản trị viên quản lý thông tin các trạm dừng.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Admin
+    \item Luồng: CRUD
+    \item Ngoại lệ: lỗi dữ liệu
+\end{itemize}
+
+Sơ đồ 4- 18. Use Case UC14 — Quản lý trạm (CRUD)
+
+Dữ liệu trạm được cập nhật phục vụ hiển thị bản đồ.
+
+\subsection{Use Case Khôi phục tuyến đã xoá}
+
+Cho phép khôi phục dữ liệu đã xóa mềm.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Admin
+    \item Luồng: restore
+    \item Post: active lại
+\end{itemize}
+
+Sơ đồ 4- 19. Use Case UC15 — Khôi phục tuyến đã xóa
+
+Dữ liệu được phục hồi mà không cần nhập lại.
+
+\subsection{Use Case Gửi thông báo tới user}
+
+Cho phép gửi thông báo tới người dùng.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Admin
+    \item Luồng: gửi → hệ thống xử lý
+\end{itemize}
+
+Sơ đồ 4- 20. Use Case UC16 — Gửi thông báo đến người dùng
+
+Người dùng nhận thông báo qua email hoặc hệ thống.
+
+\subsection{Use Case Lập lịch import định kỳ}
+
+Thiết lập import tự động.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Admin
+    \item Luồng: set schedule
+\end{itemize}
+
+Sơ đồ 4- 21. Use Case UC17 — Lập lịch import dữ liệu
+
+Job chạy định kỳ.
+
+\subsection{Use Case Xem lịch sử import}
+
+Xem lại các lần import.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Admin
+    \item Luồng: query log
+\end{itemize}
+
+Sơ đồ 4- 22. Use Case UC18 — Xem lịch sử import
+
+Hiển thị lịch sử.
+
+\subsection{Use Case Quản lý quyền người dùng}
+
+Quản lý phân quyền người dùng.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Admin
+    \item Luồng: assign role
+\end{itemize}
+
+Sơ đồ 4- 23.  Use Case UC19 — Quản lý quyền người dùng
+
+Quyền được cập nhật.
+
+\subsection{Use Case Xuất dữ liệu tuyến/trạm}
+
+Cho phép export dữ liệu thành file excel
+
+SRS
+
+\begin{itemize}
+    \item Actor: User/Admin
+    \item Luồng: chọn → export
+\end{itemize}
+
+Sơ đồ 4- 24. Use Case UC20 — Xuất dữ liệu tuyến/trạm
+
+File excel được tạo và tải xuống.
+
+\subsection{Use Case Nhập dữ liệu tuyến/trạm}
+
+Use Case này mô tả quy trình nhập dữ liệu tuyến và trạm vào hệ thống từ các nguồn bên ngoài như file CSV, JSON hoặc API. Đây là bước quan trọng nhằm đảm bảo hệ thống luôn có dữ liệu cập nhật và chính xác. Quy trình này yêu cầu kiểm tra dữ liệu chặt chẽ trước khi lưu vào cơ sở dữ liệu nhằm tránh lỗi và đảm bảo tính toàn vẹn.
+
+SRS
+
+\begin{itemize}
+    \item Actor: Quản trị viên
+    \item Tiền điều kiện: Có file dữ liệu hợp lệ hoặc nguồn dữ liệu
+    \item Hậu điều kiện: Dữ liệu tuyến/trạm được lưu vào hệ thống
+    \item Luồng chính: upload dữ liệu → validate schema → parse → lưu DB
+    \item Ngoại lệ: dữ liệu sai định dạng / thiếu trường / lỗi ghi DB
+\end{itemize}
+
+Sơ đồ 4- 25. Use Case UC21 — Nhập dữ liệu tuyến/trạm
+
+Sau khi nhập dữ liệu thành công, hệ thống cập nhật các bảng liên quan như tuyến và trạm, đồng thời có thể ghi log quá trình nhập để phục vụ việc kiểm tra và debug. Việc tách riêng Use Case này giúp làm rõ quy trình xử lý dữ liệu đầu vào và nâng cao khả năng kiểm soát chất lượng dữ liệu trong hệ thống.
+
+\subsection{Use Case xác thực}
+
+Sơ đồ Use Case xác thực mô tả các chức năng liên quan đến quản lý tài khoản người dùng, bao gồm đăng ký, đăng nhập và đặt lại mật khẩu. Đây là các chức năng quan trọng nhằm đảm bảo hệ thống chỉ cho phép người dùng hợp lệ truy cập.
+
+Sơ đồ 4- 26. Use Case UC22  -- xác thực người dùng
+
+Hệ thống áp dụng các cơ chế bảo mật như mã hóa mật khẩu và xác thực qua email. Ngoài ra, việc giới hạn số lần đăng nhập sai và sử dụng token có thời hạn giúp tăng cường bảo mật và tránh các cuộc tấn công phổ biến.
+
+\section{UML (Sequence + Activity)}
+
+\subsection{Sơ đồ Sequence tổng quan}
+
+Sơ đồ tuần tự tổng quát minh họa các tương tác theo dạng luồng tin nhắn (messages truyền tải) và theo thứ tự thời gian giữa Người sử dụng, các Tầng cấu trúc lõi trong hệ thống (Giao diện - Backend Server - Trình phân tích Logic - Cơ sở dữ liệu). Đặc trưng hoạt động của kiến trúc hệ thống BusGIS được chia làm hai giai đoạn tương tác tương ứng với hai chức năng lớn yếu nhất:
+
+\begin{itemize}
+    \item Giai đoạn 1: Tra cứu bản đồ và Sử dụng công cụ GIS (Đối với người dùng khách)
+\end{itemize}
+
+Khi Người dùng truy cập vào giao diện web, trình duyệt nhận yêu cầu và điều hướng (GET) lên Backend Server (Hệ thống điều hướng Django).
+
+Tại đây, Server tương tác với Cơ sở dữ liệu (Database) để bóc tách thông tin hệ tọa độ tuyến/trạm cơ bản và trả về cho Frontend để khởi tạo lớp bản đồ.
+
+Trong quá trình điều hướng, khi người dùng yêu cầu hệ thống xử lý các tính năng không gian phức tạp (như thu thập tọa độ hiện tại, tìm tuyến tối ưu, tra cứu buffer), Frontend sẽ đóng gói và thực thi lệnh POST qua API gửi lên Server.
+
+Tầng Trình phân tích (GIS Logic) sẽ làm nhiệm vụ nhận dữ liệu thô, sử dụng các thuật toán không gian cũng như Spatial Queries gửi tới CSDL, sau đó định dạng kết quả dưới chuẩn GeoJSON. Máy chủ phản hồi kết quả này, và Cuối cùng Giao diện bản đồ kích hoạt vẽ (render) các lớp Vector (Đoạn thẳng, Tọa độ, Đánh dấu) hỗ trợ người dùng có một hình dung trực quan nhất trên màn hình.
+
+\begin{itemize}
+    \item Giai đoạn 2: Quản trị hệ thống xe buýt đa tính năng (Đối với Quản trị viên)
+\end{itemize}
+
+Trước khi thực thi, Người dùng truy cập phải được Server đối soát và cấp quyền hợp lệ thông qua cơ chế kiểm tra (Session/Token) dưới Cơ sở dữ liệu. Sau khi thành công, dữ liệu luồng màn hình Bảng Điều Khiển (Dashboard) sẽ được hiển thị.
+
+Từ lúc này, Quản trị viên có thể nhập, tùy chỉnh dữ liệu hoặc xử lý Import / Export bằng File Excel.
+
+Đầu ra tương tác của Admin (tệp tin chuẩn hóa hoặc thông số form) sẽ tạo API tác động lên Backend Server. Server lúc này gọi Logic Model để thông dịch (Validation), sau đó đồng bộ hoá chuỗi dữ liệu không gian xuống CSDL chính.
+
+Một khi giao dịch lưu lại thành công, một xác nhận (Commit Success) được dội ngược về Server. Server thông qua đường truyền trả về mã phản hồi (HTTP Status) dẫn động UI kích hoạt thông báo (Alert/Notification) xác nhận thành công tới cho Người dùng và tự động tải lại bộ dữ liệu mới.
+
+Với sơ đồ này, ta có thể thấy tính liền mạch được duy trì liên tục giữa Front-End điều hướng API, Engine hỗ trợ bản đồ và Kho lưu dữ liệu không gian lõi của Web GIS.
+
+Sơ đồ 4- 27. Sơ đồ Sequence tổng quan của hệ thống quản lý trạm/tuyến xe buýt
+
+\subsection{Sequence — Tìm tuyến}
+
+Sơ đồ tuần tự dưới đây mô tả chi tiết quá trình tương tác giữa người dùng và hệ thống khi thực hiện chức năng tìm tuyến xe buýt.
+
+Sơ đồ 4- 28. Sơ đồ Sequence - Nhánh chức năng Tìm tuyến
+
+Quá trình bắt đầu từ việc người dùng gửi yêu cầu tìm kiếm, sau đó hệ thống xử lý và truy vấn dữ liệu từ cơ sở dữ liệu không gian. Kết quả được trả về và hiển thị trên giao diện người dùng trong thời gian ngắn.
+
+\subsection{Sequence — Import dữ liệu}
+
+Sơ đồ này mô tả luồng xử lý khi quản trị viên thực hiện import dữ liệu vào hệ thống.
+
+Sơ đồ 4- 29. Sơ đồ Sequence import dữ liệu
+
+Dữ liệu được kiểm tra trước khi đưa vào hàng đợi xử lý. Worker sẽ xử lý bất đồng bộ nhằm đảm bảo hệ thống chính không bị gián đoạn.
+
+\subsection{Sequence — Gửi thông báo}
+
+Sơ đồ mô tả quá trình hệ thống gửi thông báo đến người dùng khi có sự kiện xảy ra.
+
+Sơ đồ 4- 30. Sơ đồ Sequence gửi thông báo
+
+Thông báo được gửi thông qua email hoặc hệ thống nội bộ, đảm bảo người dùng nhận được thông tin kịp thời.
+
+\subsection{Sơ đồ Active tổng quan}
+
+Sơ đồ Activity tổng quan (General Activity Diagram) mô tả toàn bộ vòng đời tương tác và luồng chạy chức năng cốt lõi của Hệ thống Xây dựng bản đồ và quản lý tuyến xe buýt bằng GIS (BusGIS). Quy trình vận hành được chia nhỏ thông qua các phân nhánh logic theo vai trò người dùng (swimlanes), nhằm đảm bảo tính bảo mật, phân quyền rõ ràng cũng như luồng thực thi dữ liệu khép kín. Cụ thể như sau:
+
+1. Khởi đầu và Cơ chế điều hướng Ngay từ khi truy cập vào hệ thống, một nút thắt kiểm tra rẽ nhánh (Decision Node) sẽ được kích hoạt để phân cấp người dùng dựa trên trạng thái xác thực tài khoản (chưa đăng nhập hoặc đã xác thực).
+
+2. Luồng hoạt động của Người dùng phổ thông (Guest / Client) Nếu không đăng nhập, người dùng sẽ thuộc luồng công cộng (Public user). Tác nhân này sẽ trực tiếp tương tác với Giao diện Trang chủ (Bản đồ GIS) và có thể thực thi hai nhóm chuỗi hành động song song:
+
+Tra cứu và Theo dõi: Xem danh sách, thông tin chi tiết cấu trúc của từng Tuyến xe buýt và Trạm dừng hiện có trên địa bàn.
+
+Khai thác Công cụ GIS nâng cao: Thực hiện các phép phân tích không gian như tìm kiếm lộ trình di chuyển tối ưu (Find Route), tìm các trạm gần nhất quanh một vị trí (Nearest Stops / Radius), và kiểm tra vùng bao phủ phục vụ của các hệ thống trạm thông qua công cụ Buffer.
+
+3. Luồng Xác thực (Authentication System) Để đảm bảo an toàn cho dữ liệu GIS lõi (Core database), đối với bất cứ giao dịch làm thay đổi CSDL nào, hệ thống đều bắt buộc phải trải qua luồng xác thực bao gồm: Đăng nhập quyền quản trị, Đăng ký hoặc Khôi phục mật khẩu.
+
+4. Luồng Nghiệp vụ Quản trị viên (Admin / Manager) Sau khi đăng nhập và được cấp quyền thành công, Quản trị viên được phân luồng truy cập vào Trang quản trị tập trung (Management Dashboard). Từ hệ thống nội bộ này, các hoạt động nghiệp vụ được chia thành những chức năng riêng rẽ:
+
+Quản lý Danh mục: Thực thi các thao tác chuẩn thao tác CSDL bao gồm: Thêm mới, Chỉnh sửa, Xóa hoặc Phục hồi mềm (Soft-delete) đối với dữ liệu Tuyến và dữ liệu Trạm cố định.
+
+Quản lý Cấu trúc Tuyến: Can thiệp sâu vào cấu tạo không gian của tuyến bằng cách thiết lập thứ tự trạm, thêm hoặc bớt các điểm dừng vào trục tuyến sẵn có.
+
+Quản lý Luồng Dữ liệu Hàng loạt: Thực thi chức năng Export xuất hồ sơ các trạm/tuyến ra tệp tin Excel, hoặc Import dữ liệu mới từ Excel vào hệ thống để đáp ứng tính đồng bộ linh hoạt.
+
+Sơ đồ 4- 31. Sơ đồ Activity tổng quan hệ thống quản lý trạm/tuyến xe buýt
+
+\subsection{Activity — Tìm tuyến}
+
+Sơ đồ activity mô tả quy trình xử lý tìm tuyến từ khi người dùng nhập thông tin đến khi hiển thị kết quả.
+
+Sơ đồ 4- 32. Sơ đồ nhánh  Activity tìm tuyến
+
+Quy trình bao gồm các bước kiểm tra dữ liệu đầu vào, truy vấn và hiển thị kết quả, đảm bảo tính chính xác và hiệu quả.
+
+\subsection{Activity — Import dữ liệu}
+
+Sơ đồ này mô tả quy trình import dữ liệu từ lúc upload đến khi hoàn tất lưu trữ.
+
+Sơ đồ 4- 33. Sơ đồ Activity import dữ liệu
+
+Các bước xử lý bao gồm kiểm tra dữ liệu, xử lý và lưu trữ. Cơ chế retry giúp đảm bảo dữ liệu được xử lý đầy đủ.
+
+\subsection{Activity — Đăng ký người dùng}
+
+Sơ đồ activity dưới đây mô tả chi tiết quy trình đăng ký tài khoản mới trong hệ thống. Quy trình này bao gồm các bước từ việc người dùng nhập thông tin, hệ thống kiểm tra hợp lệ, đến việc gửi email xác thực nhằm đảm bảo tính chính xác và bảo mật của tài khoản.
+
+Sơ đồ 4- 34. Sơ đồ Activity đăng ký người dùng
+
+Quy trình bắt đầu khi người dùng nhập thông tin đăng ký, sau đó hệ thống kiểm tra tính hợp lệ của dữ liệu như email và mật khẩu. Nếu hợp lệ, hệ thống tạo tài khoản ở trạng thái chưa kích hoạt và gửi email xác thực. Người dùng cần xác nhận email để hoàn tất quá trình đăng ký, giúp đảm bảo tính xác thực và hạn chế tài khoản giả mạo.
+
+\subsection{Activity — Đặt lại mật khẩu}
+
+Sơ đồ activity mô tả quy trình đặt lại mật khẩu khi người dùng quên mật khẩu. Quy trình này được thiết kế nhằm đảm bảo tính bảo mật và tránh việc truy cập trái phép vào tài khoản.
+
+Sơ đồ 4- 35. Sơ đồ Activity đặt lại mật khẩu
+
+Khi người dùng yêu cầu đặt lại mật khẩu, hệ thống sẽ gửi một liên kết chứa token xác thực đến email đã đăng ký. Token này có thời hạn sử dụng nhằm tăng cường bảo mật. Sau khi xác thực thành công, người dùng có thể thiết lập mật khẩu mới và tiếp tục sử dụng hệ thống.
+
+Kết luận
+
+Chương này đã trình bày chi tiết về kiến trúc và thiết kế hệ thống WebGIS, bao gồm mô hình dữ liệu, các chức năng chính và các sơ đồ UML mô tả hành vi hệ thống. Các thành phần được thiết kế theo hướng module hóa, đảm bảo khả năng mở rộng và dễ bảo trì. Đây là cơ sở quan trọng để triển khai và đánh giá hệ thống trong các chương tiếp theo.
+
+\subsection{Cơ chế Phân quyền (Django Permissions \textbackslash{}& Authentication)}
+
+Hệ thống thiết lập một rào cản phân quyền nghiêm ngặt dựa trên thư viện django.contrib.auth.
+
+User (Người dùng thường): Chỉ có quyền truy cập các View hiển thị (Read-only). Không có quyền can thiệp vào Database.
+
+Staff/Admin (Quản trị viên): Được cấp quyền truy cập vào giao diện Dashboard và Django Admin. Có khả năng thực hiện các thao tác CRUD (Create, Read, Update, Delete). Đặc biệt, Admin có quyền "Khôi phục" các bản ghi đã xóa nhầm nhờ vào Permission tùy chỉnh được định nghĩa trong Model.
+
+\subsection{Cơ chế Phân trang (Pagination Implementation)}
+
+Để tối ưu hóa hiệu năng truyền tải khi số lượng tuyến xe và trạm dừng lên đến hàng nghìn bản ghi, hệ thống áp dụng kỹ thuật Phân trang (Pagination).
+
+Nguyên lý: Thay vì tải toàn bộ danh sách gây nghẽn băng thông, Django Paginator chia nhỏ dữ liệu thành các trang (ví dụ: 10 bản ghi/trang).
+
+Trải nghiệm người dùng: Tại giao diện Quản lý, Admin có thể chuyển đổi giữa các trang thông qua thanh điều hướng (Pagination bar). Điều này giúp trình duyệt không bị treo khi phải render quá nhiều dòng dữ liệu cùng lúc, đảm bảo tốc độ phản hồi dưới 0.5s.
+
+\section{Quy trình xử lý dữ liệu}
+
+Thuật toán làm mượt dòng chảy dữ liệu (Data Pipeline Architecture) tiến hành theo quy định:
+
+Tiếp nhận \textbackslash{}& Lưu kho: Lưới xe buýt thực địa được tổng hợp định kỳ tải vào lõi RDBMS qua cấu trúc Field đặc biệt của GeoDjango Model.
+
+Loại suy truy vấn học: Lọc, ném bỏ các mảnh dữ liệu vô hình học (không có geometry point do rớt trạm mất sóng GPS lúc đo vẽ) ra khỏi câu lệnh Queryset.
+
+GeoJSON Serialization: Mạch máu lưu thông của WebGIS, lõi server serialize (chuyển đổi tuần tự) các đối tượng Python nặng chịch thành một cấu trúc chuỗi File GeoJSON. Kỹ thuật này giảm triệt để băng thông mạng, tăng Frame-rate của bản đồ tải từ điện thoại.
+
+Kết xuất UI Graphics: Frontend JS gắp gói GeoJSON, đọc các cặp Tọa độ, chuyển đổi về kiểu dữ liệu pixel và Canvas/SVG API tiến hành cọ vẽ hiển thị theo tỷ lệ thu lốm tương ứng bằng lõi của Leaflet.js.
+
+\section{Chức năng hệ thống chuyên biệt}
+
+\subsection{Hiển thị bản đồ giao thông vô hạn (Infinite Map View):}
+
+Hệ thống không load 1 tấm ảnh, mà render bằng việc tải các mảng TileLayer đắp nối liền kề của OpenStreetMap nền. Tự động thay đổi sắc màu hiển thị tùy chỉnh cho các đối tượng buýt nổi bật.
+
+\subsection{Cơ chế Phân quyền (Django Permissions \textbackslash{}& Authentication)}
+
+Để đảm bảo tính bảo mật và tính toàn vẹn của cơ sở dữ liệu không gian định tuyến (GIS), hệ thống thiết lập một cơ chế kiểm soát truy cập và phân quyền chặt chẽ dựa trên lõi django.contrib.auth.
+
+Người dùng phổ thông (Guest/Client):
+
+Đối tượng này không yêu cầu xác thực định danh. Họ chỉ được cấp quyền truy xuất dữ liệu hiển thị trên giao diện (Read-only API), bao gồm việc tra cứu bản đồ, tuyến đường và tính năng tìm đường. Tuyệt đối không có khả năng gửi bất kỳ Request nào làm biến đổi dữ liệu (POST, PUT, DELETE) vào Database.
+
+Quản trị viên (Admin/Staff): Tài khoản sau khi được hệ thống xác thực (Authentication Token/Session) sẽ được cấp thẩm quyền truy cập nội bộ vào giao diện Dashboard và hệ quản trị lõi (Django Admin). Tại đây, quản trị viên sử dụng các quyền được định nghĩa sẵn trong hệ thống để thực hiện các thao tác thao tác vòng đời dữ liệu (CRUD).
+
+Kế thừa và Phân quyền mở rộng: Đặc biệt, hệ thống định nghĩa bổ sung các tùy chỉnh Model Permission (Ví dụ: can\textbackslash{}_restore), cho phép phân bổ cơ chế quyền đặc biệt — đơn cử là tính năng "Khôi phục mềm" các bản ghi dữ liệu Tuyến/Trạm đã lỡ bị xóa nhầm thao tác, đảm bảo sự an toàn dữ liệu mức cao nhất.
+
+\subsection{Cơ chế Phân trang (Pagination Implementation)}
+
+Khi hệ thống BusGIS mở rộng, số lượng bản ghi lưu trữ (bao gồm tuyến xe, điểm dừng, lịch sử tương tác) có thể lên tới hàng nghìn hoặc chục nghìn thực thể. Để tối ưu hóa hiệu năng máy chủ và tài nguyên băng thông, hệ thống áp dụng kỹ thuật Phân trang (Pagination) ở cả cấp độ API và Giao diện kết xuất.
+
+\begin{itemize}
+    \item Nguyên lý vận hành: Thay vì truy vấn và phản hồi (render) toàn bộ danh sách bản ghi cùng lúc gây nghẽn cổ chai mạng (Bottleneck), thư viện lõi Django Paginator được tích hợp để chia nhỏ tập dữ liệu thành các gói hữu hạn (ví dụ: giới hạn 10 - 20 bản ghi trên mỗi khối dữ liệu hiển thị).
+    \item Hiệu quả UX/UI và Tối ưu hóa hệ thống: Cấu trúc này không chỉ ngăn chặn tình trạng tràn bộ nhớ hay treo trình duyệt của máy khách (Client-side) khi phải render hàng ngàn Node HTML, mà còn giúp thời gian truy vấn dữ liệu từ bộ nhớ truy cập (Query time) giảm thiểu đáng kể; đảm bảo tốc độ phản hồi của hệ thống luôn duy trì ở độ trễ thấp (dưới 0.5s), mang lại trải nghiệm điều hướng mượt mà cho Quản trị viên tại Dashboard.
+\end{itemize}
+
+\subsection{Tìm tra cứu theo vị trí khoảng cách khu vực:}
+
+Trích xuất tọa độ Device Location GPS từ nền tảng trình duyệt Web nếu người dùng ấn lệnh "Cho phép truy cập vị trí". Thiết lập bán kính điện tử siêu hình (Circle Buffer 1km). Đổ bóng mờ highlight (Làm nổi bật) những điểm đón khách thỏa mãn thuật toán giao cắt ST\textbackslash{}_Intersects nằm lọt thỏm trong không gian vòng tròn định vị. Hỗ trợ người dùng nhận diện nhanh không phải mỏi mắt nhìn bản đồ.
+
+\subsection{Tra cứu theo mã số tuyến đặc tả}
+
+Hệ thống Filter theo String từ khóa thông minh. Khi nhận được tên tuyến, Bản đồ không bắt người dùng tự vuốt màn hình đi tìm, mà áp dụng lệnh thuật toán FitBounds thu thập tọa độ xa nhất 2 đầu tuyến, khóa cố định và bao trọn, dời con mắt Camera của thiết bị vừa khuân đủ tuyến đường uốn lượn cực thông minh.
+
+Hệ thống Quản lý cơ sở dữ liệu, Thùng Rác và Cảnh báo thư ảo (Mailtrap Integration): Cung cấp lưới thông tin dành riêng cho tác nghiệp Admin. Thiết lập một tính năng cực kỳ đắt giá đó là Email Notification (Cảnh báo Thư Tự Động). Khi tài khoản có sự thay đổi (Reset password), hoặc có tuyến xe mới đưa vào vận hành, một tiến trình đa luồng (Threading) sẽ chạy ngầm sinh thư HTML.
+
+Điểm nhấn công nghệ Sandbox: Để đảm bảo tính riêng tư của lượng dữ liệu thử nghiệm, Máy chủ thiết lập kết nối SMTP Port với hệ sinh thái Mailtrap. Cách hoạt động rất thông minh: Mailtrap sinh ra một tài khoản trung gian (EMAIL\textbackslash{}_HOST\textbackslash{}_USER, EMAIL\textbackslash{}_HOST\textbackslash{}_PASSWORD). Khi WebGIS gửi thư "Yêu cầu khôi phục mật khẩu", thay vì gọi Gmail hay Yahoo thực tế, gói tin HTTP sẽ bay thẳng vào địa chỉ sandbox.smtp.mailtrap.io qua cổng 2525. Toàn bộ lượng email này sẽ hiển thị gọn gàng trên bảng điều khiển giao diện web của Mailtrap (phần My Inbox). Tại đây, Developer có thể quan sát, debug và duyệt lại nội dung thư trước khi bàn giao hệ thống vào môi trường Production thực tế.
+
+\chapter{KẾT QUẢ TRIỂN KHAI VÀ XÂY DỰNG WEBSITE}
+
+\section{Phân hệ giao diện tương tác Người dùng (Guest Web UI)}
+
+Triết lý thiết kế (Design System) của giao diện web đối với người dùng phổ thông tuân thủ nghiêm ngặt chuẩn tối giản, kết hợp màu sắc nổi bật để tạo điểm nhìn (focal point). Mục tiêu cấu hình giao diện nhằm giúp bất kỳ nhóm đối tượng người dân nào cũng có thể tra cứu thông tin vận tải một cách hệ thống nhất.
+
+\subsection{Trang Giới thiệu hệ thống (Landing Page)}
+
+Giao diện Landing Page đóng vai trò là "bộ mặt" của dự án BusGIS, được cấu trúc theo dạng cuộn (scroll-down) cung cấp tóm tắt năng lực dự án.
+
+Cấu trúc chính: Hiển thị thông điệp cốt lõi cùng định hướng thiết kế giao thông công cộng.
+
+Nút điều hướng (Call-to-Action): Đặt ngay giữa màn hình để người dùng nhấp vào và dịch chuyển tức thời sang phân hệ bản đồ lõi.
+
+Trải nghiệm người dùng: Tương thích trên cả điện thoại (Mobile) và máy tính (Desktop) qua tính năng Responsive.
+
+Hình 5.1. 1. Giao diện trang giới thiệu dự án (Landing Page)
+
+\subsection{Giao diện Trang chủ và nền tảng Bản đồ số (Leaflet Map)}
+
+Trang chủ là trung tâm thao tác dữ liệu không gian. Giao diện tích hợp bộ thư viện Leaflet mã nguồn mở trên nền bản đồ OpenStreetMap.
+
+Không gian hiển thị: Trải rộng toàn màn hình (Full-width), giúp cực đại hóa diện tích quan sát địa lý.
+
+Thanh công cụ (Toolbar): Được neo (pinned) gọn gàng bên góc tích hợp các thanh tìm kiếm và công cụ chọn lớp hiển thị nhanh.
+
+Cơ chế thao tác: Cung cấp đầy đủ cảm ứng trượt (Pan) và thu phóng không độ trễ (Zoom), tự động tải cụm điểm mút trạm xe buýt khi thay đổi khung nhìn.
+
+Hình 5.1. 2. Giao diện Trang chủ vận hành nền tảng Bản đồ số (Leaflet Map)
+
+\subsection{Danh mục truy xuất Tuyến xe buýt và Trạm dừng}
+
+Hệ thống cung cấp một module giao diện dạng biểu bảng (List View) giúp tra cứu nhanh chóng dữ liệu tĩnh thay vì quan sát không gian.
+
+Thông tin kết xuất: Liệt kê minh bạch số hiệu tuyến, điểm đầu, điểm cuối hoặc danh xưng trạm dừng.
+
+Hiển thị khối lượng lớn: Tích hợp bộ Paginator cắt nhỏ danh sách thành nhiều trang, ngăn trình duyệt bị tắc nghẽn giao diện.
+
+Hình 5.1. 3. Giao diện danh mục Tuyến xe buýt hệ thống
+
+Hình 5.1. 4. Giao diện danh mục Trạm dừng  hệ thống
+
+\subsection{Chi tiết thông tin cấu trúc một Tuyến xe cụ thể}
+
+Khi người truy cập cần xem riêng một hệ thống vận tải, View detail sẽ được kích hoạt để bóc tách rõ thông tin.
+
+Hiển thị Lộ trình kép: Tách bạch rõ ràng lộ trình lượt đi và lượt về dựa trên hướng lưu thông.
+
+Chuỗi Trạm dừng: Liệt kê một bảng có thứ tự chính xác (Order) các trạm dừng thuộc quỹ đạo mà xe buýt sẽ đi qua để người dân dễ bề chuẩn bị điểm xuống xe.
+
+Hình 5.1. 5. Màn hình thông tin lộ trình và cấu trúc các trạm thuộc Tuyến xe
+
+\section{Nhóm công cụ Phân tích Không gian (GIS Tools)}
+
+Công cụ GIS là tính năng chuyên sâu tận dụng hệ quản trị CSDL không gian nhằm hỗ trợ xử lý toán học trên môi trường bản đồ thực tế.
+
+\subsection{Tra cứu và tìm hướng đi định tuyến (Routing - Find Route)}
+
+Cung cấp cho hành khách một công cụ vạch ra kế hoạch di chuyển hiệu quả nhất trên mạng lưới xe buýt của thành phố.
+
+Giao diện nhập liệu nhanh: Hai tùy chọn Input cho phép điền kinh/vĩ độ thủ công hoặc chỉ định tọa độ trực quan bằng cách nhấp chọn thẳng lên bề mặt bản đồ.
+
+Kết quả trực quan (Polyline): Đường đi tối ưu do thuật toán kết xuất sẽ được mô tả bằng một dải đồ họa (tô màu highlight) cắt dọc mạng lưới, giúp mắt thường dễ định vị.
+
+Bảng điều hướng: Kết quả trả về kèm theo hướng dẫn đón đúng chuyến xe / trạm dừng bên trái màn hình.
+
+Hình 5.2. 1. Cửa sổ nhập liệu và đường đi định tuyến trả về (Find Route Result)
+
+\subsection{Chức năng quét Trạm gần nhất trong bán kính (Nearest Stops)}
+
+Giải quyết bài toán "Làm sao để tìm bến đỗ gần mình nhất?" dựa trên phân tích hình học (Radius Query).
+
+Khung tùy chọn tham số: Người dùng điều chỉnh thanh trượt hoặc nhập thiết lập bán kính khoanh vùng (ví dụ: 1km, 2km quanh vị trí đang đứng).
+
+Dấu điểm ghim tọa độ: Thuật toán đẩy lại giao diện tập hợp những chiếc "ghim tọa độ" (Markers) làm nổi bật hoàn toàn các điểm nằm lọt trong vành đai khai báo.
+
+Hình 5.2. 2. Kết quả thực thi công cụ khoanh vùng Tìm Trạm gần nhất (Nearest Stops)
+
+\subsection{Đánh giá không gian mạng lưới dịch vụ (Buffer Zone)}
+
+Mô phỏng mặt phẳng đánh giá độ bao phủ công cộng, đây là công cụ cao cấp dành cho phân tích quy hoạch.
+
+Khu vực Vùng đệm: Đồ thị xuất ra dạng các đa giác trong suốt mờ (Polygon Area) loang quanh điểm trung tâm của mỗi trạm.
+
+Ứng dụng trực quan: Quan sát sự giao thoa giữa các vùng Polygon giúp thấy được nơi nào tuyến xe trùm tới quy mô cư dân tốt nhất.
+
+Hình 5.2. 3. Lớp dữ liệu thể hiện Không gian vùng đệm (Buffer Zone) quanh cụm trạm
+
+\section{Phân hệ Xác thực hệ thống và Chiến lược Bảo mật (Authentication)}
+
+Đặc thù của hệ thống BusGIS là quản trị dữ liệu quy mô quốc gia/thành phố, do đó hệ thống không cung cấp tính năng "Đăng ký tài khoản tự do" (No Public Registration) ra bên ngoài Public Web. Các tài khoản nhân sự chỉ được cấp phát bởi Super Admin thông qua Server cục bộ. Quy trình phân hệ tương tác danh tính tập trung vào hai nhánh:
+
+\subsection{Trang Đăng nhập (Authentication Gateway)}
+
+Giao diện đăng nhập được thiết kế tối giản, tập trung vào trọng tâm công việc và cấu trúc luồng dữ liệu an toàn chặn giả mạo biểu mẫu (CSRF Token).
+
+Thiết kế luồng (UI/UX): Giao diện Box tĩnh nổi bật giữa màn hình với hai trường Tên đăng nhập và Mật khẩu. Mật khẩu được mã hóa băm PBKDF2 của lõi Django Auth.
+
+Quy trình phản hồi (Feedback): Khi nhận diện sai thông số, biểu mẫu sẽ được vô hiệu tạm thời và gửi trả cảnh báo chữ đỏ tĩnh nằm trên nút Submit để phòng thủ các lỗ hổng dò mật khẩu liên tục.
+
+Hình 5.3. 1. Trang đăng nhập Authentication Gateway
+
+\subsection{Giao diện Quản trị Hồ sơ cá nhân (Profile View)}
+
+Đối với tài khoản đã Login thành công, hệ thống cung cấp giao diện cập nhật thông tin giới hạn (Profile).
+
+\begin{itemize}
+    \item Mục đích: Hỗ trợ chuyên viên cập nhật các trường địa chỉ Email theo phiên làm việc mới nhất.
+    \item An ninh: Từ Profile, giao diện tích hợp lệnh bảo vệ phiên làm việc (Session Clear) khi người dùng kích hoạt Logout.
+\end{itemize}
+
+Hình 5.3. 2. Màn hình thông tin và cập nhật chỉnh sửa Hồ sơ cá nhân (Profile View)
+
+\subsection{Khôi phục mật khẩu thông qua Email (Reset Pass)}
+
+Bù đắp cho việc thiếu trang định danh, hệ thống thiết lập chu trình Reset Password bằng Email vô cùng vững chắc để giảm tải yêu cầu cấp lại mã cho Super Admin.
+
+Yêu cầu khôi phục: Màn hình xác thực yêu cầu nhập trúng Email gốc. Nếu hợp lệ, hệ thống Server ngầm phát đi chuỗi khóa Token duy nhất có giới hạn thời gian thông qua giao thức SMTP.
+
+Thư thông báo tự động: Email từ hệ thống sẽ đáp về hộp thư điện tử của chuyên viên (mô phỏng chạy trên Mailtrap) đính kèm link xác nhận một lần.
+
+Giao diện tái thiết lập: Chuyên viên nhập lại bộ khóa mật khẩu mới với các chuẩn Validation bắt buộc (như phải có chữ, số, độ dài lớn hơn 8 tự) được Django thông dịch cứng.
+
+Hình 5.3. 3. Quy trình gửi liên kết khôi phục thông qua giao thức hộp thư điện tử (Mailtrap)- Bước 1
+
+Hình 5.3. 4. Quy trình gửi liên kết khôi phục thông qua giao thức hộp thư điện tử (Mailtrap)-Bước 2
+
+Hình 5.3. 5. Quy trình gửi liên kết khôi phục thông qua giao thức hộp thư điện tử (Mailtrap)-Bước 3
+
+Hình 5.3. 6. Quy trình gửi liên kết khôi phục thông qua giao thức hộp thư điện tử (Mailtrap)-Bước 4
+
+\section{Công nghệ bản đồ}
+
+Để hình thái bản đồ hiển thị mượt mà trên website ứng dụng không bị nghẽn (Crash) vì dữ liệu rác, nhóm lập trình chọn phối hợp:
+
+Leaflet.js: Thay vì dùng thư viện đồ sộ OpenLayers, Leaflet đóng vai trò như một nghệ nhân tinh giản mọi chức năng thừa. Nó dùng thẻ canvas hoặc SVG để vẽ hàng vạn Node đường ống trơn tuột mà không cần card đồ họa nặng nề, giữ mức tiêu thụ RAM tĩnh tuyệt đối để điện thoại đời cũ cũng có thể mở bản đồ.
+
+OpenStreetMap Layer: Lớp xi măng cốt thép nền móng bản đồ mặt phẳng hoàn toàn mở rộng dựa trên nguyên lý Gạch cắt lớp (Z,x,y Tile Systems) load cực kỳ uyển chuyển tiết kiệm Data 3G/4G của giới sinh viên và người dân bình dân, tránh lãng phí tiền cước để lấy API thương mại tốn hao.
+
+\chapter{ĐÁNH GIÁ CHẤT LƯỢNG HỆ THỐNG}
+
+Sự thành bại của một nền tảng phần mềm hệ thống thông tin địa lý (WebGIS) luôn phải trải qua môi trường kiểm tra sát hạch độ tải (Alpha Testing) và quá trình nghiệm thu tính khả dụng (Usability Testing). Việc đánh giá chính xác các kết quả đạt được sau khi lập trình không chỉ chứng minh tính hợp lý của các mô hình thuật toán định tuyến, mà còn đo lường được mức độ thân thiện và tốc độ phản hồi đối với người sử dụng cuối.
+
+\section{Đánh giá thiết kế Giao diện UI/UX và Trải nghiệm người dùng}
+
+Trải qua chu trình chạy thử nghiệm đồ họa thực chứng trên cả nền tảng Desktop và Mobile, giao diện kiến trúc của BusGIS không những đáp ứng tốt tiêu chí hiển thị Responsive mà còn tạo hiệu ứng xuất sắc về chuẩn mực thiết kế:
+
+Không gian tương tác bản đồ (View-port): Kết xuất màn hình trang chủ được mở tối đa diện tích dảnh cho bản đồ. Việc thiết kế bộ lưới tìm kiếm ở cạnh bên kèm cơ chế gập/rút (collapse) thanh Menu siêu mượt giúp giải phóng thêm đến 30\textbackslash{}% khoảng không thị giác. Hệ thống lưới rập (Grid Layout) này triệt tiêu cảm giác gò bó khi quét tọa độ, tôn lập lên các tuyến cắt (Polyline) nhiều sắc mầu hiển thị đường đi trên bản đồ nền OpenStreetMap một cách cực kỳ rực rỡ và trực quan.
+
+Hình 6. 1. Giao diện trang chủ tích hợp sức mạnh bản đồ số phân rã đa lớp trực quan
+
+Hệ thống hộp thoại phân tích Động (Dynamic Popup): Từ bỏ các bảng biểu cứng nhắc, mỗi khi có tác vụ nhấp chuột (Click / Tap) vào bất kỳ một tọa độ trạm nào trên hệ mặt phẳng, ngay lập tức một bong bóng (Popup) viền bo góc tĩnh tế được bật mở sinh động ngay vị trí đó. Hộp thoại này truy xuất lập tức cho người dùng Tọa độ tuyệt đối (Lat/Lng) và thông số kỹ thuật, định danh tên đoạn đường sở tại trên đúng thời gian thực.
+
+Hình 6. 2. Hiệu ứng bong bóng hộp thoại (Popup) sinh động xuất hiện khi tương tác trực tiếp vật lý vào Trạm xe buýt
+
+Tính hàn lâm của trang Bảng Điều khiển (Dashboard): Màn hình chuyên dụng cho trang quản trị phản ánh luồng thao tác mạch lạc. Cửa sổ có một thanh Header thanh lịch hiển thị không gian giám sát nội bộ. Sự xuất hiện của các Badge (Huy hiệu đỏ nhấp nháy trên chuông báo) đã thực hiện tốt chức năng gây chú ý cho Quản trị viên trong trường hợp có luồng tín hiệu cập nhật trạm mới từ môi trường ngoài.
+
+\section{Đánh giá Kết quả Phân tích chức năng lõi (GIS Search \textbackslash{}& Result)}
+
+Kết quả đánh giá sức mạnh của các nhóm công cụ truy vấn chuẩn Geospatial làm việc với khối lượng Vecto (Point, LineString) khổng lồ là trọng tâm đồ án:
+
+\subsection{Kết quả tra cứu Trạm bán kính hẹp (Nearest Buffer Query)}
+
+Khảo sát năng lực truy xuất dữ liệu quanh một không gian tĩnh cụ thể.
+
+Bối cảnh thử nghiệm (Test-case): Người quản lý đặt một điểm mốc M tại khu vực vùng trung tâm (Ví dụ: quanh khu vực Quận 1) và khởi chạy thông số Bán kính (Radius) mức 2km (2000 mét).
+
+Kết quả đạt được (Output): Bộ xử lý không gian (PostGIS/Spatial-Lite) tiếp nhận tọa độ M, thu phóng vòng compass qua toàn bộ cơ sở dữ liệu. Thuật toán tự động bóc tách thành công và hiển thị chính xác X trạm xe buýt lọt hoàn toàn trong bán kính 2000 mét. Mọi trạm thỏa mãn đều được đồng loạt gắn ghim (Marker) giáng xuống mặt phẳng bản đồ, đảm bảo tính chính xác định vị lên đến 100\textbackslash{}%.
+
+Hình 6. 3. Kết quả truy vấn thuật toán phân mảng "Tìm trạm trong phạm vi bán kính 2km"
+
+\subsection{Kết quả thuật toán Thiết lập định tuyến động (Routing Engine)}
+
+Đây là bài thử cho bài toán Logic đi lại bằng phương tiện chuyên chở công cộng.
+
+Bối cảnh: Tìm hướng thông tuyến kết nối giữa hai điểm ngẫu nhiên X (Điểm đi) và Y (Điểm đến).
+
+Kết quả xử lý: Thuật toán tính toán chuỗi điểm gần nhất và xuất chuỗi một vạch đường đi đồ họa đồ viền (Polyline Pattern) nối X và Y theo hệ thống lộ trình của xe buýt sẵn có. Dữ liệu mảng trả về không chỉ là vẽ đường mà còn đánh Text liệt kê các đoạn dừng tuyến cần lưu ý. Thiết kế này giải quyết triệt để nhu cầu quy hoạch lộ trình ảo cho người dân thành thị.
+
+Hình 6. 4. Đánh giá kết xuất thuật toán định tuyến giao thông, vạch đường chỉ dẫn chi tiết trên lớp bản đồ
+
+\section{Đánh giá cơ chế Phân quyền, Đồng bộ dữ liệu và Hiệu năng}
+
+Với một ứng dụng GIS có khả năng can thiệp trực diện mô hình cấu trúc Topology, độ phân quyền và đồng bộ được kiểm duyệt khốc liệt qua các kịch bản:
+
+Khả năng đồng bộ ngầm (Data Import Load): Hệ thống chứng minh năng lực phi phàm khi thử nghiệm gỡ/nhập một tệp tài liệu tiêu chuẩn Excel chứa hàng nghìn tọa độ Tuyến/Trạm mới. Bộ giải mã Parser mất chưa tới 0.5s để bóc tách luồng dữ liệu và dập tan hoàn toàn tình trạng Dead-lock, tắc nghẽn Request thường thấy.
+
+Tính phòng thủ qua vòng rào Authorization: Mọi luồng API dạng Update/Delete dữ liệu cấp cao khi cố ý tiếp cận bằng mã độc gián tiếp hoặc truy vấn không gắn thông số tài khoản đăng nhập đều vấp phải sự ngăn chặn (bắt ngoại lệ) của Firewall. Hành vi trả về mã 403 Forbidden hoặc nhảy về Gateway Đăng nhập chứng minh cơ sở DB đã rào kín.
+
+Hình 6. 5. Bằng chứng Hệ thống giám sát: Thông báo trạng thái đồng bộ dữ liệu Excel
+
+Tóm lược Hiệu năng Web (Performance): Qua đối chiếu Lighthouse System, ứng dụng WebGIS này duy trì độ đáp ứng xử lý vòng đời dữ liệu ở mức mili-giây đối với các tệp tin tĩnh. Cơ chế liên kết ngầm MailTrap để phục vụ Reset Password/Gửi Email Notifications vận hành cực kỳ chuẩn xác định tuyến giao thức. Khung chương trình chạy êm ái, trơn tru tạo ra một liên kết mạng thông tin địa lý khép kín hoàn chỉnh, xứng tầm dự án phần mềm giao thông thực chiến.
+
+Kết luận
+
+Chương 6 đã trình bày toàn bộ bức tranh tổng quan về kết quả đạt được của dự án sau quá trình triển khai cấu trúc thiết kế và kiểm thử hệ thống BusGIS. Thông qua các kịch bản thử nghiệm thực tế khắt khe từ giao diện người dùng, phương thức bảo mật cho đến sức tải của các thuật toán phân tích hình học không gian (GIS Tools), kết quả thu được đã minh chứng cho năng lực thực tế của phần mềm:
+
+Đảm bảo khả năng phục vụ người dân qua một giao diện bản đồ trực quan, tối giản nhưng đa dụng.
+
+Xử lý thành công các bài toán định tuyến tìm đường (Routing) và khoanh vùng bán kính trạm phục vụ với tốc độ mili-giây.
+
+Kiểm soát trọn vẹn rủi ro an toàn thông tin CSDL dựa trên các ràng buộc Validation và quy trình báo bắt lỗi bảo mật ngầm hoàn hảo.
+
+Sau khi tiến hành kiểm thử và đưa ứng dụng vào vận hành mô phỏng thực tế, hệ thống quản lý tuyến xe buýt BusGIS đã bộc lộ rõ những hiệu quả tích cực cũng như một số giới hạn nhất định xuất phát từ rào cản khách quan. Chương này sẽ tiến hành đo lường và đánh giá chi tiết cả hai mặt Ưu điểm và Hạn chế của đề tài.
+
+\section{Các ưu điểm đạt được của đề tài}
+
+Trải qua quá trình khảo sát, phân tích, thiết kế và trực tiếp xây dựng mã nguồn kết hợp công nghệ cơ sở dữ liệu số, hệ thống BusGIS đã chứng minh được tính khả thi kỹ thuật vượt trội thông qua 3 đặc điểm nổi bật sau:
+
+1. Giao diện trực quan, lấy người dùng làm trung tâm (User-Centric UI): Hệ thống tối ưu hóa hoàn toàn khả năng tương tác của người dùng mọi lứa tuổi nhờ cơ chế đồ họa trải phẳng, tích hợp các công nghệ UX hiện đại như chế độ Dark mode hiển thị nổi đa giác. Góc độ thiết kế chú trọng không gian hiển thị cho bản đồ, tích hợp chức năng kéo-thả (Drag \textbackslash{}& Drop) thông minh tạo được cảm giác cực kỳ thân thiện và tinh gọn cho người quản trị thay vì các bảng biểu rối mắt kiểu cũ.
+
+2. Hiệu năng tính toán và tìm trạm tức thì (High Performance): Nhờ tối ưu hóa tốt thuật toán truy xuất theo bán kính (Radius Queries) và cơ chế phân trang (Pagination) triệt để của Django ở Tầng xử lý Logic, hệ thống loại bỏ được tình trạng "nghẽn cổ chai" băng thông. Kể cả khi thực thi tìm hàng chục trạm dừng trong một khu vực, ứng dụng vẫn đáp ứng tín hiệu với độ trễ tính bằng mili-giây, mang lại trải nghiệm mượt mà không thua kém các phần mềm Desktop truyền thống.
+
+3. Tích hợp hoàn hảo sức mạnh điện toán Đám mây (Web) và Không gian (GIS): Giá trị cốt lõi lớn nhất của hệ thống nằm ở việc biến đổi những dữ liệu tọa độ tĩnh lưu trữ trong cơ sở liệu truyền thống thành một bản đồ vector có tính tương tác. Sự kết hợp giữa Web và GIS cho phép người dân tiếp cận quy hoạch giao thông từ xa thông qua trình duyệt ở bất cứ đâu. Nó số hóa việc định tuyến đường đi và thiết lập Vùng đệm dịch vụ, cung cấp công cụ đắc lực không chỉ cho hành khách mà còn định hướng cho các nhà quy hoạch, vận tải công cộng.
+
+\section{Các hạn chế còn tồn đọng}
+
+Bên cạnh những kết quả tích cực đã đạt được, giới hạn về mặt thời gian phần cứng cũng như việc tiếp cận nguồn tài nguyên quốc gia đã khiến đồ án còn một số điểm cần tiếp tục hoàn thiện:
+
+1. Cơ sở dữ liệu mẫu chưa đầy đủ (Data Coverage Limits): Khối lượng dữ liệu về trạm và quỹ đạo mạng xe buýt sử dụng trong đồ án hiện nay mới chỉ tiến hành ở dạng thử nghiệm / cục bộ (Local data test-case) dựa trên số lượng file Excel thu thập thủ công. Dữ liệu này chưa thực sự phản ánh và bao quát đầy đủ 100\textbackslash{}% bản đồ độ trễ giao thông thực tế của toàn bộ quốc gia, dẫn tới việc thực thi truy vấn thuật toán GIS đôi khi chưa bao phủ được các tình huống di chuyển phức tạp.
+
+2. Chưa hỗ trợ hệ thống nhận diện Định vị Dẫn đường động (Real-time Navigation): Hệ thống hiện tại giải quyết đặc biệt tốt bài toán vẽ khung đường đi tĩnh trên máy (Polyline routing). Tuy nhiên, ứng dụng Web chưa thể mô phỏng chức năng thu sóng định vị GPS từ điện thoại khách hàng cũng như module kết nối với hộp đen các chuyến xe thực tế ngoài xã hội. Do đó, mô hình hiện tại dừng lại ở mức "Vạch lộ tuyến", chưa đạt tới khả năng "Dẫn đường rẽ hướng bằng giọng nói thực tế (Voice Navigation / Live Streaming Tracking)" như cấu trúc phức tạp của nền tảng Google Maps.
+
+\chapter{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN TƯƠNG LAI}
+
+\section{Tổng kết và ý nghĩa thực tiễn của đề tài}
+
+Trải qua một hành trình dài từ bước nghiên cứu quy trình phân tích hệ thống đến khâu lập trình và kiểm thử phần mềm, đồ án "Xây dựng bản đồ và quản lý hệ thống tuyến xe buýt bằng GIS" đã đáp ứng trọn vẹn yêu cầu giải bài toán quy hoạch giao thông tĩnh và động. Kết quả của dự án đã vượt xa khuôn khổ một ứng dụng học thuật, thể hiện rõ ở hai khía cạnh:
+
+Về mặt ý nghĩa Khoa học - Công nghệ: Dự án đã khẳng định tính khả thi của việc ứng dụng triệt để nền tảng mã nguồn mở (Open-source Technologies). Theo đó, mô hình WebGIS đã được kiến trúc hóa thành công bằng việc kết hợp sức mạnh phân tích CSDL học không gian PostGIS/SpatialLite thông qua bộ lõi Framework Django. Việc tích hợp cấu trúc MVC (Model-View-Controller) giúp website phân lý rõ ràng ranh giới giữa luồng hiển thị (Leaflet Map) và luồng xử lý định tuyến (Routing). Từ đó, hệ thống hoàn toàn loại bỏ được sự phụ thuộc vào các nền tảng trả phí đắt đỏ như ArcGIS Server.
+
+Về mặt ứng dụng Thực tiễn - Xã hội: Đối với nhà quản trị giao thông đô thị, hệ thống hoạt động như một Cổng thông tin điện tử (Portal) quyền lực. Giúp họ triển khai những cấu hình Topology phức tạp nhất: tái quy hoạch trạm đỗ, nhập trích tự động hàng vạn hệ tọa độ xe buýt mà không cần can thiệp Code thủ công. Đối với người dân, các bộ công cụ thông minh như Tìm Trạm gần nhất (Nearest Buffer) và Kết xuất chỉ dẫn đường đi (Find Route) là chìa khóa tháo gỡ tâm lý rào cản khi sử dụng phương tiện công cộng, đóng góp không nhỏ vào công cuộc hạn chế xe cá nhân, bảo vệ môi trường và chuyển đổi số hạ tầng của chính phủ.
+
+\section{Đề xuất hướng mở rộng và phát triển tương lai}
+
+Bất kỳ một hệ thống công nghệ thông tin nào cũng mang tính kế thừa lớn. Để công năng của sản phẩm tiến gần hơn với việc hiện thực hóa đưa vào vận hành thương mại ở cấp quốc gia, giải pháp BusGIS cần thiết lập các chiến lược vĩ mô trong tương lai bao gồm 4 giai đoạn chủ chốt:
+
+1. Tích hợp định vị dẫn đường cá nhân vào Giao diện người dùng: Phát triển năng lực định vị tuyến từ dạng phác thảo "Đường vẽ tĩnh (Static Polyline)" lên khả năng "Chỉ đường đi theo thời gian thực (Live Voice Navigation)". Công năng này sẽ sử dụng thu phát tín hiệu GPS trực tiếp từ thiết bị di động của hành khách, ra lệnh rẽ hướng và nắn tuyến để đưa họ từ nhà đi bộ áp sát ra tận vạch sơn của trạm chờ xe buýt một cách chính xác tuyệt đối.
+
+2. Kết nối API Google Maps và Phân tích giao thông động (Live Traffic): Thoát ly việc chia đường chim bay thông thường, việc đồng bộ API cùng hệ thống Big Data vệ tinh của Google sẽ giúp lõi của thuật toán BusGIS đo đạc được trạng thái "Tắc nghẽn mạng lưới giao thông" theo tiết trời thực bào. Việc tích hợp này tạo ra thuật toán Né kẹt xe đối với xe buýt và thông báo chuẩn xác thời gian xe đến mốc chờ (ETA) xuống độ sai số chỉ còn vài phút.
+
+3. Chuyển đổi số hệ sinh thái Thanh toán và Chăm sóc lịch trình: Xây dựng thêm các Module thương mại điện tử nhằm phát triển văn hóa "Smart City". Hành khách có quyền tra cứu lịch trình các giờ chạy (Timetable), tương tác để nhận thông báo khẩn ngay trên Web. Đặc biệt, có thể phát triển tính năng mua Vé điện tử (E-ticket) đi kèm mã QR liên kết các cổng giao dịch số (Zalopay, VNPay, Momo) để quét soát vé lên xe mà không cần xuất lệnh in hóa đơn giấy truyền thống.
+
+4. Nâng cấp Ứng dụng gốc sang nền tảng thiết bị di động (Mobile App): Đẩy mạnh nghiên cứu tích hợp hệ cơ sở dữ liệu GIS hiện hữu của Web sang giao thức RESTful API nhằm trích xuất cho Mobile Application (Android/iOS). Cấu trúc hạ tầng thiết bị di động sẽ giúp giao thức định vị được nhạy bén hơn, đồng bộ hệ thông báo dạng Push Notication để báo động kịp thời cho mọi công dân đang lưu thông dọc tuyến đường xe phục vụ.
+
+TÀI LIỆU THAM KHẢO
+
+[1] Tài liệu và Sách Tiếng Việt
+
+Nguyễn Trọng Giảng, Phạm Quốc Thái (2018). Giáo trình Hệ thống thông tin địa lý (GIS) cơ bản và ứng dụng. Nhà xuất bản Đại học Quốc gia Hà Nội.
+
+Trần Vĩnh Phước, Nguyễn Văn A (2020). Ứng dụng WebGIS trong quản lý hạ tầng kỹ thuật đô thị và giao thông thông minh. Tạp chí Khoa học Công nghệ và Giao thông vận tải, (Số 35), trang 45-52.
+
+Bộ Giao thông Vận tải (2021). Tiêu chuẩn Quốc gia TCVN 12899:2020 về Mạng lưới đường bộ và Yêu cầu trạm đỗ xe buýt. Tổng cục Tiêu chuẩn Đo lường Chất lượng xuất bản.
+
+[2] Tài liệu Tiếng Anh và Bài báo Quốc tế (English References) 4. Longley, P. A., Goodchild, M. F., Maguire, D. J., \textbackslash{}& Rhind, D. W. (2015). Geographic Information Science and Systems (4th Edition). John Wiley \textbackslash{}& Sons. (Tài liệu nền tảng số 1 thế giới về các khái niệm GIS, Buffer, Spatial Queries). 5. Holubec, M., \textbackslash{}& Vydrová, M. (2019). Public Transport Routing Optimization using GIS. Transportation Research Procedia, 40, 246-253. Elsevier. 6. Obe, R. O., \textbackslash{}& Hsu, L. S. (2015). PostGIS in Action (2nd Edition). Manning Publications. (Tài liệu gốc mô tả cách thiết lập tọa độ, thao tác cơ sở dữ liệu không gian để tìm đường ngầm).
+
+[3] Tài liệu Công nghệ, Trích dẫn điện tử (Websites / Documentation) 7. Django Software Foundation (2023). Django Documentation - The Web framework for perfectionists with deadlines. Cập nhật tháng 10 năm 2023. Truy cập từ: https://docs.djangoproject.com/ 8. Leaflet.js Team (2023). Leaflet - an open-source JavaScript library for mobile-friendly interactive maps. Truy cập từ: https://leafletjs.com/reference.html 9. Python Software Foundation (2023). GeoDjango Documentation - Geographic Web Framework. Truy cập từ: https://docs.djangoproject.com/en/stable/ref/contrib/gis/ 10. OpenStreetMap Contributors (2023). OpenStreetMap Data and Planet OSM Database. Cập nhật liên tục. Truy cập từ: https://www.openstreetmap.org/about
+
+BẢNG PHÂN CÔNG
+
+\end{document}

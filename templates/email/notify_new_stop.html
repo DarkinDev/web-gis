@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f4f8; margin: 0; padding: 20px; }
+    .container { max-width: 580px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+    .header { background: linear-gradient(135deg, #27ae60, #1e8449); padding: 32px 40px; text-align: center; color: #fff; }
+    .header h1 { margin: 0; font-size: 22px; font-weight: 700; }
+    .body { padding: 32px 40px; }
+    .info-box { background: #f0fff4; border-left: 4px solid #27ae60; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; }
+    .info-box p { margin: 4px 0; font-size: 14px; color: #334; }
+    .footer { background: #f8fafd; padding: 20px 40px; text-align: center; color: #888; font-size: 12px; border-top: 1px solid #eee; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📍 BusGIS — Trạm dừng mới</h1>
+    <p>Thông báo tự động từ hệ thống</p>
+  </div>
+  <div class="body">
+    <p>Xin chào Admin,</p>
+    <p>Hệ thống vừa ghi nhận <strong>trạm dừng mới</strong> được thêm vào:</p>
+    <div class="info-box">
+      <p><strong>Tên trạm:</strong> {{ stop.name }}</p>
+      <p><strong>Mã trạm:</strong> {{ stop.code|default:"Chưa có" }}</p>
+      <p><strong>Địa chỉ:</strong> {{ stop.address|default:"Chưa có" }}</p>
+      <p><strong>Mái che:</strong> {% if stop.has_shelter %}Có{% else %}Không{% endif %}</p>
+    </div>
+  </div>
+  <div class="footer">BusGIS System &copy; 2026</div>
+</div>
+</body>
+</html>

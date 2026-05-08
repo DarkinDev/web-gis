@@ -1,0 +1,239 @@
+--- First 200 non-empty paragraphs ---
+PARA_0: TRƯỜNG ĐẠI HỌC TÀI NGUYÊN VÀ MÔI TRƯỜNG
+PARA_1: THÀNH PHỐ HỒ CHÍ MINH
+PARA_2: KHOA CÔNG NGHỆ THÔNG TIN
+PARA_5: TIỂU LUẬN
+PARA_6: LẬP TRÌNH GIS
+PARA_8: XÂY DỰNG BẢN ĐỒ VÀ PHÂN TÍCH HỆ THỐNG TUYẾN XE BUÝT BẰNG GIS
+PARA_9: 	Sinh viên thực hiện:	Nguyễn Hồng Tuyết Nhi (1250080128)
+PARA_10: 	Nguyễn Gia Huy (1250080072)
+PARA_12: 	Lớp:   12_ĐH_CNTT3
+PARA_13: 	Khoá:   2023 – 2027
+PARA_14: 	Giảng viên hướng dẫn : Ths.Nguyễn Duy Tuấn
+PARA_15: 		 CN.Nguyễn Phan Chí Thành
+PARA_17: TP. Hồ Chí Minh, 10  tháng 03  năm 2026
+PARA_18: LỜI CẢM ƠN
+PARA_19: Nhóm chúng em xin gửi lời cảm ơn chân thành và sâu sắc nhất đến Bộ môn Công nghệ thông tin, khoa Công nghệ thông tin, Trường Đại học Tài nguyên và Môi trường TP.HCM đã tạo ra một môi trường học tập, nghiên cứu năng động, trang bị cho chúng em đầy đủ cơ sở vật chất và kiến thức nền tảng vững chắc.
+PARA_20: Đặc biệt, chúng em xin trân trọng gửi lời tri ân đến Thầy CN. Nguyễn Duy Tuấn và Thầy ThS. Nguyễn Phan Chí Thành đã tận tình dẫn dắt, định hướng cách tiếp cận vấn đề và trực tiếp chỉ bảo cho chúng em trong suốt quá trình triển khai dự án. Nhờ có phương pháp giảng dạy hiện đại và sự khuyến khích liên tục từ các thầy, chúng em đã vượt qua những khó khăn về mặt lập trình không gian để có thể hoàn thành tốt tiểu luận môn học này.
+PARA_21: Do giới hạn về thời gian triển khai cũng như kinh nghiệm thực tiễn xử lý dữ liệu GIS quy mô lớn chưa nhiều, bài tiểu luận chắc chắn sẽ không tránh khỏi những thiếu sót. Chúng em rất mong nhận được sự góp ý, phê bình và chỉ bảo thêm của Hội đồng đánh giá cùng các Quý Thầy Cô để hệ thống được chuẩn hoá và hoàn thiện hơn.
+PARA_23: MỤC LỤC
+PARA_24: LỜI MỞ ĐẦU	1
+PARA_25: CHƯƠNG 1:	TỔNG QUAN ĐỀ TÀI	2
+PARA_26: 1.1	Lý do chọn đề tài	2
+PARA_27: 1.2	Mục tiêu nghiên cứu	2
+PARA_28: 1.2.1	Cho phép tìm trạm sạc theo:	2
+PARA_29: 1.2.1.1	vị trí hiện tại	2
+PARA_30: 1.3	đối tượng và Phạm vi nghiên cứu	3
+PARA_31: CHƯƠNG 2:	CƠ SỞ LÝ THUYẾT	4
+PARA_32: 2.1	Hệ thống thông tin địa lý (GIS)	4
+PARA_33: 2.2	WebGIS	4
+PARA_34: 2.3	Bản đồ trực tuyến	4
+PARA_35: 2.4 Công nghệ sử dụng	4
+PARA_36: Backend	4
+PARA_37: Frontend	5
+PARA_38: Thư viện bản đồ	5
+PARA_39: Thư viện GIS	5
+PARA_40: CHƯƠNG 3:	DỮ LIỆU SỬ DỤNG	5
+PARA_41: 3.1	Nguồn dữ liệu	5
+PARA_42: 3.1.1	Dữ liệu trạm sạc từ OpenStreetMap	5
+PARA_43: 3.2	Đasadsad	5
+PARA_44: 3.2.1	Ádsadsa	5
+PARA_45: 3.2.2	Ddsadsasad	5
+PARA_46: 3.2.2.1	dâdadadfafs	5
+PARA_47: 3.2 Cấu trúc dữ liệu	5
+PARA_48: 3.3 Tiền xử lý dữ liệu	5
+PARA_49: 4. PHƯƠNG PHÁP XÂY DỰNG HỆ THỐNG	5
+PARA_50: 4.1 Kiến trúc hệ thống	6
+PARA_51: 4.3 Quy trình xử lý dữ liệu	6
+PARA_52: 4.4 Chức năng hệ thống	6
+PARA_53: 1. Hiển thị bản đồ	6
+PARA_54: 2. Tìm theo vị trí hiện tại	6
+PARA_55: 3. Tìm theo tên đường	6
+PARA_56: 5. XÂY DỰNG WEBSITE	6
+PARA_57: 5.1 Giao diện trang web	7
+PARA_58: 5.2 Chức năng tìm trạm sạc	7
+PARA_59: 5.3 Công nghệ bản đồ	7
+PARA_60: 6. KẾT QUẢ THỰC NGHIỆM VÀ ĐÁNH GIÁ	7
+PARA_61: 6.1 Giao diện hệ thống	7
+PARA_62: 6.2 Kết quả tìm kiếm	7
+PARA_63: 7.1 Ưu điểm	7
+PARA_64: 7.2 Hạn chế	8
+PARA_65: 8. KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN	8
+PARA_66: TÀI LIỆU THAM KHẢO	8
+PARA_69: DANH MỤC HÌNH ẢNH
+PARA_70: Hinh 2-1. Hình ảnh test	4
+PARA_73: DANH MỤC SƠ ĐỒ, BIỂU ĐỒ
+PARA_74: Sơ đồ 1-1. Sơ đồ text ....	2
+PARA_76: Biểu đồ
+PARA_78: DANH MỤC BẢNG BIỂU
+PARA_79: Bảng 1-1. Bảng test .....	3
+PARA_80: Bảng 2-1.Bảng 2 .....	4
+PARA_83: DANH MỤC TỪ VIẾT TẮT
+PARA_87: LỜI MỞ ĐẦU
+PARA_88: Trong bối cảnh đô thị hóa diễn ra với tốc độ chóng mặt như hiện nay, việc phát triển và tối ưu hóa hệ thống giao thông công cộng, đặc biệt là mạng lưới xe buýt, đang trở thành "chìa khóa" thiết yếu để giải quyết triệt để các bài toán nan giải về ùn tắc giao thông và ô nhiễm môi trường. Tại các đô thị lớn như Thành phố Hồ Chí Minh, mặc dù mạng lưới xe buýt khá dày đặc, nhưng việc cung cấp các công cụ tra cứu thông tin lộ trình một cách trực quan, chính xác và theo thời gian thực cho hành khách vẫn còn tồn tại rất nhiều rào cản. Các tài liệu dạng văn bản, danh sách hay bản đồ tĩnh truyền thống thường gây khó khăn cho việc định vị không gian và lên kế hoạch di chuyển.
+PARA_89: Để giải quyết vấn đề đó, sự ra đời của Hệ thống Thông tin Địa lý trên nền tảng Web (WebGIS) cung cấp một giải pháp toàn diện và linh hoạt. Việc áp dụng công nghệ WebGIS cho phép chuyển đổi các tệp dữ liệu không gian phức tạp thành những giao diện bản đồ động sinh động, có khả năng tương tác cao. Nhận thức được tầm quan trọng này, nhóm chúng em đã quyết định thực hiện đề tài "Xây dựng bản đồ và phân tích hệ thống tuyến xe buýt bằng GIS". Sản phẩm là một phần mềm kết hợp giữa máy chủ backend xử lý địa lý mạnh mẽ (GeoDjango, PostgreSQL/PostGIS) và giao diện trực quan (Leaflet.js). Đề tài không chỉ đơn thuần là việc số hóa dữ liệu, mà còn đóng vai trò phân tích vùng phục vụ, truy vấn tuyến đường và quản lý dữ liệu thông minh, mang lại tiện ích to lớn cho cả nhà quản lý hệ thống giao thông lẫn hành khách tham gia xe buýt.
+PARA_91: Đề tài: Xây dựng bản đồ và phân tích hệ thống tuyến xe buýt bằng GIS
+PARA_92: TỔNG QUAN ĐỀ TÀI
+PARA_93: Lý do chọn đề tài
+PARA_94: Trong bối cảnh chuyển đổi số đang diễn ra mạnh mẽ trên hầu hết các lĩnh vực kinh tế – xã hội, việc ứng dụng công nghệ thông tin vào hoạt động quản lý, đặc biệt là hạ tầng giao thông công cộng đã trở thành xu thế tất yếu. Hệ thống xe buýt tại khu vực đô thị giữ vai trò nòng cốt trong việc giảm ách tắc giao thông, bảo vệ môi trường, tuy nhiên, việc phục vụ thông tin đến khách hàng cũng như vận hành bộ máy quản lý vẫn tồn đọng nhiều khó khăn. Thực tế khảo sát cho thấy, trong quá trình vận hành hệ thống xe buýt, các dữ liệu điểm (trạm dừng) và đường (tuyến đường) chủ yếu được quản lý dưới dạng danh sách chữ viết, các tệp bảng tính đơn giản (Excel) hoặc bản đồ 2D dạng ảnh tĩnh. Cách thức quản lý này tồn tại nhiều hạn chế như: khó kiểm soát trực quan các sai lệch bản đồ, mất nhiều thời gian trong việc sửa đổi vị trí khi đường sá bị điều chỉnh, dữ liệu bị phân tán và không hỗ trợ các thuật toán không gian. Đối với hành khách, việc phải lên các ứng dụng rời rạc hoặc web tĩnh để xem số tuyến rất bất tiện, nhất là khi họ không biết các trạm nào đang ở gần mình. Ngoài ra, người quản trị thường xuyên mắc lỗi "xóa nhầm" dữ liệu trạm/tuyến lúc cập nhật mà không có hệ thống phục hồi lại. Sự gia tăng về mức độ phức tạp của quy hoạch và lưu lượng xe khiến mô hình quản lý truyền thống không còn phù hợp. Nếu không có một hệ thống thông tin địa lý (GIS) tương tác cao, kết nối đồng bộ giữa nền tảng Web trực tuyến và cơ sở dữ liệu không gian, các đơn vị vận hành sẽ gặp khó khăn lớn, làm giảm chất lượng phục vụ công cộng. Xuất phát từ những vấn đề thực tiễn nêu trên, đề tài “Xây dựng bản đồ và phân tích hệ thống tuyến xe buýt bằng GIS” được lựa chọn nhằm nghiên cứu, phân tích hiện trạng hoạt động quản lý lộ trình xe buýt, từ đó xây dựng một ứng dụng WebGIS hiện đại với các tính năng chuyên biệt hỗ trợ trực quan hóa bản đồ, quản lý tuyến/trạm, tìm kiếm bán kính (Nearby Search) và cơ chế khôi phục dữ liệu an toàn (Soft Delete & Restore).
+PARA_95: Mục tiêu nghiên cứu
+PARA_96: 1.2.1. Mục tiêu tổng quát : 
+PARA_97: Mục tiêu tổng quát của đề tài là phân tích, mô hình hóa và thiết kế một hệ thống WebGIS hoàn chỉnh nhằm giám sát, hiển thị trực quan và quản lý hiệu quả các tuyến/trạm xe buýt. Qua đó, hỗ trợ hành khách dễ dàng tiếp cận giao thông công cộng, đồng thời tối ưu hóa công tác quản trị, bảo vệ dữ liệu nội bộ một cách chặt chẽ.
+PARA_98: 1.2.2. Mục tiêu cụ thể : 
+PARA_99: Để đạt được mục tiêu tổng quát, đề tài tập trung vào:
+PARA_100: Khảo sát thực tế nhu cầu tra cứu tuyến xe buýt của hành khách và quy trình cập nhật dữ liệu của quản trị viên (Admin).
+PARA_101: Phân tích các hạn chế của hệ thống dò tìm hiện tại (AS-IS), từ đó xác định yêu cầu hệ thống TO-BE (WebGIS có tương tác).
+PARA_102: Đặc tả chi tiết yêu cầu phần mềm dưới dạng tài liệu SRS (các Use Case phân lớp người tìm đường, người quản lý, và dữ liệu thùng rác).
+PARA_103: Thiết kế hệ thống ở mức logic thông qua các mô hình UML, ERD và triển khai cơ sở dữ liệu học thuật không gian bằng PostGIS (SRID 4326).
+PARA_104: Xây dựng giao diện Dashboard với các hành động an toàn như: xóa mềm (Soft Delete) không mất dữ liệu gốc và có thể Khôi phục (Restore). Thông qua việc đạt được các mục tiêu trên, đồ án minh họa rõ cách ánh xạ hệ thống GIS vào bài toán đô thị thực tế.
+PARA_107: Sơ đồ 1-1. Sơ đồ text .....
+PARA_108: Đối tượng và Phạm vi nghiên cứu
+PARA_109: 1.3.1. Đối tượng nghiên cứu :
+PARA_110: Hệ thống thông tin địa lý (GIS) nền Web.
+PARA_111: Các nghiệp vụ cốt lõi: Phân tích vùng đệm (Buffer), xem lớp bản đồ, tìm kiếm, đăng nhập và quản lý điểm/tuyến trên cơ sở dữ liệu không gian.
+PARA_112: 1.3.2. Phạm vi nghiên cứu :
+PARA_113:  Phạm vi của hệ thống tập trung vào mặt thiết kế trải nghiệm người dùng WebGIS và triển khai kỹ thuật 백엔드 (Backend) GIS (với GeoDjango). Đề tài sử dụng dữ liệu một số các tuyến tiêu biểu làm demo. Hệ thống đảm bảo đầy đủ nền tảng vận hành logic nhưng không đi sâu tính năng bán vé hoặc giao dịch tiền tệ vì yếu tố này nằm ngoài mảng kỹ thuật bản đồ không gian.
+PARA_114: Phương pháp nghiên cứu :
+PARA_115: Đề tài sử dụng các phương pháp nghiên cứu sau:
+PARA_116: Phương pháp khảo sát và phỏng vấn: Thu thập thông tin thực tế từ hành khách đi xe buýt và quản trị viên đang quản lý lộ trình giao thông.
+PARA_117: Phương pháp quan sát: Ghi nhận trực tiếp hệ thống web cũ (các web cung cấp danh sách chỉ gồm các thẻ HTML rườm rà thiếu bản đồ).
+PARA_118: Phương pháp phân tích hệ thống (AS-IS/TO-BE): Chỉ ra các thiếu sót (dữ liệu tĩnh, dễ mất lỗi) và đề xuất hệ thống mới.
+PARA_119: Phương pháp mô hình hóa UML & ERD: Thiết kế kiến trúc lớp (Class), đặc tả hành vi của ứng dụng và biểu diễn các thực thể Geometry trên CSDL PostGIS.
+PARA_120: Phương pháp thực nghiệm lập trình: Code trực tiếp sản phẩm bằng Python/GeoDjango và Javascript/Leaflet để kiểm chứng.
+PARA_121:  Kết cấu của đề tài :
+PARA_122: Nội dung đề tài gồm 8 chương: 1: Giới thiệu chung. | 2: Khảo sát và thu thập thông tin. | 3: Phân tích hệ thống hiện tại. | 4: Đặc tả yêu cầu (SRS). | 5: Thiết kế hệ thống (UML, Database). | 6: Thiết kế Giao diện. | 7: Đánh giá hệ thống. | 8: Kết luận & Kiến nghị.
+PARA_126: hình 1-1 Hình test chương 1
+PARA_128: CƠ SỞ LÝ THUYẾT
+PARA_129: Hệ thống thông tin địa lý (GIS)
+PARA_130: Khái niệm về GIS: GIS (Geographic Information System) là hệ thống phức hệ bao gồm máy tính phần cứng, phần mềm, dữ liệu, nhân sự và các phương pháp luận, được thiết kế chuyên biệt để hoạt động và dung hợp mọi dữ liệu có gắn với tọa độ (Spatial Referenced Data). Nó chịu trách nhiệm thu nhận, lưu trữ, thao tác, phân tích toán học, truy vấn, và trình bày kết xuất dưới dạng bản đồ 2D/3D. Trong luận án này, GIS chính là trái tim thuật toán giúp xử lý các phép toán hình học đồ sộ.
+PARA_131: Ứng dụng của thuật toán GIS trong Web Mapping: Khác biệt hoàn toàn so với việc nhúng một bức ảnh tĩnh, bản đồ web GIS chia lãnh thổ thành các Vector sắc nét (Point, Line, Polygon). Mỗi Vector mang một bảng thuộc tính (Attribute Table) vô hạn. Sự kết hợp này đóng vai trò màng lọc vô cùng linh hoạt cho phép thiết lập các thông báo (popup), tạo vùng (Highlight) tương tác không gian ngay lập tức vào từng tọa độ khi con người tác động chuột.
+PARA_132:  Thuật toán Haversine – tính khoảng cách địa lý
+PARA_133:   Lý thuyết định lý: Trong không gian hình học phẳng Euclid, việc tính khoảng cách dựa trên định lý Pythagoras. Tuy nhiên, Trái Đất là một bề mặt dạng hình cầu elipsoid. Do vậy, thuật toán Haversine là công thức toán lượng giác siêu việt dùng để tìm góc ở tâm và suy ra quãng đường ngắn nhất (vòng cung lớn) kết nối hai điểm được chiếu trên bề mặt khối cầu, khi đã có dữ liệu chéo của vĩ độ và kinh độ.
+PARA_134:   Công thức biểu diễn toán học tính toán: d = 2 * r * arcsin( √[ sin²((lat2 - lat1) / 2) + cos(lat1) * cos(lat2) * sin²((lon2 - lon1) / 2) ] )
+PARA_135:   Giải thích biến đổi và vận dụng: Phương trình chứa hằng số r là bán kính vòng cung Trái Đất (được ước lượng xấp xỉ 6,371 km tính từ xích đạo đến lõi). Hệ số lat1, lat2 đại diện cho tọa độ vĩ độ góc, lon1, lon2 là tọa độ kinh độ (tính bằng radians). Thuật toán này có sai số rất nhỏ bé, cực kỳ phù hợp khi hệ thống WebGIS xác lập khoảng cách thực từ trạm xe buýt X đến tọa độ một hành khách Y có độ lệch mét siêu việt. Ngoài ra, trong đồ án sử dụng tương tự hàm thư viện ST_Distance của PostGIS được tối ưu bằng C++ để gia tốc tính toán nhanh hơn.
+PARA_137: WebGIS
+PARA_138: Khái niệm bản chất WebGIS: Sự giao thoa đỉnh cao của cách mạng Internet truyền thông và Công nghệ không gian GIS hình thành nên khái niệm WebGIS. Nó giải phóng hệ thống GIS cục bộ cá nhân (Desktop GIS) trên máy tính chuyên gia, cho phép phân phối và cấp quyền tương tác các bản đồ động đồ sộ trên mạng viễn thông.
+PARA_139: Các thành phần cốt lõi của kiến trúc WebGIS: Một hệ thực thể WebGIS cần duy trì ba hệ tư tưởng phần cứng:
+PARA_140: Máy khách (Client): Là chiếc trình duyệt Web (Chrome, Safari, Edge) do bệnh viện, trường học, cá nhân sở hữu để gửi request dữ liệu đồ họa (HTTP Request) để xem bản đồ.
+PARA_141: Máy chủ ứng dụng (Application Server / Web Server): Khối điều hướng khổng lồ, là trung tâm tiếp nhận, chứa logic lọc dữ liệu bảo mật (vd: Django/Python).
+PARA_142: Máy chủ Database Không gian (Data Server): Cỗ máy ngầm chứa toàn vẹn dữ liệu hệ quy chiếu, điểm, đường (PostgreSQL).
+PARA_144: Bản đồ trực tuyến
+PARA_145: Mạng lưới OpenStreetMap (OSM): OSM là dự án dữ liệu bản đồ do cộng đồng nguồn mở cộng tác lớn nhất toàn cầu. Cung cấp nền tảng bản đồ (BaseMap Tile) hoàn toàn miễn phí, có độ phân giải siêu chi tiết đến cụm ngõ hẻm nhỏ nhất ở quy mô đường sá đô thị. WebGIS ứng dụng OSM để render dưới dạng các gói gạch hình ảnh (Tile Layer) qua URL (với mức thu phóng z, tọa độ x, y). Hình 2.1 Hình ảnh lớp bản tự nền gạch OSM
+PARA_146: Hệ sinh thái Google Maps: Một dịch vụ thương mại xuất chúng cung cấp kho API cực lớn, mạnh về dẫn đường Traffic GPS. Dù vậy, điểm yếu kìm hãm duy nhất là chính sách trả phí duy trì đính kèm làm phát sinh gánh nặng tài chính đối với sinh viên hay cơ quan vận hành nhỏ. Bảng nghiên cứu dưới đây chỉ ra định hướng sử dụng OSM thông qua Leaflet làm giải pháp thay thế hoàn hảo. Bảng 2.1 Bảng so sánh API Công nghệ Web Mapping hiện tại
+PARA_147:  Công nghệ sử dụng trong đồ án
+PARA_148: Hệ thống này hội tụ tổ hợp (Tech Stack) tân tiến bậc nhất cho quy mô phân tích viễn thám và quản trị quy mô: Backend (Lớp xử lý phía Server):
+PARA_149: Python: Ngôn ngữ lập trình cốt lõi mang đặc tính bảo vệ (Garbage Collector), cú pháp khoa học giúp việc xử lý thuật toán địa lý gọn gàng, giảm thiểu rủi ro bảo mật hệ thống.
+PARA_150: Django Open Framework: Bộ khung kiến trúc ưu việt với triết lý Model-View-Template (MVT); bao trùm sẵn module quản trị, xác thực Token mã băm an toàn nhất. 
+PARA_151: Mailtrap (Hệ thống kiểm thử giao thức SMTP ảo): Trong quá trình phát triển (Development), Mailtrap đóng vai trò là một máy chủ Sandbox bảo mật (sandbox.smtp.mailtrap.io). Nguyên lý hoạt động của nó là 'đánh lừa' ứng dụng WebGIS rằng Email đã được gửi đi thành công ra Internet, nhưng thực tế toàn bộ luồng thư từ (như thông báo "Mật khẩu mới của bạn", "Yêu cầu khôi phục mật khẩu") sẽ bị chặn lại và lưu trữ tập trung tại hộp thư ảo "My Inbox".
+PARA_152: Cách thức hoạt động: Bằng cách cấu hình các thông số EMAIL_HOST_USER, PASSWORD và EMAIL_PORT = '2525' trực tiếp vào cấu hình lõi của Django, lập trình viên có thể kiểm tra định dạng thư tĩnh HTML, debug đường dẫn liên kết, mà không sợ hệ thống xả thư rác (Spam) nhầm vào hộp thư thật của khách hàng, đảm bảo tính vô trùng tuyệt đối cho dữ liệu thật. 
+PARA_154: Frontend (Lớp kết xuất phía Khách hàng):
+PARA_155: Ngôn ngữ HTML/CSS/JavaScript: Ngôn ngữ chịu trách nhiệm định dạng khối DOM, giao diện mỹ quan, phản hồi tương tác click chuột qua hệ thống Event Listener JS mãnh liệt. Thư viện bản đồ (Client-side Rendering):
+PARA_156: Leaflet.js: Một viên ngọc quý trong nền công nghiệp Web Map. Thư viện JS mở siêu nhỏ vọn (micro-library) có khả năng vẽ hàng chục ngàn vector GeoJSON lên khung màn hình HTML5 Canvas/SVG với tốc độ khung hình (FPS) cực kỳ trơn tru, không xé ảnh, kết hợp vuốt chạm đa điểm cảm ứng. Thư viện xử lý GIS (Động cơ lõi DB):
+PARA_157: GeoDjango + PostgreSQL + PostGIS: Lõi RDBMS được mở rộng thuộc tính Topology, biến PostgreSQL thành pháo đài. GEOS Engine xử lý phép tính Hình Học, hỗ trợ các truy vấn chồng lớp, định danh Index cấp độ K-dimensional qua thuật toán phân trang GiST Tree.
+PARA_158: Hinh 2-1. Hình ảnh test
+PARA_159: Bảng 2-1.Bảng 2 .....
+PARA_160: DỮ LIỆU SỬ DỤNG
+PARA_161: Nguồn dữ liệu
+PARA_162: Dữ liệu của hệ thống không lấy từ hình vẽ tĩnh, mà được thu thập và vector hoá từ OpenStreetMap (OSM) cùng một số tham khảo từ cổng thông tin giao thông thành phố. Các tuyến đường được digitize thành danh sách các tọa độ địa lý ghép nối nhau.
+PARA_163:  Dữ liệu mạng lưới giao thông từ OpenStreetMap
+PARA_164: Các tệp dữ liệu nguyên thủy cung cấp hình hài các cấu trúc mặt đường và điểm trung chuyển công cộng được chắt lọc (Crawled) thông qua cổng điện tử tự do kết hợp kiểm kê tại thực địa, bao gồm tọa độ góc, chuỗi vĩ - kinh độ thô bám theo quỹ đạo mặt đường nhựa. Dữ liệu tiếp nhận dưới định dạng shapefile (.shp) hoặc xml tinh gọn.
+PARA_166:  Cấu trúc cơ sở dữ liệu GIS (Data Schema)
+PARA_167: Hệ thống xoay quanh 3 thực thể dữ liệu được liên kết với nhau chặt chẽ:
+PARA_168: Model BusRoute (Tuyến Xe Buýt):
+PARA_169: Các field định danh cơ bản: route_number, name, operating_hours, ticket_price, color.
+PARA_170: Đặc trưng GIS: geometry = models.LineStringField(srid=4326): Trường này nắm giữ toàn bộ mảng tọa độ uốn lượn liên tục miêu tả chính xác lộ trình xe sẽ đi qua trên bản đồ đường phố.
+PARA_171: Model BusStop (Trạm Dừng):
+PARA_172: Các field quản lý: code, name, address. Các đặc quyền hạ tầng như has_shelter (có nhà chờ), has_bench (có ghế ngồi).
+PARA_173: Đặc trưng GIS: location = models.PointField(srid=4326): Điểm tọa độ kinh độ (Longitude), vĩ độ (Latitude) đơn lập xác định đúng chấm mốc cắm của nhà chờ.
+PARA_174: Model RouteStop (Trạm Dừng Trên Tuyến):
+PARA_175: Bảng trung gian giải quyết quan hệ nhiều - nhiều (N:N). Lưu order (thứ tự dừng), distance_from_start (khoảng cách so với điểm cầu phát).
+PARA_177: Ví dụ bảng dữ liệu:
+PARA_178: Lấy ảnh 
+PARA_179: Tiền xử lý dữ liệu
+PARA_180: Hệ tọa độ tham chiếu: Toàn bộ dự án phải được chuẩn hoá đồng nhất về Hệ toạ độ địa lý thế giới hệ WGS-84, ứng với ID SRID: 4326. Việc đồng bộ SRID vô cùng quan trọng để hệ thống không bị lỗi tọa độ khi ánh xạ điểm từ PostGIS lên trình tải bản đồ Leaflet.
+PARA_181: Chuyển đổi GeoJSON: Lập trình View API sử dụng lớp Serialization trong Django (serializers.serialize('geojson', queryset)) để tự động convert tệp hình học từ nhị phân CSDL ra chuẩn văn bản GeoJSON chuẩn của OGC.
+PARA_183:  PHƯƠNG PHÁP XÂY DỰNG HỆ THỐNG
+PARA_184: Kiến trúc hệ thống
+PARA_185: Mô hình tổ chức luận lý kiến trúc của đồ án WebGIS được chia làm hai luồng không gian hành vi phân cấp: tương tác công cộng và tương tác biên tập quản trị. Thiết kế 3-Layer (Client - Web Server - Database Server) chặn đứng mọi nỗ lực khai thác dữ liệu trái phép: + Quy trình tương tác vòng khép kín của User (Hành khách):
+PARA_186: Mở App/Browser máy tính thiết bị di động truy cập đường dẫn (URL) qua mạng Internet.
+PARA_187: Web Interface -> Thực thể giao diện hiển thị cung cấp khung nhìn Canvas. Hành khách lướt quét, tương tác bấm chuột kéo thả (Drag/Zoom map), nhấn tìm mã số chạy tàu, đăng kí định danh qua form.
+PARA_188: Back-End API -> Phản hồi thông báo JSON về, điều khiển vị trí mốc máy ảnh. Khách hàng theo dõi vị trí trạm xe buýt mục tiêu một cách trực quan để đi bộ trong trạng thái chờ.
+PARA_189: + Quy trình can thiệp chiều sâu của Admin (Biên tập viên GIS):
+PARA_190: Vận hành quy trình bảo mật HTTPS Auth Login quyền ưu tiên cao (Superuser).
+PARA_191: Trang Dashboard Admin -> Tham chiếu màn hình điều khiển theo dõi thống kê lưới giao thông, danh mục các điểm dừng. Xử lý nghiệp vụ Thêm/Sửa theo lệnh chỉ huy mạng lưới thực địa.
+PARA_192: Cơ chế quản lý lỗi sai -> Lỡ tay ấn nhầm Xóa tuyến quan trọng, thực thể bay vào hộp giam dữ liệu. Kích hoạt nút bấm Khôi phục từ mềm. Phía Server DB thay lệnh truy vấn, biến trạng thái dữ liệu is_deleted=False -> Báo cáo phục hồi dữ liệu mỹ mãn về giao diện báo hiệu thành công. Bản đồ Web cho User bên ngoài lập tức tự động load lại tuyến bị mất.
+PARA_193: Sơ đồ UseCase, Active, Tuần tự
+PARA_194: Sự vận hành khoa học của phần mềm được chứng minh minh định bằng các sơ đồ UML tiêu chuẩn.
+PARA_195: Sơ đồ UseCase (Ca sử dụng hệ thống):
+PARA_196: Khách hàng không xác thực (Guest): Nắm quyền hạn được Xem bản đồ bao quát, Tìm tuyến bằng thanh tra cứu trượt, tùy biến giao diện Sáng tối (Dark Mode/Light Mode).
+PARA_197: Adminstrator: Kế thừa mọi quyền của user, mở khóa đặc quyền truy cập Dashboard bảng dữ liệu, chỉnh sửa tên quỹ đạo, có quyền bấm Xóa (tạo sự kiện Soft Delete) và Khôi phục (Restore API logic).
+PARA_199: Sơ đồ Active (Biểu đồ Hoạt động của luồng tra cứu):
+PARA_200: Khi User nhập từ khóa "152" qua textbox. Hành động nhấn Find Event sẽ chạy script Javascript ở Browser kiểm tra định dạng dữ liệu (validation). Sau đó nó sinh ra lệnh GET Asynchronous về Controller của Máy chủ (View Django). View lọc cấu trúc trong Model. Kết xuất ra JSON. Đẩy cho Map Engine đắp màu sơn lên Layer đa phân rồi tung ra màn hình trong vòng chưa tới 0.3 giây thao tác.
+PARA_202: Sơ đồ Tuần tự (Sequence Diagram - Nghiệp vụ Khôi phục mềm):
+PARA_203: Khởi nguồn từ Khách hàng Admin (UI User) tìm thấy cảnh báo nhãn "Đã xóa màu đỏ" nhấp nháy trên bảng. Ấn click sự kiện Button Restore. Browser sinh Ajax Fetch URL (/api/bus/restore). Ngay tại lớp Router url.py bắt gói tin. Đẩy vô Function View điều khiển mã logic Python ORM BusRoute.objects.filter(id).update(is_deleted=False). Bơm SQL Update vô Postgres. Database báo Success (200 OK) Response lên View, View nén JSON đẩy lên Client. Client nhận thông báo và javascript tự dùng CSS làm bay nhãn "Đã Xóa" cực lẹ mượt không cần reload cả cái bảng.
+PARA_204: Cơ chế Phân quyền (Django Permissions & Authentication) 
+PARA_205: Hệ thống thiết lập một rào cản phân quyền nghiêm ngặt dựa trên thư viện django.contrib.auth.
+PARA_206: User (Người dùng thường): Chỉ có quyền truy cập các View hiển thị (Read-only). Không có quyền can thiệp vào Database.
+PARA_207: Staff/Admin (Quản trị viên): Được cấp quyền truy cập vào giao diện Dashboard và Django Admin. Có khả năng thực hiện các thao tác CRUD (Create, Read, Update, Delete). Đặc biệt, Admin có quyền "Khôi phục" các bản ghi đã xóa nhầm nhờ vào Permission tùy chỉnh được định nghĩa trong Model.
+PARA_208: Cơ chế Phân trang (Pagination Implementation) 
+PARA_209: Để tối ưu hóa hiệu năng truyền tải khi số lượng tuyến xe và trạm dừng lên đến hàng nghìn bản ghi, hệ thống áp dụng kỹ thuật Phân trang (Pagination).
+PARA_210: Nguyên lý: Thay vì tải toàn bộ danh sách gây nghẽn băng thông, Django Paginator chia nhỏ dữ liệu thành các trang (ví dụ: 10 bản ghi/trang).
+PARA_211: Trải nghiệm người dùng: Tại giao diện Quản lý, Admin có thể chuyển đổi giữa các trang thông qua thanh điều hướng (Pagination bar). Điều này giúp trình duyệt không bị treo khi phải render quá nhiều dòng dữ liệu cùng lúc, đảm bảo tốc độ phản hồi dưới 0.5s.
+PARA_213:  Quy trình xử lý dữ liệu
+PARA_214: Thuật toán làm mượt dòng chảy dữ liệu (Data Pipeline Architecture) tiến hành theo quy định:
+PARA_215: Tiếp nhận & Lưu kho: Lưới xe buýt thực địa được tổng hợp định kỳ tải vào lõi RDBMS qua cấu trúc Field đặc biệt của GeoDjango Model.
+PARA_216: Loại suy truy vấn học: Lọc, ném bỏ các mảnh dữ liệu vô hình học (không có geometry point do rớt trạm mất sóng GPS lúc đo vẽ) ra khỏi câu lệnh Queryset.
+PARA_217: GeoJSON Serialization: Mạch máu lưu thông của WebGIS, lõi server serialize (chuyển đổi tuần tự) các đối tượng Python nặng chịch thành một cấu trúc chuỗi File GeoJSON. Kỹ thuật này giảm triệt để băng thông mạng, tăng Frame-rate của bản đồ tải từ điện thoại.
+PARA_218: Kết xuất UI Graphics: Frontend JS gắp gói GeoJSON, đọc các cặp Tọa độ, chuyển đổi về kiểu dữ liệu pixel và Canvas/SVG API tiến hành cọ vẽ hiển thị theo tỷ lệ thu lốm tương ứng bằng lõi của Leaflet.js.
+PARA_220:  Chức năng hệ thống chuyên biệt
+PARA_221: Hiển thị bản đồ giao thông vô hạn (Infinite Map View): Hệ thống không load 1 tấm ảnh, mà render bằng việc tải các mảng TileLayer đắp nối liền kề của OpenStreetMap nền. Tự động thay đổi sắc màu hiển thị tùy chỉnh cho các đối tượng buýt nổi bật.
+PARA_223: Tìm tra cứu theo vị trí khoảng cách khu vực: Trích xuất tọa độ Device Location GPS từ nền tảng trình duyệt Web nếu người dùng ấn lệnh "Cho phép truy cập vị trí". Thiết lập bán kính điện tử siêu hình (Circle Buffer 1km). Đổ bóng mờ highlight (Làm nổi bật) những điểm đón khách thỏa mãn thuật toán giao cắt ST_Intersects nằm lọt thỏm trong không gian vòng tròn định vị. Hỗ trợ người dùng nhận diện nhanh không phải mỏi mắt nhìn bản đồ.
+PARA_225: Tra cứu theo mã số tuyến đặc tả: Hệ thống Filter theo String từ khóa thông minh. Khi nhận được tên tuyến, Bản đồ không bắt người dùng tự vuốt màn hình đi tìm, mà áp dụng lệnh thuật toán FitBounds thu thập tọa độ xa nhất 2 đầu tuyến, khóa cố định và bao trọn, dời con mắt Camera của thiết bị vừa khuân đủ tuyến đường uốn lượn cực thông minh.
+PARA_227: Hệ thống Quản lý cơ sở dữ liệu, Thùng Rác và Cảnh báo thư ảo (Mailtrap Integration): Cung cấp lưới thông tin dành riêng cho tác nghiệp Admin. Thiết lập một tính năng cực kỳ đắt giá đó là Email Notification (Cảnh báo Thư Tự Động). Khi tài khoản có sự thay đổi (Reset password), hoặc có tuyến xe mới đưa vào vận hành, một tiến trình đa luồng (Threading) sẽ chạy ngầm sinh thư HTML.
+PARA_229: Điểm nhấn công nghệ Sandbox: Để đảm bảo tính riêng tư của lượng dữ liệu thử nghiệm, Máy chủ thiết lập kết nối SMTP Port với hệ sinh thái Mailtrap. Cách hoạt động rất thông minh: Mailtrap sinh ra một tài khoản trung gian (EMAIL_HOST_USER, EMAIL_HOST_PASSWORD). Khi WebGIS gửi thư "Yêu cầu khôi phục mật khẩu", thay vì gọi Gmail hay Yahoo thực tế, gói tin HTTP sẽ bay thẳng vào địa chỉ sandbox.smtp.mailtrap.io qua cổng 2525. Toàn bộ lượng email này sẽ hiển thị gọn gàng trên bảng điều khiển giao diện web của Mailtrap (phần My Inbox). Tại đây, Developer có thể quan sát, debug và duyệt lại nội dung thư trước khi bàn giao hệ thống vào môi trường Production thực tế.
+PARA_231:  XÂY DỰNG WEBSITE
+PARA_232: Giao diện trang web và Nguyên lý thiết kế
+PARA_233: Triết lý thiết kế (Design System) của trang web tuân thủ nghiêm ngặt chuẩn hệ thống Material hoặc bộ quy chuẩn User Experience hiện đại tối ưu khả năng đọc.
+PARA_234: Trang Đăng nhập (Authentication Gateway)
+PARA_235: Giao diện đăng nhập được thiết kế tối giản nhưng đạt chuẩn bảo mật cao. Hệ thống sử dụng Form của Django với cơ chế CSRF Token chống tấn công giả mạo. Giao diện bao gồm:
+PARA_236: Khung nhập liệu: Tên đăng nhập và Mật khẩu (với mã hóa băm PBKDF2).
+PARA_237: Tính năng mở rộng: Liên kết Reset Password qua Email (liên kết với Mailtrap trong môi trường thử nghiệm).
+PARA_238: Phản hồi: Thông báo lỗi đỏ trực quan khi sai thông tin định danh. 
+
+--- Paragraphs mentioning hình/sơ đồ ---
+PARA_69: DANH MỤC HÌNH ẢNH
+PARA_70: Hinh 2-1. Hình ảnh test	4
+PARA_73: DANH MỤC SƠ ĐỒ, BIỂU ĐỒ
+PARA_74: Sơ đồ 1-1. Sơ đồ text ....	2
+PARA_94: Trong bối cảnh chuyển đổi số đang diễn ra mạnh mẽ trên hầu hết các lĩnh vực kinh tế – xã hội, việc ứng dụng công nghệ thông tin vào hoạt động quản lý, đặc biệt là hạ tầng giao thông công cộng đã trở thành xu thế tất yếu. Hệ thống xe buýt tại khu vực đô thị giữ vai trò nòng cốt trong việc giảm ách tắc giao thông, bảo vệ môi trường, tuy nhiên, việc phục vụ thông tin đến khách hàng cũng như vận hành bộ máy quản lý vẫn tồn đọng nhiều khó khăn. Thực tế khảo sát cho thấy, trong quá trình vận hành hệ thống xe buýt, các dữ liệu điểm (trạm dừng) và đường (tuyến đường) chủ yếu được quản lý dưới dạng danh sách chữ viết, các tệp bảng tính đơn giản (Excel) hoặc bản đồ 2D dạng ảnh tĩnh. Cách thức quản lý này tồn tại nhiều hạn chế như: khó kiểm soát trực quan các sai lệch bản đồ, mất nhiều thời gian trong việc sửa đổi vị trí khi đường sá bị điều chỉnh, dữ liệu bị phân tán và không hỗ trợ các thuật toán không gian. Đối với hành khách, việc phải lên các ứng dụng rời rạc hoặc web tĩnh để xem số tuyến rất bất tiện, nhất là khi họ không biết các trạm nào đang ở gần mình. Ngoài ra, người quản trị thường xuyên mắc lỗi "xóa nhầm" dữ liệu trạm/tuyến lúc cập nhật mà không có hệ thống phục hồi lại. Sự gia tăng về mức độ phức tạp của quy hoạch và lưu lượng xe khiến mô hình quản lý truyền thống không còn phù hợp. Nếu không có một hệ thống thông tin địa lý (GIS) tương tác cao, kết nối đồng bộ giữa nền tảng Web trực tuyến và cơ sở dữ liệu không gian, các đơn vị vận hành sẽ gặp khó khăn lớn, làm giảm chất lượng phục vụ công cộng. Xuất phát từ những vấn đề thực tiễn nêu trên, đề tài “Xây dựng bản đồ và phân tích hệ thống tuyến xe buýt bằng GIS” được lựa chọn nhằm nghiên cứu, phân tích hiện trạng hoạt động quản lý lộ trình xe buýt, từ đó xây dựng một ứng dụng WebGIS hiện đại với các tính năng chuyên biệt hỗ trợ trực quan hóa bản đồ, quản lý tuyến/trạm, tìm kiếm bán kính (Nearby Search) và cơ chế khôi phục dữ liệu an toàn (Soft Delete & Restore).
+PARA_97: Mục tiêu tổng quát của đề tài là phân tích, mô hình hóa và thiết kế một hệ thống WebGIS hoàn chỉnh nhằm giám sát, hiển thị trực quan và quản lý hiệu quả các tuyến/trạm xe buýt. Qua đó, hỗ trợ hành khách dễ dàng tiếp cận giao thông công cộng, đồng thời tối ưu hóa công tác quản trị, bảo vệ dữ liệu nội bộ một cách chặt chẽ.
+PARA_103: Thiết kế hệ thống ở mức logic thông qua các mô hình UML, ERD và triển khai cơ sở dữ liệu học thuật không gian bằng PostGIS (SRID 4326).
+PARA_107: Sơ đồ 1-1. Sơ đồ text .....
+PARA_119: Phương pháp mô hình hóa UML & ERD: Thiết kế kiến trúc lớp (Class), đặc tả hành vi của ứng dụng và biểu diễn các thực thể Geometry trên CSDL PostGIS.
+PARA_126: hình 1-1 Hình test chương 1
+PARA_130: Khái niệm về GIS: GIS (Geographic Information System) là hệ thống phức hệ bao gồm máy tính phần cứng, phần mềm, dữ liệu, nhân sự và các phương pháp luận, được thiết kế chuyên biệt để hoạt động và dung hợp mọi dữ liệu có gắn với tọa độ (Spatial Referenced Data). Nó chịu trách nhiệm thu nhận, lưu trữ, thao tác, phân tích toán học, truy vấn, và trình bày kết xuất dưới dạng bản đồ 2D/3D. Trong luận án này, GIS chính là trái tim thuật toán giúp xử lý các phép toán hình học đồ sộ.
+PARA_133:   Lý thuyết định lý: Trong không gian hình học phẳng Euclid, việc tính khoảng cách dựa trên định lý Pythagoras. Tuy nhiên, Trái Đất là một bề mặt dạng hình cầu elipsoid. Do vậy, thuật toán Haversine là công thức toán lượng giác siêu việt dùng để tìm góc ở tâm và suy ra quãng đường ngắn nhất (vòng cung lớn) kết nối hai điểm được chiếu trên bề mặt khối cầu, khi đã có dữ liệu chéo của vĩ độ và kinh độ.
+PARA_138: Khái niệm bản chất WebGIS: Sự giao thoa đỉnh cao của cách mạng Internet truyền thông và Công nghệ không gian GIS hình thành nên khái niệm WebGIS. Nó giải phóng hệ thống GIS cục bộ cá nhân (Desktop GIS) trên máy tính chuyên gia, cho phép phân phối và cấp quyền tương tác các bản đồ động đồ sộ trên mạng viễn thông.
+PARA_145: Mạng lưới OpenStreetMap (OSM): OSM là dự án dữ liệu bản đồ do cộng đồng nguồn mở cộng tác lớn nhất toàn cầu. Cung cấp nền tảng bản đồ (BaseMap Tile) hoàn toàn miễn phí, có độ phân giải siêu chi tiết đến cụm ngõ hẻm nhỏ nhất ở quy mô đường sá đô thị. WebGIS ứng dụng OSM để render dưới dạng các gói gạch hình ảnh (Tile Layer) qua URL (với mức thu phóng z, tọa độ x, y). Hình 2.1 Hình ảnh lớp bản tự nền gạch OSM
+PARA_152: Cách thức hoạt động: Bằng cách cấu hình các thông số EMAIL_HOST_USER, PASSWORD và EMAIL_PORT = '2525' trực tiếp vào cấu hình lõi của Django, lập trình viên có thể kiểm tra định dạng thư tĩnh HTML, debug đường dẫn liên kết, mà không sợ hệ thống xả thư rác (Spam) nhầm vào hộp thư thật của khách hàng, đảm bảo tính vô trùng tuyệt đối cho dữ liệu thật. 
+PARA_156: Leaflet.js: Một viên ngọc quý trong nền công nghiệp Web Map. Thư viện JS mở siêu nhỏ vọn (micro-library) có khả năng vẽ hàng chục ngàn vector GeoJSON lên khung màn hình HTML5 Canvas/SVG với tốc độ khung hình (FPS) cực kỳ trơn tru, không xé ảnh, kết hợp vuốt chạm đa điểm cảm ứng. Thư viện xử lý GIS (Động cơ lõi DB):
+PARA_157: GeoDjango + PostgreSQL + PostGIS: Lõi RDBMS được mở rộng thuộc tính Topology, biến PostgreSQL thành pháo đài. GEOS Engine xử lý phép tính Hình Học, hỗ trợ các truy vấn chồng lớp, định danh Index cấp độ K-dimensional qua thuật toán phân trang GiST Tree.
+PARA_158: Hinh 2-1. Hình ảnh test
+PARA_162: Dữ liệu của hệ thống không lấy từ hình vẽ tĩnh, mà được thu thập và vector hoá từ OpenStreetMap (OSM) cùng một số tham khảo từ cổng thông tin giao thông thành phố. Các tuyến đường được digitize thành danh sách các tọa độ địa lý ghép nối nhau.
+PARA_164: Các tệp dữ liệu nguyên thủy cung cấp hình hài các cấu trúc mặt đường và điểm trung chuyển công cộng được chắt lọc (Crawled) thông qua cổng điện tử tự do kết hợp kiểm kê tại thực địa, bao gồm tọa độ góc, chuỗi vĩ - kinh độ thô bám theo quỹ đạo mặt đường nhựa. Dữ liệu tiếp nhận dưới định dạng shapefile (.shp) hoặc xml tinh gọn.
+PARA_181: Chuyển đổi GeoJSON: Lập trình View API sử dụng lớp Serialization trong Django (serializers.serialize('geojson', queryset)) để tự động convert tệp hình học từ nhị phân CSDL ra chuẩn văn bản GeoJSON chuẩn của OGC.
+PARA_185: Mô hình tổ chức luận lý kiến trúc của đồ án WebGIS được chia làm hai luồng không gian hành vi phân cấp: tương tác công cộng và tương tác biên tập quản trị. Thiết kế 3-Layer (Client - Web Server - Database Server) chặn đứng mọi nỗ lực khai thác dữ liệu trái phép: + Quy trình tương tác vòng khép kín của User (Hành khách):
+PARA_191: Trang Dashboard Admin -> Tham chiếu màn hình điều khiển theo dõi thống kê lưới giao thông, danh mục các điểm dừng. Xử lý nghiệp vụ Thêm/Sửa theo lệnh chỉ huy mạng lưới thực địa.
+PARA_193: Sơ đồ UseCase, Active, Tuần tự
+PARA_194: Sự vận hành khoa học của phần mềm được chứng minh minh định bằng các sơ đồ UML tiêu chuẩn.
+PARA_195: Sơ đồ UseCase (Ca sử dụng hệ thống):
+PARA_199: Sơ đồ Active (Biểu đồ Hoạt động của luồng tra cứu):
+PARA_200: Khi User nhập từ khóa "152" qua textbox. Hành động nhấn Find Event sẽ chạy script Javascript ở Browser kiểm tra định dạng dữ liệu (validation). Sau đó nó sinh ra lệnh GET Asynchronous về Controller của Máy chủ (View Django). View lọc cấu trúc trong Model. Kết xuất ra JSON. Đẩy cho Map Engine đắp màu sơn lên Layer đa phân rồi tung ra màn hình trong vòng chưa tới 0.3 giây thao tác.
+PARA_202: Sơ đồ Tuần tự (Sequence Diagram - Nghiệp vụ Khôi phục mềm):
+PARA_216: Loại suy truy vấn học: Lọc, ném bỏ các mảnh dữ liệu vô hình học (không có geometry point do rớt trạm mất sóng GPS lúc đo vẽ) ra khỏi câu lệnh Queryset.
+PARA_223: Tìm tra cứu theo vị trí khoảng cách khu vực: Trích xuất tọa độ Device Location GPS từ nền tảng trình duyệt Web nếu người dùng ấn lệnh "Cho phép truy cập vị trí". Thiết lập bán kính điện tử siêu hình (Circle Buffer 1km). Đổ bóng mờ highlight (Làm nổi bật) những điểm đón khách thỏa mãn thuật toán giao cắt ST_Intersects nằm lọt thỏm trong không gian vòng tròn định vị. Hỗ trợ người dùng nhận diện nhanh không phải mỏi mắt nhìn bản đồ.
+PARA_225: Tra cứu theo mã số tuyến đặc tả: Hệ thống Filter theo String từ khóa thông minh. Khi nhận được tên tuyến, Bản đồ không bắt người dùng tự vuốt màn hình đi tìm, mà áp dụng lệnh thuật toán FitBounds thu thập tọa độ xa nhất 2 đầu tuyến, khóa cố định và bao trọn, dời con mắt Camera của thiết bị vừa khuân đủ tuyến đường uốn lượn cực thông minh.
+PARA_242: Là "linh hồn" của hệ thống, chiếm trọn khung hình với lớp bản đồ OpenStreetMap.
+PARA_272: Cắt gọt và tống chuỗi tọa độ trả về Client. Ngay khi luồng Byte GeoJSON chạy vào thanh gầm Browser. Leaflet giải nén, vẽ nhanh quỹ đạo đa giác màu lên không gian màn hình trơn tru trong 1 tích tắc.
+PARA_274: Để hình thái bản đồ hiển thị mượt mà trên website ứng dụng không bị nghẽn (Crash) vì dữ liệu rác, nhóm lập trình chọn phối hợp:
+PARA_282: Kết xuất giao diện trang chủ với bộ lưới tìm kiếm ở cạnh bên, có chế độ gập rút thanh Menu. Chế độ thay đổi giao diện đen tuyền Dark mode lặp tức làm chìm sáng trắng xuống, tôn các trục lộ trình xe buýt phát quang chói mắt rực rỡ nổi bần bật. Nút tìm kiếm cực kỳ tinh xảo. Màn hình User Profile rõ ràng tường minh. Bấm chuột vào trạm, 1 cái bong bóng Popup có viền bo góc bật mở ra sinh động hiển thị tọa độ tuyệt đối và thông tin tên đường. Cửa sổ trang quản trị viên Dashboard có thanh header thanh lịch báo hiệu đang vận hành luồng giám sát chuyên việt (với Badge đỏ báo trạm).
