@@ -55,14 +55,26 @@ def test_pg(psql_dir, pwd):
 # ── Update settings.py ──────────────────────────────────────────────
 def update_settings(osgeo, gdal_dll, pw, pg_ver):
     with open(SETTINGS_PATH, 'r', encoding='utf-8') as f:
-        c = f.read()
-    c = re.sub(r"OSGEO4W_ROOT = r'[^']*'", f"OSGEO4W_ROOT = r'{osgeo}'", c, count=1)
-    if gdal_dll:
-        c = re.sub(r"'gdal\d+\.dll'", f"'{gdal_dll}'", c)
-    c = re.sub(r"'PASSWORD': '[^']*'", f"'PASSWORD': '{pw}'", c)
-    c = re.sub(r"POSTGIS_PATH = r'[^']*'", f"POSTGIS_PATH = r'C:\\Program Files\\PostgreSQL\\{pg_ver}\\bin'", c)
+        lines = f.readlines()
+    
+    new_lines = []
+    for line in lines:
+        # Update OSGeo4W path (first occurrence)
+        if "OSGEO4W_ROOT = r'" in line and 'OSGEO4W =' not in line and 'OSGEO4W64' not in line:
+            line = f"    OSGEO4W_ROOT = r'{osgeo}'\n"
+        # Update GDAL DLL name
+        elif gdal_dll and re.search(r"gdal\d+\.dll", line):
+            line = re.sub(r"gdal\d+\.dll", gdal_dll, line)
+        # Update password
+        elif "'PASSWORD':" in line:
+            line = f"        'PASSWORD': '{pw}',\n"
+        # Update PostgreSQL path
+        elif "POSTGIS_PATH = r'" in line:
+            line = f"    POSTGIS_PATH = r'C:\\Program Files\\PostgreSQL\\{pg_ver}\\bin'\n"
+        new_lines.append(line)
+    
     with open(SETTINGS_PATH, 'w', encoding='utf-8') as f:
-        f.write(c)
+        f.writelines(new_lines)
 
 # ── Create database ─────────────────────────────────────────────────
 def create_db(psql_dir, pwd):
@@ -146,12 +158,16 @@ def main():
     else:
         # Only update password and pg version
         with open(SETTINGS_PATH, 'r', encoding='utf-8') as f:
-            c = f.read()
-        c = re.sub(r"'PASSWORD': '[^']*'", f"'PASSWORD': '{pw}'", c)
-        c = re.sub(r"POSTGIS_PATH = r'[^']*'",
-                   f"POSTGIS_PATH = r'C:\\Program Files\\PostgreSQL\\{pg_ver}\\bin'", c)
+            lines = f.readlines()
+        new_lines = []
+        for line in lines:
+            if "'PASSWORD':" in line:
+                line = f"        'PASSWORD': '{pw}',\n"
+            elif "POSTGIS_PATH = r'" in line:
+                line = f"    POSTGIS_PATH = r'C:\\Program Files\\PostgreSQL\\{pg_ver}\\bin'\n"
+            new_lines.append(line)
         with open(SETTINGS_PATH, 'w', encoding='utf-8') as f:
-            f.write(c)
+            f.writelines(new_lines)
         ok("settings.py da cap nhat (password + PostgreSQL path)")
     
     # 5. Database + migrations + data
