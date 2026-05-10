@@ -177,15 +177,27 @@ def main():
         input("  Nhan Enter de thoat...")
         sys.exit(1)
     
-    print("\n  Chay migrations...")
-    subprocess.run([sys.executable, 'manage.py', 'makemigrations'], cwd=BASE_DIR)
-    subprocess.run([sys.executable, 'manage.py', 'migrate'], cwd=BASE_DIR)
-    ok("Migrations xong")
-    
-    fixture = os.path.join(BASE_DIR, 'fixtures', 'sample_data.json')
-    if os.path.exists(fixture):
-        subprocess.run([sys.executable, 'manage.py', 'loaddata', fixture], cwd=BASE_DIR)
-        ok("Du lieu mau da nap")
+    sql_backup = os.path.join(BASE_DIR, 'Document', 'bus_gis_backup.sql')
+    if os.path.exists(sql_backup):
+        print("\n  Phuc hoi database tu file SQL backup...")
+        env = os.environ.copy()
+        env['PGPASSWORD'] = pw
+        psql = os.path.join(pg_path, 'psql.exe')
+        r = subprocess.run([psql, '-U', 'postgres', '-d', 'bus_gis', '-f', sql_backup], capture_output=True, text=True, env=env)
+        if r.returncode == 0:
+            ok("Phuc hoi du lieu tu SQL backup thanh cong")
+        else:
+            warn(f"Co the co loi khi phuc hoi SQL (bo qua neu la loi bang da ton tai): {r.stderr[:200]}...")
+    else:
+        print("\n  Chay migrations...")
+        subprocess.run([sys.executable, 'manage.py', 'makemigrations'], cwd=BASE_DIR)
+        subprocess.run([sys.executable, 'manage.py', 'migrate'], cwd=BASE_DIR)
+        ok("Migrations xong")
+        
+        fixture = os.path.join(BASE_DIR, 'fixtures', 'sample_data.json')
+        if os.path.exists(fixture):
+            subprocess.run([sys.executable, 'manage.py', 'loaddata', fixture], cwd=BASE_DIR)
+            ok("Du lieu mau da nap (JSON)")
     
     # Create admin
     env = os.environ.copy()
